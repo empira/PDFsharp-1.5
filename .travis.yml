@@ -7,4 +7,5 @@ install:
 script:
   - nuget restore src/PdfSharp/PdfSharp.csproj -NonInteractive
   - xbuild /p:Configuration=ReleaseMono src/PdfSharp/PdfSharp.csproj
+  - xbuild /p:Configuration=ReleaseMono src/PdfSharp.Tests/PdfSharp.Tests.csproj
   - nunit-console src/PdfSharp.Tests/bin/ReleaseMono/PdfSharp.Tests.dll
