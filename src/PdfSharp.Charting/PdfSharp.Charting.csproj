@@ -142,9 +142,9 @@
     <None Include="StrongnameKey.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PdfSharp\PdfSharp.csproj">
+    <ProjectReference Include="..\PdfSharp\PDFsharp.csproj">
       <Project>{5a6055bc-bf86-4fdd-9f62-0109db7a303b}</Project>
-      <Name>PdfSharp</Name>
+      <Name>PDFsharp</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

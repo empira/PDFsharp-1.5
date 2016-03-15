@@ -99,8 +99,8 @@
         //normalized names
         private string getFaceName(string face)
         {
-            string faceName = face;
-            switch (face.ToLowerInvariant())
+			string faceName = face.ToLowerInvariant();
+            switch (faceName)
             {
                 case "times new roman":
                     faceName = "times";
@@ -114,9 +114,9 @@
 
         private string getPrefixFileName(string faceName)
         {
-            string prefixFileName = faceName;
+			string prefixFileName = faceName.ToLowerInvariant();
             //exceptions
-            switch (faceName.ToLowerInvariant())
+            switch (prefixFileName)
             {
                 case "courier":
                     prefixFileName = "cour";
