@@ -80,7 +80,7 @@
   </Target>
   -->
   <ItemGroup>
-    <ProjectReference Include="..\PdfSharp\PDFsharp.csproj">
+    <ProjectReference Include="..\PdfSharp\PdfSharp.csproj">
       <Project>{5A6055BC-BF86-4FDD-9F62-0109DB7A303B}</Project>
       <Name>PDFsharp</Name>
     </ProjectReference>
