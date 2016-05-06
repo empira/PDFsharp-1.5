@@ -850,9 +850,9 @@ namespace PdfSharp.Pdf
         /// </summary>
         public void Flatten()
         {
-            for (int i = 0; i < AcroForm.Fields.Count; i++)
+            for (int idx = 0; idx < AcroForm.Fields.Count; idx++)
             {
-                AcroForm.Fields[i].ReadOnly = true;
+                AcroForm.Fields[idx].ReadOnly = true;
             }
         }
 
