@@ -23,7 +23,7 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
 // THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
@@ -800,7 +800,7 @@ namespace PdfSharp.Pdf
 
         /// <summary>
         /// Creates a new page and adds it to this document.
-        /// Depending of the IsMetric property of the current region the page size is set to 
+        /// Depending of the IsMetric property of the current region the page size is set to
         /// A4 or Letter respectively. If this size is not appropriate it should be changed before
         /// any drawing operations are performed on the page.
         /// </summary>
@@ -846,6 +846,17 @@ namespace PdfSharp.Pdf
         }
 
         /// <summary>
+        /// Flattens a document (make the fields non-editable).
+        /// </summary>
+        public void Flatten()
+        {
+            for (int i = 0; i < AcroForm.Fields.Count; i++)
+            {
+                AcroForm.Fields[i].ReadOnly = true;
+            }
+        }
+
+        /// <summary>
         /// Gets the security handler.
         /// </summary>
         public PdfStandardSecurityHandler SecurityHandler
@@ -878,6 +889,7 @@ namespace PdfSharp.Pdf
         }
 
         //internal static GlobalObjectTable Gob = new GlobalObjectTable();
+
 
         /// <summary>
         /// Gets the ThreadLocalStorage object. It is used for caching objects that should created

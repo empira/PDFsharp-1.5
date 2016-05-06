@@ -23,14 +23,14 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
 // THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
 namespace PdfSharp.Pdf.AcroForms
 {
     /// <summary>
-    /// Represents a interactive form (or AcroForm), a collection of fields for 
+    /// Represents a interactive form (or AcroForm), a collection of fields for
     /// gathering information interactively from the user.
     /// </summary>
     public sealed class PdfAcroForm : PdfDictionary
@@ -66,7 +66,7 @@ namespace PdfSharp.Pdf.AcroForms
         PdfAcroField.PdfAcroFieldCollection _fields;
 
         /// <summary>
-        /// Predefined keys of this dictionary. 
+        /// Predefined keys of this dictionary.
         /// The description comes from PDF 1.4 Reference.
         /// </summary>
         public sealed class Keys : KeysBase
@@ -99,7 +99,7 @@ namespace PdfSharp.Pdf.AcroForms
             /// <summary>
             /// (Required if any fields in the document have additional-actions dictionaries
             /// containing a C entry; PDF 1.3) An array of indirect references to field dictionaries
-            /// with calculation actions, defining the calculation order in which their values will 
+            /// with calculation actions, defining the calculation order in which their values will
             /// be recalculated when the value of any field changes.
             /// </summary>
             [KeyInfo(KeyType.Array)]

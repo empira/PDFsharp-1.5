@@ -23,7 +23,7 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
 // THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
@@ -310,6 +310,17 @@ namespace PdfSharp.Pdf.AcroForms
             { }
 
             /// <summary>
+            /// Gets the number of elements in the array.
+            /// </summary>
+            public int Count
+            {
+                get
+                {
+                    return Elements.Count;
+                }
+            }
+
+            /// <summary>
             /// Gets the names of all fields in the collection.
             /// </summary>
             public string[] Names
@@ -442,7 +453,7 @@ namespace PdfSharp.Pdf.AcroForms
         }
 
         /// <summary>
-        /// Predefined keys of this dictionary. 
+        /// Predefined keys of this dictionary.
         /// The description comes from PDF 1.4 Reference.
         /// </summary>
         public class Keys : KeysBase
@@ -497,7 +508,7 @@ namespace PdfSharp.Pdf.AcroForms
             public const string TU = "/TU";
 
             /// <summary>
-            /// (Optional; PDF 1.3) The mapping name to be used when exporting interactive form field 
+            /// (Optional; PDF 1.3) The mapping name to be used when exporting interactive form field
             /// data from the document.
             /// </summary>
             [KeyInfo(KeyType.TextString | KeyType.Optional)]
