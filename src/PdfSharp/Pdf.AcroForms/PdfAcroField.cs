@@ -308,6 +308,10 @@ namespace PdfSharp.Pdf.AcroForms
             PdfAcroFieldCollection(PdfArray array)
                 : base(array)
             { }
+            PdfAcroFieldCollection(PdfDocument document)
+            : base(document)
+            {
+            }
 
             /// <summary>
             /// Gets the names of all fields in the collection.
@@ -562,7 +566,27 @@ namespace PdfSharp.Pdf.AcroForms
             [KeyInfo(KeyType.Integer | KeyType.Optional)]
             public const string Q = "/Q";
 
-            // ReSharper restore InconsistentNaming
+            /// <summary>
+            /// (Optional) The type of PDF object that this dictionary describes; if present,
+            /// must be Sig for a signature dictionary.
+            /// </summary>
+            [KeyInfo(KeyType.Name | KeyType.Optional)]
+            public const string Type = "/Type";
+
+            /// <summary>
+            /// 
+            /// </summary>
+            [KeyInfo(KeyType.Name | KeyType.Required)]
+            public const string Subtype = "/Subtype";
+
+            /// <summary>
+            /// 
+            /// </summary>
+            [KeyInfo(KeyType.Rectangle | KeyType.Required)]
+            public const string Rect = "/Rect";
+
+            [KeyInfo(KeyType.Rectangle | KeyType.Required)]
+            public const string P = "/P";
         }
     }
 }

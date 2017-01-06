@@ -70,6 +70,21 @@ namespace PdfSharp.Pdf
                 Elements.Add(item);
         }
 
+        /// Orphan array used for signature
+        /// </summary>
+        /// <param name="items"></param>
+        public PdfArray(params PdfItem[] items)
+        {
+            foreach (PdfItem item in items)
+                Elements.Add(item);
+        }
+
+        public PdfArray(PdfDocument document, int paddingRight, params PdfItem[] items)
+      : this(document, items)
+        {
+            this.PaddingRight = paddingRight;
+        }
+
         /// <summary>
         /// Initializes a new instance from an existing dictionary. Used for object type transformation.
         /// </summary>
@@ -110,13 +125,21 @@ namespace PdfSharp.Pdf
             return array;
         }
 
+        ArrayElements elements;
         /// <summary>
         /// Gets the collection containing the elements of this object.
         /// </summary>
         public ArrayElements Elements
         {
-            get { return _elements ?? (_elements = new ArrayElements(this)); }
+            get
+            {
+                if (this.elements == null)
+                    this.elements = new ArrayElements(this);
+                return this.elements;
+            }
         }
+
+        public int PaddingRight { get; private set; }
 
         /// <summary>
         /// Returns an enumerator that iterates through a collection.
@@ -145,16 +168,24 @@ namespace PdfSharp.Pdf
             return pdf.ToString();
         }
 
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             writer.WriteBeginObject(this);
             int count = Elements.Count;
             for (int idx = 0; idx < count; idx++)
             {
                 PdfItem value = Elements[idx];
-                value.WriteObject(writer);
+                value.Write(writer);
             }
             writer.WriteEndObject();
+            if (PaddingRight > 0)
+            {
+                var bytes = new byte[PaddingRight];
+                for (int i = 0; i < PaddingRight; i++)
+                    bytes[i] = 32;
+
+                writer.Write(bytes);
+            }
         }
 
         /// <summary>

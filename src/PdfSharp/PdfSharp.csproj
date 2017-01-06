@@ -44,6 +44,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -301,6 +302,11 @@
     <Compile Include="Pdf.Security\PdfSecurityHandler.cs" />
     <Compile Include="Pdf.Security\PdfSecuritySettings.cs" />
     <Compile Include="Pdf.Security\PdfStandardSecurityHandler.cs" />
+    <Compile Include="Pdf.Signatures\DefaultAppearanceHandler.cs" />
+    <Compile Include="Pdf.Signatures\ISignatureAppearanceHandler.cs" />
+    <Compile Include="Pdf.Signatures\PdfSignatureHandler.cs" />
+    <Compile Include="Pdf.Signatures\PdfSignatureOptions.cs" />
+    <Compile Include="Pdf.Signatures\PositionTracker.cs" />
     <Compile Include="Pdf\EntryInfoAttribute.cs" />
     <Compile Include="Pdf\enums\DocumentState.cs" />
     <Compile Include="Pdf\enums\PdfFlateEncodeMode.cs" />

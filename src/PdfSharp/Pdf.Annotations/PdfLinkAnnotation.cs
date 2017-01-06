@@ -108,7 +108,7 @@ namespace PdfSharp.Pdf.Annotations
             return link;
         }
 
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             PdfPage dest = null;
             //pdf.AppendFormat(CultureInfo.InvariantCulture,

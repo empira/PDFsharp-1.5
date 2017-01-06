@@ -635,7 +635,7 @@ namespace PdfSharp.Pdf
             return Double.IsNaN(value) ? "null" : value.ToString("#.##", CultureInfo.InvariantCulture);
         }
 
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
 #if DEBUG
             writer.WriteRaw("% Title = " + FilterUnicode(Title) + "\n");
