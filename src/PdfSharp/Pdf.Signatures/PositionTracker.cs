@@ -15,7 +15,7 @@ namespace PdfSharp.Signatures
         {
             Item = item;
             Item.BeforeWrite += (s, e) =>
-                this.Start = e.Position + 1;
+                this.Start = e.Position;
             Item.AfterWrite += (s, e) => 
                 this.End = e.Position;
         }

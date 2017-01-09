@@ -177,13 +177,7 @@ namespace PdfSharp.Pdf.AcroForms
         /// The description comes from PDF 1.4 Reference.
         /// </summary>
         public new class Keys : PdfAcroField.Keys
-        {
-            /// <summary>
-            /// (Optional) The type of PDF object that this dictionary describes; if present,
-            /// must be Sig for a signature dictionary.
-            /// </summary>
-            [KeyInfo(KeyType.Name | KeyType.Optional)]
-            public const string Type = "/Type";
+        {          
 
             /// <summary>
             /// (Required; inheritable) The name of the signature handler to be used for

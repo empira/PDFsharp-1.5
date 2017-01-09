@@ -76,7 +76,9 @@ namespace PdfSharp.Pdf
 
         internal void Write(PdfWriter writer)
         {
-            this.BeforeWrite?.Invoke(this, new PdfItemEventArgs() { Position = writer.Position });
+            var startPosition = writer.Layout == PdfWriterLayout.Verbose ? writer.Position + 1 : writer.Position;
+
+            this.BeforeWrite?.Invoke(this, new PdfItemEventArgs() { Position = startPosition });
             WriteObject(writer);
             this.AfterWrite?.Invoke(this, new PdfItemEventArgs() { Position = writer.Position });
         }

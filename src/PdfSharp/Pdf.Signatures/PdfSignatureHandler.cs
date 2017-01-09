@@ -45,7 +45,7 @@ namespace PdfSharp.Signatures
         private void ComputeSignatureAndRange(object sender, PdfDocumentEventArgs e)
         {
             var writer = e.Writer;
-            writer.Stream.Position = rangeTracker.Start-1;
+            writer.Stream.Position = rangeTracker.Start;
             var rangeArray = new PdfArray(new PdfInteger(0), 
                 new PdfInteger(contentsTraker.Start), 
                 new PdfInteger(contentsTraker.End), 

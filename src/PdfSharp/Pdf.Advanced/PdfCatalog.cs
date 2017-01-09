@@ -173,7 +173,6 @@ namespace PdfSharp.Pdf.Advanced
                     Elements.Add(Keys.AcroForm, value);
             }
         }
-        PdfAcroForm _acroForm;
 
         /// <summary>
         /// Gets or sets the language identifier specifying the natural language for all text in the document.
