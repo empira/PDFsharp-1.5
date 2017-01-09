@@ -1,28 +1,21 @@
 ﻿using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using PdfSharp.Signatures;
 using System.Security.Cryptography.X509Certificates;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Drawing.Layout;
 using System.IO;
-using System.Drawing;
 
 namespace TestConsole
 {
     class Program
     {
-
         class SignAppearenceHandler : ISignatureAppearanceHandler
-        {
-            private XFont font = new XFont("Verdana", 10, XFontStyle.Regular);
+        {           
 
-            public XImage Image = XImage.FromFile(@"..\..\resources\logo.jpg");
+            private XImage Image = XImage.FromFile(@"..\..\resources\logo.jpg");
             public void DrawAppearance(XGraphics gfx, XRect rect)
             {
                 var backColor = XColor.Empty;
@@ -60,7 +53,6 @@ namespace TestConsole
 
         }
 
-
         private static void CreateAndSign()
         {
             string path = "CreateAndSign.pdf";
@@ -80,7 +72,7 @@ namespace TestConsole
             };
 
             PdfSignatureHandler signatureHandler = new PdfSignatureHandler(
-                GetCert(),
+                GetCertificate(),
                 signatureOptions
                 );
             signatureHandler.AttachToDocument(document);
@@ -91,8 +83,7 @@ namespace TestConsole
 
 
         private static void SignExisting()
-        {
-            
+        {            
             string path = string.Format("SignExisting.pdf");
 
             PdfDocument document = PdfReader.Open(new MemoryStream(Properties.Resources.doc1));
@@ -107,16 +98,17 @@ namespace TestConsole
                 AppearanceHandler = new SignAppearenceHandler()
             };
 
-            PdfSignatureHandler signatureHandler = new PdfSignatureHandler(GetCert(), signatureOptions);
+            PdfSignatureHandler signatureHandler = new PdfSignatureHandler(GetCertificate(), signatureOptions);
             signatureHandler.AttachToDocument(document);
 
             document.Save(path);
             Process.Start(path);
         }
 
-        private static X509Certificate2 GetCert()
-        {            
-            return new X509Certificate2(@"C:\work\kds\svnroot\test-console\pdfs\MigraDoc\code\Demo\Demo_TemporaryKey.pfx", "qwe123");
+        private static X509Certificate2 GetCertificate()
+        {
+            throw new NotImplementedException("Add tour own certificate here");
+            //return new X509Certificate2(@"...");
         }
     }
 }
