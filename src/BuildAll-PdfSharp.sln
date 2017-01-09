@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfSharp-wpf", "PdfSharp-wp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfSharp.Charting-wpf", "PdfSharp.Charting-wpf\PdfSharp.Charting-wpf.csproj", "{E6A2734E-0CD6-4210-8AEC-47EE348F8D78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{BE1777CD-B2F7-4E0E-89EE-16B4D48CCD50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignatureTestConsole", "SignatureTestConsole\SignatureTestConsole.csproj", "{BE1777CD-B2F7-4E0E-89EE-16B4D48CCD50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
