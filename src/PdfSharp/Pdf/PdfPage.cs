@@ -576,7 +576,7 @@ namespace PdfSharp.Pdf
             return GetFormName(form);
         }
 
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             // HACK: temporarily flip media box if Landscape
             PdfRectangle mediaBox = MediaBox;

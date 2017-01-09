@@ -100,6 +100,7 @@
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms">
       <Name>System.Windows.Forms</Name>
     </Reference>
@@ -887,6 +888,21 @@
     </Compile>
     <Compile Include="..\PdfSharp\Pdf.Security\PdfStandardSecurityHandler.cs">
       <Link>Pdf.Security\PdfStandardSecurityHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Signatures\DefaultAppearanceHandler.cs">
+      <Link>Pdf.Signatures\DefaultAppearanceHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Signatures\ISignatureAppearanceHandler.cs">
+      <Link>Pdf.Signatures\ISignatureAppearanceHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Signatures\PdfSignatureHandler.cs">
+      <Link>Pdf.Signatures\PdfSignatureHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Signatures\PdfSignatureOptions.cs">
+      <Link>Pdf.Signatures\PdfSignatureOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Signatures\PositionTracker.cs">
+      <Link>Pdf.Signatures\PositionTracker.cs</Link>
     </Compile>
     <Compile Include="..\PdfSharp\Pdf\EntryInfoAttribute.cs">
       <Link>Pdf\EntryInfoAttribute.cs</Link>

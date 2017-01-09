@@ -172,7 +172,7 @@ namespace PdfSharp.Pdf
                     if (_iref != null)
                         _iref.Document = value;
                 }
-            }
+            }            
         }
         internal PdfDocument _document;
 
@@ -204,7 +204,7 @@ namespace PdfSharp.Pdf
         /// <summary>
         /// Saves the stream position. 2nd Edition.
         /// </summary>
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             Debug.Assert(false, "Must not come here!");
             //Debug.Assert(_inStreamOffset <= 0);

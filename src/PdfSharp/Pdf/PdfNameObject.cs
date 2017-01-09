@@ -141,7 +141,7 @@ namespace PdfSharp.Pdf
         /// <summary>
         /// Writes the name including the leading slash.
         /// </summary>
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             writer.WriteBeginObject(this);
             writer.Write(new PdfName(_value));
