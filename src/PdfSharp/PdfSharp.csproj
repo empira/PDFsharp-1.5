@@ -44,6 +44,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -214,8 +215,10 @@
     <Compile Include="Pdf.Advanced\PdfCrossReferenceStream.cs" />
     <Compile Include="Pdf.Advanced\PdfCrossReferenceTable.cs" />
     <Compile Include="Pdf.Advanced\PdfDictionaryWithContentStream.cs" />
+    <Compile Include="Pdf.Advanced\PdfEmbeddedFile.cs" />
     <Compile Include="Pdf.Advanced\PdfExtGState.cs" />
     <Compile Include="Pdf.Advanced\PdfExtGStateTable.cs" />
+    <Compile Include="Pdf.Advanced\PdfFileSpecification.cs" />
     <Compile Include="Pdf.Advanced\PdfFont.cs" />
     <Compile Include="Pdf.Advanced\PdfFontDescriptor.cs" />
     <Compile Include="Pdf.Advanced\PdfFontTable.cs" />
@@ -251,6 +254,7 @@
     <Compile Include="Pdf.Annotations\enums\PdfTextAnnotationIcon.cs" />
     <Compile Include="Pdf.Annotations\PdfAnnotation.cs" />
     <Compile Include="Pdf.Annotations\PdfAnnotations.cs" />
+    <Compile Include="Pdf.Annotations\PdfFileAttachmentAnnotation.cs" />
     <Compile Include="Pdf.Annotations\PdfGenericAnnotation.cs" />
     <Compile Include="Pdf.Annotations\PdfLinkAnnotation.cs" />
     <Compile Include="Pdf.Annotations\PdfRubberStampAnnotation.cs" />
@@ -301,6 +305,11 @@
     <Compile Include="Pdf.Security\PdfSecurityHandler.cs" />
     <Compile Include="Pdf.Security\PdfSecuritySettings.cs" />
     <Compile Include="Pdf.Security\PdfStandardSecurityHandler.cs" />
+    <Compile Include="Pdf.Signatures\DefaultAppearanceHandler.cs" />
+    <Compile Include="Pdf.Signatures\ISignatureAppearanceHandler.cs" />
+    <Compile Include="Pdf.Signatures\PdfSignatureHandler.cs" />
+    <Compile Include="Pdf.Signatures\PdfSignatureOptions.cs" />
+    <Compile Include="Pdf.Signatures\PositionTracker.cs" />
     <Compile Include="Pdf\EntryInfoAttribute.cs" />
     <Compile Include="Pdf\enums\DocumentState.cs" />
     <Compile Include="Pdf\enums\PdfFlateEncodeMode.cs" />

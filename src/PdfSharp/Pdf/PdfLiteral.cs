@@ -93,7 +93,7 @@ namespace PdfSharp.Pdf
             return _value;
         }
 
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             writer.Write(this);
         }

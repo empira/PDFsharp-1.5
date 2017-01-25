@@ -655,7 +655,7 @@ namespace PdfSharp.Pdf.Security
 
         #endregion
 
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             // Don't encrypt myself.
             PdfStandardSecurityHandler securityHandler = writer.SecurityHandler;

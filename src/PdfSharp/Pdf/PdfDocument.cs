@@ -43,12 +43,19 @@ using PdfSharp.Pdf.Security;
 
 namespace PdfSharp.Pdf
 {
+    internal class PdfDocumentEventArgs : EventArgs
+    {
+        public PdfWriter Writer { get; set; }
+    }
     /// <summary>
     /// Represents a PDF document.
     /// </summary>
     [DebuggerDisplay("(Name={Name})")] // A name makes debugging easier
     public sealed class PdfDocument : PdfObject, IDisposable
     {
+
+        internal event EventHandler BeforeSave = (s, e) => { };
+        internal event EventHandler<PdfDocumentEventArgs> AfterSave = (s, e) => { };
         internal DocumentState _state;
         internal PdfDocumentOpenMode _openMode;
 
@@ -253,7 +260,7 @@ namespace PdfSharp.Pdf
                 throw new InvalidOperationException(PSSR.CannotModify);
 
 #if !NETFX_CORE
-            using (Stream stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (Stream stream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
             {
                 Save(stream);
             }
@@ -357,6 +364,8 @@ namespace PdfSharp.Pdf
         /// </summary>
         void DoSave(PdfWriter writer)
         {
+            this.BeforeSave(this, EventArgs.Empty);
+
             if (_pages == null || _pages.Count == 0)
             {
                 if (_outStream != null)
@@ -402,13 +411,13 @@ namespace PdfSharp.Pdf
                         GetType();
 #endif
                     iref.Position = writer.Position;
-                    iref.Value.WriteObject(writer);
+                    iref.Value.Write(writer);
                 }
                 int startxref = writer.Position;
                 _irefTable.WriteObject(writer);
                 writer.WriteRaw("trailer\n");
                 _trailer.Elements.SetInteger("/Size", count + 1);
-                _trailer.WriteObject(writer);
+                _trailer.Write(writer);
                 writer.WriteEof(this, startxref);
 
                 //if (encrypt)
@@ -421,6 +430,7 @@ namespace PdfSharp.Pdf
             {
                 if (writer != null)
                 {
+                    this.AfterSave(this, new PdfDocumentEventArgs() { Writer = writer });
                     writer.Stream.Flush();
                     // DO NOT CLOSE WRITER HERE
                     //writer.Close();
@@ -716,6 +726,7 @@ namespace PdfSharp.Pdf
         public PdfAcroForm AcroForm
         {
             get { return Catalog.AcroForm; }
+            set { Catalog.AcroForm = value; }
         }
 
         /// <summary>

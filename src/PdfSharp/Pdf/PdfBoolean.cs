@@ -83,7 +83,7 @@ namespace PdfSharp.Pdf
         /// <summary>
         /// Writes 'true' or 'false'.
         /// </summary>
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             writer.Write(this);
         }

@@ -76,7 +76,7 @@ namespace PdfSharp.Pdf
         /// <summary>
         /// Writes the integer as string.
         /// </summary>
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             writer.Write(this);
         }

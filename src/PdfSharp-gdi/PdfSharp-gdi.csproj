@@ -44,6 +44,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -69,6 +70,7 @@
     <ErrorReport>prompt</ErrorReport>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -78,7 +80,8 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>TRACE;GDI;UseGdiObjects</DefineConstants>
-    <DocumentationFile>bin\Release\PdfSharp-gdi.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
@@ -92,6 +95,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>none</DebugType>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
@@ -100,6 +104,7 @@
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms">
       <Name>System.Windows.Forms</Name>
     </Reference>
@@ -627,11 +632,17 @@
     <Compile Include="..\PdfSharp\Pdf.Advanced\PdfDictionaryWithContentStream.cs">
       <Link>Pdf.Advanced\PdfDictionaryWithContentStream.cs</Link>
     </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Advanced\PdfEmbeddedFile.cs">
+      <Link>Pdf.Advanced\PdfEmbeddedFile.cs</Link>
+    </Compile>
     <Compile Include="..\PdfSharp\Pdf.Advanced\PdfExtGState.cs">
       <Link>Pdf.Advanced\PdfExtGState.cs</Link>
     </Compile>
     <Compile Include="..\PdfSharp\Pdf.Advanced\PdfExtGStateTable.cs">
       <Link>Pdf.Advanced\PdfExtGStateTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Advanced\PdfFileSpecification.cs">
+      <Link>Pdf.Advanced\PdfFileSpecification.cs</Link>
     </Compile>
     <Compile Include="..\PdfSharp\Pdf.Advanced\PdfFont.cs">
       <Link>Pdf.Advanced\PdfFont.cs</Link>
@@ -740,6 +751,9 @@
     </Compile>
     <Compile Include="..\PdfSharp\Pdf.Annotations\PdfGenericAnnotation.cs">
       <Link>Pdf.Annotations\PdfGenericAnnotation.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Annotations\PdfFileAttachmentAnnotation.cs">
+      <Link>Pdf.Annotations\PdfFileAttachmentAnnotation.cs</Link>
     </Compile>
     <Compile Include="..\PdfSharp\Pdf.Annotations\PdfLinkAnnotation.cs">
       <Link>Pdf.Annotations\PdfLinkAnnotation.cs</Link>
@@ -887,6 +901,21 @@
     </Compile>
     <Compile Include="..\PdfSharp\Pdf.Security\PdfStandardSecurityHandler.cs">
       <Link>Pdf.Security\PdfStandardSecurityHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Signatures\DefaultAppearanceHandler.cs">
+      <Link>Pdf.Signatures\DefaultAppearanceHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Signatures\ISignatureAppearanceHandler.cs">
+      <Link>Pdf.Signatures\ISignatureAppearanceHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Signatures\PdfSignatureHandler.cs">
+      <Link>Pdf.Signatures\PdfSignatureHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Signatures\PdfSignatureOptions.cs">
+      <Link>Pdf.Signatures\PdfSignatureOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Signatures\PositionTracker.cs">
+      <Link>Pdf.Signatures\PositionTracker.cs</Link>
     </Compile>
     <Compile Include="..\PdfSharp\Pdf\EntryInfoAttribute.cs">
       <Link>Pdf\EntryInfoAttribute.cs</Link>
@@ -1047,9 +1076,6 @@
     <Compile Include="..\PdfSharp\Pdf\TrimMargins.cs">
       <Link>Pdf\TrimMargins.cs</Link>
     </Compile>
-    <Compile Include="..\PdfSharp\Properties\AssemblyInfo.cs">
-      <Link>Properties\AssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="..\PdfSharp\root\enums\PageOrientation.cs">
       <Link>root\enums\PageOrientation.cs</Link>
     </Compile>
@@ -1177,6 +1203,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Properties\" />
     <Folder Include="Resources\images\" />
     <Folder Include="SharpZipLib\SharpZip\" />
   </ItemGroup>
