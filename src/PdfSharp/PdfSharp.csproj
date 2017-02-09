@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PdfSharp</RootNamespace>
     <AssemblyName>PdfSharp</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -306,10 +306,13 @@
     <Compile Include="Pdf.Security\PdfSecuritySettings.cs" />
     <Compile Include="Pdf.Security\PdfStandardSecurityHandler.cs" />
     <Compile Include="Pdf.Signatures\DefaultAppearanceHandler.cs" />
+    <Compile Include="Pdf.Signatures\DefaultSigner.cs" />
     <Compile Include="Pdf.Signatures\ISignatureAppearanceHandler.cs" />
+    <Compile Include="Pdf.Signatures\ISigner.cs" />
     <Compile Include="Pdf.Signatures\PdfSignatureHandler.cs" />
     <Compile Include="Pdf.Signatures\PdfSignatureOptions.cs" />
     <Compile Include="Pdf.Signatures\PositionTracker.cs" />
+    <Compile Include="Pdf.Signatures\RangedStream.cs" />
     <Compile Include="Pdf\EntryInfoAttribute.cs" />
     <Compile Include="Pdf\enums\DocumentState.cs" />
     <Compile Include="Pdf\enums\PdfFlateEncodeMode.cs" />

@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PdfSharp</RootNamespace>
     <AssemblyName>PdfSharp-wpf</AssemblyName>
-    <TargetFrameworkVersion>v3.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>StrongnameKey.snk</AssemblyOriginatorKeyFile>
@@ -73,6 +73,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -585,7 +586,7 @@
     </Compile>
     <Compile Include="..\PdfSharp\Pdf.Advanced\PdfExtGStateTable.cs">
       <Link>Pdf.Advanced\PdfExtGStateTable.cs</Link>
-    </Compile>    
+    </Compile>
     <Compile Include="..\PdfSharp\Pdf.Advanced\PdfFileSpecification.cs">
       <Link>Pdf.Advanced\PdfFileSpecification.cs</Link>
     </Compile>
@@ -693,7 +694,7 @@
     </Compile>
     <Compile Include="..\PdfSharp\Pdf.Annotations\PdfGenericAnnotation.cs">
       <Link>Pdf.Annotations\PdfGenericAnnotation.cs</Link>
-    </Compile>	
+    </Compile>
     <Compile Include="..\PdfSharp\Pdf.Annotations\PdfFileAttachmentAnnotation.cs">
       <Link>Pdf.Annotations\PdfFileAttachmentAnnotation.cs</Link>
     </Compile>
@@ -847,8 +848,14 @@
     <Compile Include="..\PdfSharp\Pdf.Signatures\DefaultAppearanceHandler.cs">
       <Link>Pdf.Signatures\DefaultAppearanceHandler.cs</Link>
     </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Signatures\DefaultSigner.cs">
+      <Link>Pdf.Signatures\DefaultSigner.cs</Link>
+    </Compile>
     <Compile Include="..\PdfSharp\Pdf.Signatures\ISignatureAppearanceHandler.cs">
       <Link>Pdf.Signatures\ISignatureAppearanceHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Signatures\ISigner.cs">
+      <Link>Pdf.Signatures\ISigner.cs</Link>
     </Compile>
     <Compile Include="..\PdfSharp\Pdf.Signatures\PdfSignatureHandler.cs">
       <Link>Pdf.Signatures\PdfSignatureHandler.cs</Link>
@@ -858,6 +865,9 @@
     </Compile>
     <Compile Include="..\PdfSharp\Pdf.Signatures\PositionTracker.cs">
       <Link>Pdf.Signatures\PositionTracker.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Signatures\RangedStream.cs">
+      <Link>Pdf.Signatures\RangedStream.cs</Link>
     </Compile>
     <Compile Include="..\PdfSharp\Pdf\EntryInfoAttribute.cs">
       <Link>Pdf\EntryInfoAttribute.cs</Link>

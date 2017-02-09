@@ -2,7 +2,7 @@
 using PdfSharp.Drawing;
 using PdfSharp.Drawing.Layout;
 
-namespace PdfSharp.Signatures
+namespace PdfSharp.Pdf.Signatures
 {
     internal class DefaultAppearanceHandler : ISignatureAppearanceHandler
     {

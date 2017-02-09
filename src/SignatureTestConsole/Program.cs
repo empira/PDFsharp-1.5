@@ -2,7 +2,6 @@
 using PdfSharp.Pdf;
 using System;
 using System.Diagnostics;
-using PdfSharp.Signatures;
 using System.Security.Cryptography.X509Certificates;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Drawing.Layout;
@@ -10,6 +9,7 @@ using System.IO;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Annotations;
 using TestConsole.Properties;
+using PdfSharp.Pdf.Signatures;
 
 namespace TestConsole
 {
@@ -57,7 +57,8 @@ namespace TestConsole
                 Reason = "Test signatures",
                 Rectangle = new XRect(36.0, 700.0, 200.0, 50.0)
             };
-            PdfSignatureHandler pdfSignatureHandler = new PdfSignatureHandler(Program.GetCertificate(), null, options);
+            PdfSignatureHandler pdfSignatureHandler = new PdfSignatureHandler( new DefaultSigner(Program.GetCertificate()), null, options);
+            //PdfSignatureHandler pdfSignatureHandler = new PdfSignatureHandler(new BouncySigner(Program.GetCertificate()), null, options);
             pdfSignatureHandler.AttachToDocument(pdfDocument);
             pdfDocument.Save(text);
             Process.Start(text);
@@ -74,7 +75,8 @@ namespace TestConsole
                 Rectangle = new XRect(36.0, 735.0, 200.0, 50.0),
                 AppearanceHandler = new Program.SignAppearenceHandler()
             };
-            PdfSignatureHandler pdfSignatureHandler = new PdfSignatureHandler(Program.GetCertificate(), null, options);
+            //PdfSignatureHandler pdfSignatureHandler = new PdfSignatureHandler(new DefaultSigner(Program.GetCertificate()), null, options);
+            PdfSignatureHandler pdfSignatureHandler = new PdfSignatureHandler(new BouncySigner(Program.GetCertificate()), null, options);
             pdfSignatureHandler.AttachToDocument(pdfDocument);
             pdfDocument.Save(text);
             Process.Start(text);
@@ -100,5 +102,9 @@ namespace TestConsole
             throw new NotImplementedException("Put your certificate path here");
             //return new X509Certificate2(....);
         }
+
+
+
+
     }
 }

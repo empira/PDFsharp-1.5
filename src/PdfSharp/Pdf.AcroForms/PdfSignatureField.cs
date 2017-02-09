@@ -29,7 +29,7 @@
 
 using PdfSharp.Drawing;
 using PdfSharp.Pdf.Annotations;
-using PdfSharp.Signatures;
+using PdfSharp.Pdf.Signatures;
 using System;
 
 namespace PdfSharp.Pdf.AcroForms

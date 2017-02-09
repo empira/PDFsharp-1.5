@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PdfSharp.Signatures
+namespace PdfSharp.Pdf.Signatures
 {
     internal class PositionTracker
     {

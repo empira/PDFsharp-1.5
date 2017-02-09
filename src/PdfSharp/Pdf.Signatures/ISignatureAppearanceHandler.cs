@@ -1,6 +1,6 @@
 ﻿using PdfSharp.Drawing;
 
-namespace PdfSharp.Signatures
+namespace PdfSharp.Pdf.Signatures
 {
     public interface ISignatureAppearanceHandler
     {

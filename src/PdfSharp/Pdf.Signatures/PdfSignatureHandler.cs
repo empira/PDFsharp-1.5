@@ -2,6 +2,7 @@
 using PdfSharp.Pdf.AcroForms;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Annotations;
+using PdfSharp.Pdf.Signatures;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +11,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using static PdfSharp.Pdf.AcroForms.PdfAcroField;
 
-namespace PdfSharp.Signatures
+namespace PdfSharp.Pdf.Signatures
 {
     public class IntEventArgs : EventArgs { public int Value { get; set; } }
 
@@ -20,8 +21,6 @@ namespace PdfSharp.Signatures
     public class PdfSignatureHandler
     {
 
-
-
         private PositionTracker contentsTraker;
         private PositionTracker rangeTracker;
         private int? maximumSignatureLength;
@@ -29,10 +28,9 @@ namespace PdfSharp.Signatures
 
         public event EventHandler<IntEventArgs> SignatureSizeComputed = (s, e) => { };
 
-        public PdfDocument Document { get; private set; }
-        public X509Certificate2 Certificate { get; private set; }
+        public PdfDocument Document { get; private set; }    
         public PdfSignatureOptions Options { get; private set; }
-        
+        private ISigner signer { get; set; }
 
         public void AttachToDocument(PdfDocument documentToSign)
         {            
@@ -42,14 +40,14 @@ namespace PdfSharp.Signatures
 
             if (!maximumSignatureLength.HasValue)
             {
-                maximumSignatureLength = GetSignature(new byte[] { 0 }).Length;
+                maximumSignatureLength = signer.GetSignedCms(new MemoryStream(new byte[] { 0})).Length;
                 SignatureSizeComputed(this, new IntEventArgs() { Value = maximumSignatureLength.Value });
             }
         }
 
-        public PdfSignatureHandler(X509Certificate2 certificate, int? signatureMaximumLength, PdfSignatureOptions options)
+        public PdfSignatureHandler(ISigner signer, int? signatureMaximumLength, PdfSignatureOptions options)
         {            
-            this.Certificate = certificate;
+            this.signer = signer;
            
 
             this.maximumSignatureLength = signatureMaximumLength;
@@ -68,7 +66,7 @@ namespace PdfSharp.Signatures
 
             var rangeToSign = GetRangeToSign(writer.Stream);
 
-            var signature = GetSignature(rangeToSign);
+            var signature = signer.GetSignedCms(rangeToSign);
             if (signature.Length > maximumSignatureLength)
                 throw new Exception("The signature length is bigger that the approximation made.");
 
@@ -79,19 +77,7 @@ namespace PdfSharp.Signatures
         }
 
 
-        private byte[] GetSignature(byte[] range)
-        {
-            var contentInfo = new ContentInfo(range);
-
-            SignedCms signedCms = new SignedCms(contentInfo, true);
-            CmsSigner signer = new CmsSigner(Certificate);
-            signer.UnsignedAttributes.Add(new Pkcs9SigningTime());
-
-            signedCms.ComputeSignature(signer, true);
-            var bytes = signedCms.Encode();
-
-            return bytes;
-        }
+        
 
         string FormatHex(byte[] bytes)
         {
@@ -103,22 +89,14 @@ namespace PdfSharp.Signatures
             return retval.ToString();
         }
 
-        private byte[] GetRangeToSign(Stream stream)
-        {            
-            stream.Position = 0;           
-
-            var size = contentsTraker.Start + stream.Length - contentsTraker.End;
-            var signRange = new byte[size];
-
-            for (int i = 0;  i < signRange.Length; i++)
+        private RangedStream GetRangeToSign(Stream stream)
+        {
+            return new RangedStream(stream, new List<RangedStream.Range>()
             {
-                if (i == contentsTraker.Start)
-                    stream.Position = contentsTraker.End;
-                signRange[i] = (byte)stream.ReadByte();
-                
-            }
-                       
-            return signRange;
+                new RangedStream.Range(0, contentsTraker.Start),
+                new RangedStream.Range(contentsTraker.End, stream.Length - contentsTraker.End)
+            });
+            
         }       
 
         private void AddSignatureComponents(object sender, EventArgs e)
@@ -144,7 +122,7 @@ namespace PdfSharp.Signatures
             {                
                 Location = Options.Location,
                 Reason = Options.Reason,
-                Signer = Certificate.GetNameInfo(X509NameType.SimpleName, false)
+                Signer = signer.GetName()
             };
             signature.PrepareForSave();           
 
