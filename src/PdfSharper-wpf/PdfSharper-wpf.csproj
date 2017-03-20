@@ -1,0 +1,1141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{02FCC0BB-2AA2-43BA-8D2F-66D168B87A1D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PdfSharp</RootNamespace>
+    <AssemblyName>PdfSharp-wpf</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WPF</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;WPF</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Release\PdfSharp-wpf.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\PdfSharper\!internal\Configuration.cs">
+      <Link>!internal\Configuration.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\!internal\Directives.cs">
+      <Link>!internal\Directives.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\!internal\TargetContext.cs">
+      <Link>!internal\TargetContext.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\BarCode.cs">
+      <Link>Drawing.BarCodes\BarCode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\BarCodeRenderInfo.cs">
+      <Link>Drawing.BarCodes\BarCodeRenderInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\BcgSR.cs">
+      <Link>Drawing.BarCodes\BcgSR.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\Code2of5Interleaved.cs">
+      <Link>Drawing.BarCodes\Code2of5Interleaved.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\Code3of9Standard.cs">
+      <Link>Drawing.BarCodes\Code3of9Standard.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\CodeBase.cs">
+      <Link>Drawing.BarCodes\CodeBase.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\CodeDataMatrix.cs">
+      <Link>Drawing.BarCodes\CodeDataMatrix.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\CodeOmr.cs">
+      <Link>Drawing.BarCodes\CodeOmr.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\DataMatrixImage.cs">
+      <Link>Drawing.BarCodes\DataMatrixImage.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\enums\AnchorType.cs">
+      <Link>Drawing.BarCodes\enums\AnchorType.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\enums\CodeDirection.cs">
+      <Link>Drawing.BarCodes\enums\CodeDirection.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\enums\CodeType.cs">
+      <Link>Drawing.BarCodes\enums\CodeType.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\enums\DataMatrixEncoding.cs">
+      <Link>Drawing.BarCodes\enums\DataMatrixEncoding.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\enums\MarkDistance.cs">
+      <Link>Drawing.BarCodes\enums\MarkDistance.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\enums\TextLocation.cs">
+      <Link>Drawing.BarCodes\enums\TextLocation.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\MatrixCode.cs">
+      <Link>Drawing.BarCodes\MatrixCode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\OmrData.cs">
+      <Link>Drawing.BarCodes\OmrData.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.BarCodes\ThickThinBarcodeRenderer.cs">
+      <Link>Drawing.BarCodes\ThickThinBarcodeRenderer.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.Internal\IImageImporter.cs">
+      <Link>Drawing.Internal\IImageImporter.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.Internal\ImageImporter.cs">
+      <Link>Drawing.Internal\ImageImporter.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.Internal\ImageImporterBmp.cs">
+      <Link>Drawing.Internal\ImageImporterBmp.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.Internal\ImageImporterJpeg.cs">
+      <Link>Drawing.Internal\ImageImporterJpeg.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.Internal\ImageImporterRoot.cs">
+      <Link>Drawing.Internal\ImageImporterRoot.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.Layout\enums\XParagraphAlignment.cs">
+      <Link>Drawing.Layout\enums\XParagraphAlignment.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.Layout\XTextFormatter.cs">
+      <Link>Drawing.Layout\XTextFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.Pdf\enums\DirtyFlags.cs">
+      <Link>Drawing.Pdf\enums\DirtyFlags.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.Pdf\enums\StreamMode.cs">
+      <Link>Drawing.Pdf\enums\StreamMode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.Pdf\PdfGraphicsState.cs">
+      <Link>Drawing.Pdf\PdfGraphicsState.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing.Pdf\XGraphicsPdfRenderer.cs">
+      <Link>Drawing.Pdf\XGraphicsPdfRenderer.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\CoreGraphicsPath.cs">
+      <Link>Drawing\CoreGraphicsPath.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\PathStart.cs">
+      <Link>Drawing\enums\PathStart.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XColorSpace.cs">
+      <Link>Drawing\enums\XColorSpace.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XCombineMode.cs">
+      <Link>Drawing\enums\XCombineMode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XDashStyle.cs">
+      <Link>Drawing\enums\XDashStyle.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XFillMode.cs">
+      <Link>Drawing\enums\XFillMode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XFontStyle.cs">
+      <Link>Drawing\enums\XFontStyle.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XGdiFontStyle.cs">
+      <Link>Drawing\enums\XGdiFontStyle.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XGraphicRenderTarget.cs">
+      <Link>Drawing\enums\XGraphicRenderTarget.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XGraphicsPathItemType.cs">
+      <Link>Drawing\enums\XGraphicsPathItemType.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XGraphicsPdfPageOptions.cs">
+      <Link>Drawing\enums\XGraphicsPdfPageOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XGraphicsUnit.cs">
+      <Link>Drawing\enums\XGraphicsUnit.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XKnownColor.cs">
+      <Link>Drawing\enums\XKnownColor.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XLineAlignment.cs">
+      <Link>Drawing\enums\XLineAlignment.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XLinearGradientMode.cs">
+      <Link>Drawing\enums\XLinearGradientMode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XLineCap.cs">
+      <Link>Drawing\enums\XLineCap.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XLineJoin.cs">
+      <Link>Drawing\enums\XLineJoin.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XMatrixOrder.cs">
+      <Link>Drawing\enums\XMatrixOrder.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XPageDirection.cs">
+      <Link>Drawing\enums\XPageDirection.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XSmoothingMode.cs">
+      <Link>Drawing\enums\XSmoothingMode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XStringAlignment.cs">
+      <Link>Drawing\enums\XStringAlignment.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XStyleSimulations.cs">
+      <Link>Drawing\enums\XStyleSimulations.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\enums\XSweepDirection.cs">
+      <Link>Drawing\enums\XSweepDirection.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\FontFamilyCache.cs">
+      <Link>Drawing\FontFamilyCache.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\FontFamilyInternal.cs">
+      <Link>Drawing\FontFamilyInternal.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\FontHelper.cs">
+      <Link>Drawing\FontHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\GeometryHelper.cs">
+      <Link>Drawing\GeometryHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\GraphicsStateStack.cs">
+      <Link>Drawing\GraphicsStateStack.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\ImageHelper.cs">
+      <Link>Drawing\ImageHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\InternalGraphicsState.cs">
+      <Link>Drawing\InternalGraphicsState.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\IXGraphicsRenderer.cs">
+      <Link>Drawing\IXGraphicsRenderer.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\PdfFontOptions.cs">
+      <Link>Drawing\PdfFontOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XBitmapDecoder.cs">
+      <Link>Drawing\XBitmapDecoder.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XBitmapEncoder.cs">
+      <Link>Drawing\XBitmapEncoder.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XBitmapImage.cs">
+      <Link>Drawing\XBitmapImage.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XBitmapSource.cs">
+      <Link>Drawing\XBitmapSource.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XBrush.cs">
+      <Link>Drawing\XBrush.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XBrushes.cs">
+      <Link>Drawing\XBrushes.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XColor.cs">
+      <Link>Drawing\XColor.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XColorResourceManager.cs">
+      <Link>Drawing\XColorResourceManager.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XColors.cs">
+      <Link>Drawing\XColors.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XConvert.cs">
+      <Link>Drawing\XConvert.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XFont.cs">
+      <Link>Drawing\XFont.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XFontFamily.cs">
+      <Link>Drawing\XFontFamily.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XFontMetrics.cs">
+      <Link>Drawing\XFontMetrics.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XFontSource.cs">
+      <Link>Drawing\XFontSource.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XFontStretch.cs">
+      <Link>Drawing\XFontStretch.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XFontWeight.cs">
+      <Link>Drawing\XFontWeight.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XFontWeights.cs">
+      <Link>Drawing\XFontWeights.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XForm.cs">
+      <Link>Drawing\XForm.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XGlyphTypeface.cs">
+      <Link>Drawing\XGlyphTypeface.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XGraphics.cs">
+      <Link>Drawing\XGraphics.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XGraphicsContainer.cs">
+      <Link>Drawing\XGraphicsContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XGraphicsPath.cs">
+      <Link>Drawing\XGraphicsPath.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XGraphicsPathInternals.cs">
+      <Link>Drawing\XGraphicsPathInternals.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XGraphicsPathItem.cs">
+      <Link>Drawing\XGraphicsPathItem.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XGraphicsState.cs">
+      <Link>Drawing\XGraphicsState.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XImage.cs">
+      <Link>Drawing\XImage.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XImageFormat.cs">
+      <Link>Drawing\XImageFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XKnownColorTable.cs">
+      <Link>Drawing\XKnownColorTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XLinearGradientBrush.cs">
+      <Link>Drawing\XLinearGradientBrush.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XMatrix.cs">
+      <Link>Drawing\XMatrix.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XPdfForm.cs">
+      <Link>Drawing\XPdfForm.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XPen.cs">
+      <Link>Drawing\XPen.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XPens.cs">
+      <Link>Drawing\XPens.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XPoint.cs">
+      <Link>Drawing\XPoint.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XPrivateFontCollection.cs">
+      <Link>Drawing\XPrivateFontCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XRect.cs">
+      <Link>Drawing\XRect.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XSize.cs">
+      <Link>Drawing\XSize.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XSolidBrush.cs">
+      <Link>Drawing\XSolidBrush.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XStringFormat.cs">
+      <Link>Drawing\XStringFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XStringFormats.cs">
+      <Link>Drawing\XStringFormats.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XTypeface.cs">
+      <Link>Drawing\XTypeface.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XUnit.cs">
+      <Link>Drawing\XUnit.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Drawing\XVector.cs">
+      <Link>Drawing\XVector.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\enums\FontTechnology.cs">
+      <Link>Fonts.OpenType\enums\FontTechnology.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\enums\TableTagNames.cs">
+      <Link>Fonts.OpenType\enums\TableTagNames.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\FontDescriptor.cs">
+      <Link>Fonts.OpenType\FontDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\GenericFontTable.cs">
+      <Link>Fonts.OpenType\GenericFontTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\GlyphDataTable.cs">
+      <Link>Fonts.OpenType\GlyphDataTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\GlyphTypefaceCache.cs">
+      <Link>Fonts.OpenType\GlyphTypefaceCache.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\IndexToLocationTable.cs">
+      <Link>Fonts.OpenType\IndexToLocationTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\IRefFontTable.cs">
+      <Link>Fonts.OpenType\IRefFontTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\OpenTypeDescriptor.cs">
+      <Link>Fonts.OpenType\OpenTypeDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\OpenTypeFontface.cs">
+      <Link>Fonts.OpenType\OpenTypeFontface.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\OpenTypeFontfaceCache.cs">
+      <Link>Fonts.OpenType\OpenTypeFontfaceCache.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\OpenTypeFontTable.cs">
+      <Link>Fonts.OpenType\OpenTypeFontTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\OpenTypeFontTables.cs">
+      <Link>Fonts.OpenType\OpenTypeFontTables.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\OpenTypeFontWriter.cs">
+      <Link>Fonts.OpenType\OpenTypeFontWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts.OpenType\TableDirectoryEntry.cs">
+      <Link>Fonts.OpenType\TableDirectoryEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts\AdobeGlyphList20.cs">
+      <Link>Fonts\AdobeGlyphList20.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts\AdobeGlyphListForNewFonts.cs">
+      <Link>Fonts\AdobeGlyphListForNewFonts.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts\CMapInfo.cs">
+      <Link>Fonts\CMapInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts\FontDescriptorCache.cs">
+      <Link>Fonts\FontDescriptorCache.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts\FontFactory.cs">
+      <Link>Fonts\FontFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts\FontResolverInfo.cs">
+      <Link>Fonts\FontResolverInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts\FontResolvingOptions.cs">
+      <Link>Fonts\FontResolvingOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts\FontWriter.cs">
+      <Link>Fonts\FontWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts\GlobalFontSettings.cs">
+      <Link>Fonts\GlobalFontSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts\IFontResolver.cs">
+      <Link>Fonts\IFontResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts\PlatformFontResolver.cs">
+      <Link>Fonts\PlatformFontResolver.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts\PlatformFontResolverInfo.cs">
+      <Link>Fonts\PlatformFontResolverInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Internal\Calc.cs">
+      <Link>Internal\Calc.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Internal\ColorHelper.cs">
+      <Link>Internal\ColorHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Internal\Diagnostics.cs">
+      <Link>Internal\Diagnostics.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Internal\DiagnosticsHelper.cs">
+      <Link>Internal\DiagnosticsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Internal\DoubleUtil.cs">
+      <Link>Internal\DoubleUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Internal\Lock.cs">
+      <Link>Internal\Lock.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Internal\NativeMethods.cs">
+      <Link>Internal\NativeMethods.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Internal\TokenizerHelper.cs">
+      <Link>Internal\TokenizerHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\enums\PdfAcroFieldFlags.cs">
+      <Link>Pdf.AcroForms\enums\PdfAcroFieldFlags.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\PdfAcroField.cs">
+      <Link>Pdf.AcroForms\PdfAcroField.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\PdfAcroForm.cs">
+      <Link>Pdf.AcroForms\PdfAcroForm.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\PdfButtonField.cs">
+      <Link>Pdf.AcroForms\PdfButtonField.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\PdfCheckBoxField.cs">
+      <Link>Pdf.AcroForms\PdfCheckBoxField.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\PdfChoiceField.cs">
+      <Link>Pdf.AcroForms\PdfChoiceField.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\PdfComboBoxField.cs">
+      <Link>Pdf.AcroForms\PdfComboBoxField.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\PdfGenericField.cs">
+      <Link>Pdf.AcroForms\PdfGenericField.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\PdfListBoxField.cs">
+      <Link>Pdf.AcroForms\PdfListBoxField.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\PdfPushButtonField.cs">
+      <Link>Pdf.AcroForms\PdfPushButtonField.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\PdfRadioButtonField.cs">
+      <Link>Pdf.AcroForms\PdfRadioButtonField.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\PdfSignatureField.cs">
+      <Link>Pdf.AcroForms\PdfSignatureField.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\PdfTextField.cs">
+      <Link>Pdf.AcroForms\PdfTextField.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Actions\enums\PdfNamedActionNames.cs">
+      <Link>Pdf.Actions\enums\PdfNamedActionNames.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Actions\PdfAction.cs">
+      <Link>Pdf.Actions\PdfAction.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Actions\PdfGoToAction.cs">
+      <Link>Pdf.Actions\PdfGoToAction.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\IContentStream.cs">
+      <Link>Pdf.Advanced\IContentStream.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfCatalog.cs">
+      <Link>Pdf.Advanced\PdfCatalog.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfCIDFont.cs">
+      <Link>Pdf.Advanced\PdfCIDFont.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfContent.cs">
+      <Link>Pdf.Advanced\PdfContent.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfContents.cs">
+      <Link>Pdf.Advanced\PdfContents.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfCrossReferenceStream.cs">
+      <Link>Pdf.Advanced\PdfCrossReferenceStream.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfCrossReferenceTable.cs">
+      <Link>Pdf.Advanced\PdfCrossReferenceTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfDictionaryWithContentStream.cs">
+      <Link>Pdf.Advanced\PdfDictionaryWithContentStream.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfExtGState.cs">
+      <Link>Pdf.Advanced\PdfExtGState.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfExtGStateTable.cs">
+      <Link>Pdf.Advanced\PdfExtGStateTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfFont.cs">
+      <Link>Pdf.Advanced\PdfFont.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfFontDescriptor.cs">
+      <Link>Pdf.Advanced\PdfFontDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfFontTable.cs">
+      <Link>Pdf.Advanced\PdfFontTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfFormXObject.cs">
+      <Link>Pdf.Advanced\PdfFormXObject.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfFormXObjectTable.cs">
+      <Link>Pdf.Advanced\PdfFormXObjectTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfGroupAttributes.cs">
+      <Link>Pdf.Advanced\PdfGroupAttributes.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfImage.cs">
+      <Link>Pdf.Advanced\PdfImage.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfImage.FaxEncode.cs">
+      <Link>Pdf.Advanced\PdfImage.FaxEncode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfImageTable.cs">
+      <Link>Pdf.Advanced\PdfImageTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfImportedObjectTable.cs">
+      <Link>Pdf.Advanced\PdfImportedObjectTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfInternals.cs">
+      <Link>Pdf.Advanced\PdfInternals.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfObjectInternals.cs">
+      <Link>Pdf.Advanced\PdfObjectInternals.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfObjectStream.cs">
+      <Link>Pdf.Advanced\PdfObjectStream.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfPageInheritableObjects.cs">
+      <Link>Pdf.Advanced\PdfPageInheritableObjects.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfReference.cs">
+      <Link>Pdf.Advanced\PdfReference.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfResourceMap.cs">
+      <Link>Pdf.Advanced\PdfResourceMap.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfResources.cs">
+      <Link>Pdf.Advanced\PdfResources.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfResourceTable.cs">
+      <Link>Pdf.Advanced\PdfResourceTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfShading.cs">
+      <Link>Pdf.Advanced\PdfShading.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfShadingPattern.cs">
+      <Link>Pdf.Advanced\PdfShadingPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfSoftMask.cs">
+      <Link>Pdf.Advanced\PdfSoftMask.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfTilingPattern.cs">
+      <Link>Pdf.Advanced\PdfTilingPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfToUnicodeMap.cs">
+      <Link>Pdf.Advanced\PdfToUnicodeMap.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfTrailer.cs">
+      <Link>Pdf.Advanced\PdfTrailer.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfTransparencyGroupAttributes.cs">
+      <Link>Pdf.Advanced\PdfTransparencyGroupAttributes.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfTrueTypeFont.cs">
+      <Link>Pdf.Advanced\PdfTrueTypeFont.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfType0Font.cs">
+      <Link>Pdf.Advanced\PdfType0Font.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfType1Font.cs">
+      <Link>Pdf.Advanced\PdfType1Font.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfXObject.cs">
+      <Link>Pdf.Advanced\PdfXObject.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Annotations\enums\PdfAnnotationFlags.cs">
+      <Link>Pdf.Annotations\enums\PdfAnnotationFlags.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Annotations\enums\PdfRubberStampAnnotationIcon.cs">
+      <Link>Pdf.Annotations\enums\PdfRubberStampAnnotationIcon.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Annotations\enums\PdfTextAnnotationIcon.cs">
+      <Link>Pdf.Annotations\enums\PdfTextAnnotationIcon.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Annotations\PdfAnnotation.cs">
+      <Link>Pdf.Annotations\PdfAnnotation.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Annotations\PdfAnnotations.cs">
+      <Link>Pdf.Annotations\PdfAnnotations.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Annotations\PdfGenericAnnotation.cs">
+      <Link>Pdf.Annotations\PdfGenericAnnotation.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Annotations\PdfLinkAnnotation.cs">
+      <Link>Pdf.Annotations\PdfLinkAnnotation.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Annotations\PdfRubberStampAnnotation.cs">
+      <Link>Pdf.Annotations\PdfRubberStampAnnotation.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Annotations\PdfTextAnnotation.cs">
+      <Link>Pdf.Annotations\PdfTextAnnotation.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Annotations\PdfWidgetAnnotation.cs">
+      <Link>Pdf.Annotations\PdfWidgetAnnotation.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Content.Objects\CObjects.cs">
+      <Link>Pdf.Content.Objects\CObjects.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Content.Objects\enum\OpCodeFlags.cs">
+      <Link>Pdf.Content.Objects\enum\OpCodeFlags.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Content.Objects\enum\OpCodeName.cs">
+      <Link>Pdf.Content.Objects\enum\OpCodeName.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Content.Objects\Operators.cs">
+      <Link>Pdf.Content.Objects\Operators.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Content\Chars.cs">
+      <Link>Pdf.Content\Chars.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Content\CLexer.cs">
+      <Link>Pdf.Content\CLexer.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Content\ContentReader.cs">
+      <Link>Pdf.Content\ContentReader.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Content\ContentReaderException.cs">
+      <Link>Pdf.Content\ContentReaderException.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Content\ContentWriter.cs">
+      <Link>Pdf.Content\ContentWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Content\CParser.cs">
+      <Link>Pdf.Content\CParser.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Content\enums\Symbol.cs">
+      <Link>Pdf.Content\enums\Symbol.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Filters\Ascii85Decode.cs">
+      <Link>Pdf.Filters\Ascii85Decode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Filters\AsciiHexDecode.cs">
+      <Link>Pdf.Filters\AsciiHexDecode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Filters\Filter.cs">
+      <Link>Pdf.Filters\Filter.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Filters\Filtering.cs">
+      <Link>Pdf.Filters\Filtering.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Filters\FlateDecode.cs">
+      <Link>Pdf.Filters\FlateDecode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Filters\LzwDecode.cs">
+      <Link>Pdf.Filters\LzwDecode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Internal\AnsiEncoding.cs">
+      <Link>Pdf.Internal\AnsiEncoding.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Internal\ColorSpaceHelper.cs">
+      <Link>Pdf.Internal\ColorSpaceHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Internal\DocEncoding.cs">
+      <Link>Pdf.Internal\DocEncoding.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Internal\GlobalObjectTable.cs">
+      <Link>Pdf.Internal\GlobalObjectTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Internal\PdfDiagnostics.cs">
+      <Link>Pdf.Internal\PdfDiagnostics.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Internal\PdfEncoders.cs">
+      <Link>Pdf.Internal\PdfEncoders.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Internal\RawEncoding.cs">
+      <Link>Pdf.Internal\RawEncoding.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Internal\RawUnicodeEncoding.cs">
+      <Link>Pdf.Internal\RawUnicodeEncoding.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Internal\ThreadLocalStorage.cs">
+      <Link>Pdf.Internal\ThreadLocalStorage.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.IO\Chars.cs">
+      <Link>Pdf.IO\Chars.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.IO\enums\PasswordValidity.cs">
+      <Link>Pdf.IO\enums\PasswordValidity.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.IO\enums\PdfDocumentOpenMode.cs">
+      <Link>Pdf.IO\enums\PdfDocumentOpenMode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.IO\enums\PdfWriterLayout.cs">
+      <Link>Pdf.IO\enums\PdfWriterLayout.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.IO\enums\PdfWriterOptions.cs">
+      <Link>Pdf.IO\enums\PdfWriterOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.IO\enums\Symbol.cs">
+      <Link>Pdf.IO\enums\Symbol.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.IO\Lexer.cs">
+      <Link>Pdf.IO\Lexer.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.IO\Parser.cs">
+      <Link>Pdf.IO\Parser.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.IO\PdfReader.cs">
+      <Link>Pdf.IO\PdfReader.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.IO\PdfReaderException.cs">
+      <Link>Pdf.IO\PdfReaderException.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.IO\PdfWriter.cs">
+      <Link>Pdf.IO\PdfWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.IO\ShiftStack.cs">
+      <Link>Pdf.IO\ShiftStack.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Printing\PdfFilePrinter.cs">
+      <Link>Pdf.Printing\PdfFilePrinter.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Security\enums\PdfDocumentSecurity.cs">
+      <Link>Pdf.Security\enums\PdfDocumentSecurity.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Security\enums\PdfUserAccessPermission.cs">
+      <Link>Pdf.Security\enums\PdfUserAccessPermission.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Security\MD5Managed.cs">
+      <Link>Pdf.Security\MD5Managed.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Security\PdfSecurityHandler.cs">
+      <Link>Pdf.Security\PdfSecurityHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Security\PdfSecuritySettings.cs">
+      <Link>Pdf.Security\PdfSecuritySettings.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Security\PdfStandardSecurityHandler.cs">
+      <Link>Pdf.Security\PdfStandardSecurityHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\EntryInfoAttribute.cs">
+      <Link>Pdf\EntryInfoAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\enums\DocumentState.cs">
+      <Link>Pdf\enums\DocumentState.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\enums\PdfColorMode.cs">
+      <Link>Pdf\enums\PdfColorMode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\enums\PdfCustomValueCompression.cs">
+      <Link>Pdf\enums\PdfCustomValueCompression.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\enums\PdfFlateEncodeMode.cs">
+      <Link>Pdf\enums\PdfFlateEncodeMode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\enums\PdfFontEmbedding.cs">
+      <Link>Pdf\enums\PdfFontEmbedding.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\enums\PdfFontEncoding.cs">
+      <Link>Pdf\enums\PdfFontEncoding.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\enums\PdfOutlineStyle.cs">
+      <Link>Pdf\enums\PdfOutlineStyle.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\enums\PdfPageDestinationType.cs">
+      <Link>Pdf\enums\PdfPageDestinationType.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\enums\PdfPageLayout.cs">
+      <Link>Pdf\enums\PdfPageLayout.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\enums\PdfPageMode.cs">
+      <Link>Pdf\enums\PdfPageMode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\enums\PdfReadingDirection.cs">
+      <Link>Pdf\enums\PdfReadingDirection.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\enums\PdfTextStringEncoding.cs">
+      <Link>Pdf\enums\PdfTextStringEncoding.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\enums\PdfUseFlateDecoderForJpegImages.cs">
+      <Link>Pdf\enums\PdfUseFlateDecoderForJpegImages.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\KeysBase.cs">
+      <Link>Pdf\KeysBase.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\KeysMeta.cs">
+      <Link>Pdf\KeysMeta.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfArray.cs">
+      <Link>Pdf\PdfArray.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfBoolean.cs">
+      <Link>Pdf\PdfBoolean.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfBooleanObject.cs">
+      <Link>Pdf\PdfBooleanObject.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfCustomValue.cs">
+      <Link>Pdf\PdfCustomValue.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfCustomValues.cs">
+      <Link>Pdf\PdfCustomValues.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfDate.cs">
+      <Link>Pdf\PdfDate.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfDictionary.cs">
+      <Link>Pdf\PdfDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfDocument.cs">
+      <Link>Pdf\PdfDocument.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfDocumentInformation.cs">
+      <Link>Pdf\PdfDocumentInformation.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfDocumentOptions.cs">
+      <Link>Pdf\PdfDocumentOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfDocumentSettings.cs">
+      <Link>Pdf\PdfDocumentSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfInteger.cs">
+      <Link>Pdf\PdfInteger.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfIntegerObject.cs">
+      <Link>Pdf\PdfIntegerObject.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfItem.cs">
+      <Link>Pdf\PdfItem.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfLiteral.cs">
+      <Link>Pdf\PdfLiteral.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfName.cs">
+      <Link>Pdf\PdfName.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfNameObject.cs">
+      <Link>Pdf\PdfNameObject.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfNull.cs">
+      <Link>Pdf\PdfNull.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfNullObject.cs">
+      <Link>Pdf\PdfNullObject.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfNumber.cs">
+      <Link>Pdf\PdfNumber.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfNumberObject.cs">
+      <Link>Pdf\PdfNumberObject.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfObject.cs">
+      <Link>Pdf\PdfObject.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfObjectID.cs">
+      <Link>Pdf\PdfObjectID.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfOutline.cs">
+      <Link>Pdf\PdfOutline.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfOutlineCollection.cs">
+      <Link>Pdf\PdfOutlineCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfPage.cs">
+      <Link>Pdf\PdfPage.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfPages.cs">
+      <Link>Pdf\PdfPages.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfReal.cs">
+      <Link>Pdf\PdfReal.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfRealObject.cs">
+      <Link>Pdf\PdfRealObject.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfRectangle.cs">
+      <Link>Pdf\PdfRectangle.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfReferenceTable.cs">
+      <Link>Pdf\PdfReferenceTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfString.cs">
+      <Link>Pdf\PdfString.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfStringObject.cs">
+      <Link>Pdf\PdfStringObject.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfUInteger.cs">
+      <Link>Pdf\PdfUInteger.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfUIntegerObject.cs">
+      <Link>Pdf\PdfUIntegerObject.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfViewerPreferences.cs">
+      <Link>Pdf\PdfViewerPreferences.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\TrimMargins.cs">
+      <Link>Pdf\TrimMargins.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\root\enums\PageOrientation.cs">
+      <Link>root\enums\PageOrientation.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\root\enums\PageSize.cs">
+      <Link>root\enums\PageSize.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\root\enums\PSMsgID.cs">
+      <Link>root\enums\PSMsgID.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\root\PageSizeConverter.cs">
+      <Link>root\PageSizeConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\root\PdfSharpException.cs">
+      <Link>root\PdfSharpException.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\root\ProductVersionInfo.cs">
+      <Link>root\ProductVersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\root\PSSR.cs">
+      <Link>root\PSSR.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\root\VersionInfo.cs">
+      <Link>root\VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Checksums\Adler32.cs">
+      <Link>SharpZipLib\Checksums\Adler32.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Checksums\CRC32.cs">
+      <Link>SharpZipLib\Checksums\CRC32.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Checksums\IChecksum.cs">
+      <Link>SharpZipLib\Checksums\IChecksum.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\SharpZipBaseException.cs">
+      <Link>SharpZipLib\SharpZipBaseException.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\Compression\Deflater.cs">
+      <Link>SharpZipLib\Zip\Compression\Deflater.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\Compression\DeflaterConstants.cs">
+      <Link>SharpZipLib\Zip\Compression\DeflaterConstants.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\Compression\DeflaterEngine.cs">
+      <Link>SharpZipLib\Zip\Compression\DeflaterEngine.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\Compression\DeflaterHuffman.cs">
+      <Link>SharpZipLib\Zip\Compression\DeflaterHuffman.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\Compression\DeflaterPending.cs">
+      <Link>SharpZipLib\Zip\Compression\DeflaterPending.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\Compression\Inflater.cs">
+      <Link>SharpZipLib\Zip\Compression\Inflater.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\Compression\InflaterDynHeader.cs">
+      <Link>SharpZipLib\Zip\Compression\InflaterDynHeader.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\Compression\InflaterHuffmanTree.cs">
+      <Link>SharpZipLib\Zip\Compression\InflaterHuffmanTree.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\Compression\PendingBuffer.cs">
+      <Link>SharpZipLib\Zip\Compression\PendingBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\Compression\Streams\DeflaterOutputStream.cs">
+      <Link>SharpZipLib\Zip\Compression\Streams\DeflaterOutputStream.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\Compression\Streams\InflaterInputStream.cs">
+      <Link>SharpZipLib\Zip\Compression\Streams\InflaterInputStream.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\Compression\Streams\OutputWindow.cs">
+      <Link>SharpZipLib\Zip\Compression\Streams\OutputWindow.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\Compression\Streams\StreamManipulator.cs">
+      <Link>SharpZipLib\Zip\Compression\Streams\StreamManipulator.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\ZipConstants.cs">
+      <Link>SharpZipLib\Zip\ZipConstants.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\SharpZipLib\Zip\ZipException.cs">
+      <Link>SharpZipLib\Zip\ZipException.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Windows\enums\RenderMode.cs">
+      <Link>Windows\enums\RenderMode.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Windows\enums\Zoom.cs">
+      <Link>Windows\enums\Zoom.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Windows\VisualPresenter.cs">
+      <Link>Windows\VisualPresenter.cs</Link>
+    </Compile>
+    <Compile Include="Windows\PagePreview.xaml.cs">
+      <DependentUpon>PagePreview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\PagePreviewDesignTimeData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\PdfSharper\Resources\Messages.de.restext">
+      <Link>Resources\Messages.de.restext</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Resources\Messages.restext">
+      <Link>Resources\Messages.restext</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\PdfSharper\SharpZipLib\ReadMe.txt">
+      <Link>SharpZipLib\ReadMe.txt</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Windows\PagePreview.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
