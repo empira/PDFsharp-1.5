@@ -379,7 +379,6 @@
     <EmbeddedResource Include="..\PdfSharper.Charting\Resources\Messages.restext">
       <Link>Resources\Messages.restext</Link>
     </EmbeddedResource>
-    <None Include="PdfSharper.Charting-wpf.csproj.resharper" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PdfSharper-wpf\PdfSharper-wpf.csproj">
