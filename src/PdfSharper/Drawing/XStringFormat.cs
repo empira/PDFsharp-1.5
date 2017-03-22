@@ -185,12 +185,48 @@ namespace PdfSharper.Drawing
         }
 
         /// <summary>
+        /// Gets a new XStringFormat object that tops the text in the right of the layout rectangle.
+        /// </summary>
+        [Obsolete("Use XStringFormats.TopRight. (Note plural in class name.)")]
+        public static XStringFormat TopRight
+        {
+            get { return XStringFormats.TopRight; }
+        }
+
+        /// <summary>
+        /// Gets a new XStringFormat object that bottoms the text in the right of the layout rectangle.
+        /// </summary>
+        [Obsolete("Use XStringFormats.BottomRight. (Note plural in class name.)")]
+        public static XStringFormat BottomRight
+        {
+            get { return XStringFormats.BottomRight; }
+        }
+
+        /// <summary>
         /// Gets a new XStringFormat object that centers the text at the top of the layout rectangle.
         /// </summary>
         [Obsolete("Use XStringFormats.TopCenter. (Note plural in class name.)")]
         public static XStringFormat TopCenter
         {
             get { return XStringFormats.TopCenter; }
+        }
+
+        /// <summary>
+        /// Gets a new XStringFormat object that centers the text at the top of the layout rectangle.
+        /// </summary>
+        [Obsolete("Use XStringFormats.CenterLeft. (Note plural in class name.)")]
+        public static XStringFormat CenterLeft
+        {
+            get { return XStringFormats.CenterLeft; }
+        }
+
+        /// <summary>
+        /// Gets a new XStringFormat object that centers the text at the right of the layout rectangle.
+        /// </summary>
+        [Obsolete("Use XStringFormats.TopCenter. (Note plural in class name.)")]
+        public static XStringFormat CenterRight
+        {
+            get { return XStringFormats.CenterRight; }
         }
 
         /// <summary>

@@ -231,5 +231,18 @@ namespace PdfSharper.Drawing
                 return format;
             }
         }
+
+        public static bool Equals(XStringFormat format1, XStringFormat format2)
+        {
+            if((format1 == null && format2 == null))
+            {
+                return true;
+            }
+            else if((format1 != null && format2 == null) || (format2 != null && format1 == null))
+            {
+                return false;
+            }
+            return (format1.Alignment == format2.Alignment && format1.LineAlignment == format2.LineAlignment);
+        }
     }
 }
