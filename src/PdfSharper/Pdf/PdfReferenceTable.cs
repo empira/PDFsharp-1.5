@@ -266,8 +266,11 @@ namespace PdfSharper.Pdf
             ObjectTable.Clear();
             foreach (PdfReference iref in irefs)
             {
-                ObjectTable.Add(iref.ObjectID, iref);
-                _maxObjectNumber = Math.Max(_maxObjectNumber, iref.ObjectNumber);
+                if(!ObjectTable.ContainsKey(iref.ObjectID))
+                {
+                    ObjectTable.Add(iref.ObjectID, iref);
+                    _maxObjectNumber = Math.Max(_maxObjectNumber, iref.ObjectNumber);
+                }
             }
             //CheckConsistence();
             removed -= ObjectTable.Count;
