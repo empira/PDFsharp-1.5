@@ -303,7 +303,7 @@ namespace PdfSharper.Pdf.AcroForms
             }
             else
             {
-            var rect = Rectangle;
+                var rect = Rectangle;
                 var page = Page;
                 XStringFormat format = GetAlignment(Elements);
                 DrawToPDF(rect, page, Font, format);
@@ -392,8 +392,8 @@ namespace PdfSharper.Pdf.AcroForms
                         return XStringFormats.TopRight;
                     default:
                         return XStringFormats.TopLeft;
-                    }
                 }
+            }
             else
             {
                 return XStringFormats.TopLeft;

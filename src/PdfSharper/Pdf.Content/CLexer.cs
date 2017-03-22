@@ -32,11 +32,11 @@ using System.Globalization;
 using System.Diagnostics;
 using System.Text;
 using System.IO;
-using PdfSharp.Internal;
+using PdfSharper.Internal;
 
 #pragma warning disable 1591
 
-namespace PdfSharp.Pdf.Content
+namespace PdfSharper.Pdf.Content
 {
     /// <summary>
     /// Lexical analyzer for PDF content files. Adobe specifies no grammar, but it seems that it
