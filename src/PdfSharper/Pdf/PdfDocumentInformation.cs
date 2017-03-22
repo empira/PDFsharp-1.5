@@ -52,7 +52,7 @@ namespace PdfSharper.Pdf
         /// </summary>
         public string Title
         {
-            get { return Elements.GetString(Keys.Title); }
+            get { return Elements.GetString(Keys.Title) ?? string.Empty; }
             set { Elements.SetString(Keys.Title, value); }
         }
 
@@ -61,7 +61,7 @@ namespace PdfSharper.Pdf
         /// </summary>
         public string Author
         {
-            get { return Elements.GetString(Keys.Author); }
+            get { return Elements.GetString(Keys.Author) ?? string.Empty; }
             set { Elements.SetString(Keys.Author, value); }
         }
 
@@ -70,7 +70,7 @@ namespace PdfSharper.Pdf
         /// </summary>
         public string Subject
         {
-            get { return Elements.GetString(Keys.Subject); }
+            get { return Elements.GetString(Keys.Subject) ?? string.Empty; }
             set { Elements.SetString(Keys.Subject, value); }
         }
 
@@ -79,7 +79,7 @@ namespace PdfSharper.Pdf
         /// </summary>
         public string Keywords
         {
-            get { return Elements.GetString(Keys.Keywords); }
+            get { return Elements.GetString(Keys.Keywords) ?? string.Empty; }
             set { Elements.SetString(Keys.Keywords, value); }
         }
 
@@ -88,7 +88,7 @@ namespace PdfSharper.Pdf
         /// </summary>
         public string Creator
         {
-            get { return Elements.GetString(Keys.Creator); }
+            get { return Elements.GetString(Keys.Creator) ?? string.Empty; }
             set { Elements.SetString(Keys.Creator, value); }
         }
 
@@ -97,7 +97,7 @@ namespace PdfSharper.Pdf
         /// </summary>
         public string Producer
         {
-            get { return Elements.GetString(Keys.Producer); }
+            get { return Elements.GetString(Keys.Producer) ?? string.Empty; }
         }
 
         /// <summary>

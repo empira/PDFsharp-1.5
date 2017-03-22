@@ -105,6 +105,9 @@ namespace PdfSharper.Pdf
         /// </summary>
         public static bool operator ==(PdfNameObject name, string str)
         {
+            if (ReferenceEquals(name, null))
+                return str != null;
+
             return name._value == str;
         }
 
@@ -113,27 +116,48 @@ namespace PdfSharper.Pdf
         /// </summary>
         public static bool operator !=(PdfNameObject name, string str)
         {
+            if (ReferenceEquals(name, null))
+                return str != null;
+
             return name._value != str;
         }
 
 #if leads_to_ambiguity
         public static bool operator ==(string str, PdfName name)
         {
+            if (ReferenceEquals(name, null))
+                return str != null;
+
             return str == name.value;
         }
 
         public static bool operator !=(string str, PdfName name)
         {
+            if (ReferenceEquals(name, null))
+                return str != null;
+
             return str == name.value;
         }
 
         public static bool operator ==(PdfName name1, PdfName name2)
         {
+            if (ReferenceEquals(name1, null))
+                return name2 != null;
+
+            if (ReferenceEquals(name2, null))
+                return name1 != null;
+
             return name1.value == name2.value;
         }
 
         public static bool operator !=(PdfName name1, PdfName name2)
         {
+            if (ReferenceEquals(name1, null))
+                return name2 != null;
+
+            if (ReferenceEquals(name2, null))
+                return name1 != null;
+
             return name1.value != name2.value;
         }
 #endif

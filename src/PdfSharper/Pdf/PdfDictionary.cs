@@ -500,7 +500,14 @@ namespace PdfSharper.Pdf
 
                 PdfReference reference = obj as PdfReference;
                 if (reference != null)
+                {
                     obj = reference.Value;
+
+                    if (reference.Value.Internals.TypeID == "PdfNullObject")
+                    {
+                        return null;
+                    }
+                }
 
                 PdfString str = obj as PdfString;
                 if (str != null)

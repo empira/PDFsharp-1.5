@@ -110,7 +110,7 @@ namespace PdfSharper.Internal
         {
             string message = string.Format(CultureInfo.InvariantCulture,
                 "Unexpected character '0x{0:x4}' in content stream. The stream may be corrupted or the feature is not implemented. " +
-                "If you think this is a bug in PDFsharp, please send us your PDF file.", ch);
+                "If you think this is a bug in PDFsharp, please send us your PDF file.", (int)ch);
             ThrowContentReaderException(message);
         }
     }

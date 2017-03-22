@@ -181,7 +181,7 @@ namespace PdfSharper.Pdf.Content.Objects
         static readonly OpCode Do = new OpCode("Do", OpCodeName.Do, 1, null, OpCodeFlags.None,
             "Invoke named XObject");
 
-        static readonly OpCode DP = new OpCode("DP", OpCodeName.DP, 2, null, OpCodeFlags.None,
+        static readonly OpCode DP = new OpCode("DP", OpCodeName.DP, -1, null, OpCodeFlags.None,
             "(PDF 1.2) Define marked-content point with property list");
 
         static readonly OpCode EI = new OpCode("EI", OpCodeName.EI, 0, null, OpCodeFlags.None,
