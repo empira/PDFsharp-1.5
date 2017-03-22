@@ -81,7 +81,8 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>TRACE;GDI;UseGdiObjects</DefineConstants>
-    <DocumentationFile>bin\Release\PdfSharp-gdi.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <DebugSymbols>false</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
@@ -104,6 +105,7 @@
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms">
       <Name>System.Windows.Forms</Name>
     </Reference>
@@ -631,11 +633,17 @@
     <Compile Include="..\PdfSharper\Pdf.Advanced\PdfDictionaryWithContentStream.cs">
       <Link>Pdf.Advanced\PdfDictionaryWithContentStream.cs</Link>
     </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfEmbeddedFile.cs">
+      <Link>Pdf.Advanced\PdfEmbeddedFile.cs</Link>
+    </Compile>
     <Compile Include="..\PdfSharper\Pdf.Advanced\PdfExtGState.cs">
       <Link>Pdf.Advanced\PdfExtGState.cs</Link>
     </Compile>
     <Compile Include="..\PdfSharper\Pdf.Advanced\PdfExtGStateTable.cs">
       <Link>Pdf.Advanced\PdfExtGStateTable.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Advanced\PdfFileSpecification.cs">
+      <Link>Pdf.Advanced\PdfFileSpecification.cs</Link>
     </Compile>
     <Compile Include="..\PdfSharper\Pdf.Advanced\PdfFont.cs">
       <Link>Pdf.Advanced\PdfFont.cs</Link>
@@ -744,6 +752,9 @@
     </Compile>
     <Compile Include="..\PdfSharper\Pdf.Annotations\PdfGenericAnnotation.cs">
       <Link>Pdf.Annotations\PdfGenericAnnotation.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Annotations\PdfFileAttachmentAnnotation.cs">
+      <Link>Pdf.Annotations\PdfFileAttachmentAnnotation.cs</Link>
     </Compile>
     <Compile Include="..\PdfSharper\Pdf.Annotations\PdfLinkAnnotation.cs">
       <Link>Pdf.Annotations\PdfLinkAnnotation.cs</Link>
@@ -891,6 +902,21 @@
     </Compile>
     <Compile Include="..\PdfSharper\Pdf.Security\PdfStandardSecurityHandler.cs">
       <Link>Pdf.Security\PdfStandardSecurityHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Signatures\DefaultAppearanceHandler.cs">
+      <Link>Pdf.Signatures\DefaultAppearanceHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Signatures\ISignatureAppearanceHandler.cs">
+      <Link>Pdf.Signatures\ISignatureAppearanceHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Signatures\PdfSignatureHandler.cs">
+      <Link>Pdf.Signatures\PdfSignatureHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Signatures\PdfSignatureOptions.cs">
+      <Link>Pdf.Signatures\PdfSignatureOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf.Signatures\PositionTracker.cs">
+      <Link>Pdf.Signatures\PositionTracker.cs</Link>
     </Compile>
     <Compile Include="..\PdfSharper\Pdf\EntryInfoAttribute.cs">
       <Link>Pdf\EntryInfoAttribute.cs</Link>
@@ -1050,7 +1076,7 @@
     </Compile>
     <Compile Include="..\PdfSharper\Pdf\TrimMargins.cs">
       <Link>Pdf\TrimMargins.cs</Link>
-    </Compile>
+    </Compile>    
     <Compile Include="..\PdfSharper\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
@@ -1180,6 +1206,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Properties\" />
     <Folder Include="Resources\images\" />
     <Folder Include="SharpZipLib\SharpZip\" />
   </ItemGroup>

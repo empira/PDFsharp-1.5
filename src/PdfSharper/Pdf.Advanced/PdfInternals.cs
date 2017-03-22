@@ -282,7 +282,7 @@ namespace PdfSharper.Pdf.Advanced
             // Never write an encrypted object
             PdfWriter writer = new PdfWriter(stream, null);
             writer.Options = PdfWriterOptions.OmitStream;
-            item.WriteObject(writer);
+            item.Write(writer);
         }
 
         /// <summary>

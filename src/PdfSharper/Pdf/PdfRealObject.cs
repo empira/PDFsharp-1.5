@@ -85,7 +85,7 @@ namespace PdfSharper.Pdf
         /// <summary>
         /// Writes the real literal.
         /// </summary>
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             writer.WriteBeginObject(this);
             writer.Write(_value);

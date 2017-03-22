@@ -166,10 +166,11 @@ namespace PdfSharper.Pdf
             _flags = (PdfStringFlags)encoding;
         }
 
-        internal PdfString(string value, PdfStringFlags flags)
+        internal PdfString(string value, PdfStringFlags flags, int paddingLeft = 0)
         {
             _value = value;
             _flags = flags;
+			this.PaddingLeft = paddingLeft;
         }
 
         /// <summary>
@@ -223,6 +224,8 @@ namespace PdfSharper.Pdf
             set { _value = PdfEncoders.RawEncoding.GetString(value, 0, value.Length); }
         }
 
+        public int PaddingLeft { get; private set; }
+
         /// <summary>
         /// Returns the string.
         /// </summary>
@@ -232,7 +235,7 @@ namespace PdfSharper.Pdf
             PdfStringEncoding encoding = (PdfStringEncoding)(_flags & PdfStringFlags.EncodingMask);
             string pdf = (_flags & PdfStringFlags.HexLiteral) == 0 ?
                 PdfEncoders.ToStringLiteral(_value, encoding, null) :
-                PdfEncoders.ToHexStringLiteral(_value, encoding, null);
+                PdfEncoders.ToHexStringLiteral(_value, encoding, null, PaddingLeft);
             return pdf;
 #else
             return _value;
@@ -299,7 +302,7 @@ namespace PdfSharper.Pdf
         /// <summary>
         /// Writes the string DocEncoded.
         /// </summary>
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             writer.Write(this);
         }

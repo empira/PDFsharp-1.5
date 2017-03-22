@@ -126,7 +126,7 @@ namespace PdfSharper.Pdf
         /// <summary>
         /// Writes the name including the leading slash.
         /// </summary>
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             // TODO: what if unicode character are part of the name? 
             writer.Write(this);

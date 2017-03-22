@@ -250,9 +250,9 @@ namespace PdfSharper.Pdf.Internal
         /// <summary>
         /// Converts a raw string into a raw hexadecimal string literal, possibly encrypted.
         /// </summary>
-        public static string ToHexStringLiteral(string text, PdfStringEncoding encoding, PdfStandardSecurityHandler securityHandler)
+        public static string ToHexStringLiteral(string text, PdfStringEncoding encoding, PdfStandardSecurityHandler securityHandler, int paddingLeft)
         {
-            if (String.IsNullOrEmpty(text))
+            if (String.IsNullOrEmpty(text) && paddingLeft == 0)
                 return "<>";
 
             byte[] bytes;
@@ -277,6 +277,13 @@ namespace PdfSharper.Pdf.Internal
 
                 default:
                     throw new NotImplementedException(encoding.ToString());
+            }
+
+            if (bytes.Length < paddingLeft)
+            {
+                byte[] tmp = new byte[paddingLeft];
+                Array.Copy(bytes, tmp, bytes.Length);
+                bytes = tmp;
             }
 
             byte[] agTemp = FormatStringLiteral(bytes, encoding == PdfStringEncoding.Unicode, true, true, securityHandler);

@@ -83,7 +83,7 @@ namespace PdfSharper.Pdf
         /// <summary>
         /// Writes the value in the PDF date format.
         /// </summary>
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             writer.WriteDocString(ToString());
         }

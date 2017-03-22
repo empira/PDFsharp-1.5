@@ -141,7 +141,7 @@ namespace PdfSharper.Pdf.Advanced
         {
             get
             {
-               if (_outline == null)
+                if (_outline == null)
                 {
                     ////// Ensure that the page tree exists.
                     ////// ReSharper disable once UnusedVariable because we need dummy to call the getter.
@@ -150,7 +150,7 @@ namespace PdfSharper.Pdf.Advanced
                     // Now create the outline item tree.
                     _outline = (PdfOutline)Elements.GetValue(Keys.Outlines, VCF.CreateIndirect);
                 }
-               return _outline.Outlines;
+                return _outline.Outlines;
             }
         }
         PdfOutline _outline;
@@ -162,24 +162,27 @@ namespace PdfSharper.Pdf.Advanced
         {
             get
             {
-                if (_acroForm == null)
-                    _acroForm = (PdfAcroForm)Elements.GetValue(Keys.AcroForm);
-                return _acroForm;
+                return (PdfAcroForm)Elements.GetValue(Keys.AcroForm);
             }
-            internal set
+
+            set
             {
                 if (value != null)
-                    Elements.SetValue(Keys.AcroForm, value);
+                {
+                    if (Elements.ContainsKey(Keys.AcroForm))
+                        Elements[Keys.AcroForm] = value;
+                    else
+                        Elements.Add(Keys.AcroForm, value);
+                }
                 else
                 {
-                    if (_acroForm != null && _acroForm.Reference != null)
-                        _document._irefTable.Remove(_acroForm.Reference);
+                    if (AcroForm != null && AcroForm.Reference != null)
+                        _document._irefTable.Remove(AcroForm.Reference);
+
                     Elements.Remove(Keys.AcroForm);
-        }
-                _acroForm = value;
+                }
             }
         }
-        PdfAcroForm _acroForm;
 
         /// <summary>
         /// Gets or sets the language identifier specifying the natural language for all text in the document.
@@ -213,7 +216,7 @@ namespace PdfSharper.Pdf.Advanced
             }
         }
 
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             if (_outline != null && _outline.Outlines.Count > 0)
             {

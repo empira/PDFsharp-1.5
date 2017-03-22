@@ -62,7 +62,7 @@ namespace PdfSharper.Pdf.Advanced
         //      SetObjectID(ref objectID);
         //    }
         //
-        //    internal override void WriteObject(Stream stream)
+        //    protected override void WriteObject(Stream stream)
         //    {
         //      base.WriteObject(stream);
         //      StringBuilder pdf = new StringBuilder();

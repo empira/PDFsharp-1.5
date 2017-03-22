@@ -161,7 +161,7 @@ namespace PdfSharper.Pdf.Advanced
         }
         internal PdfStandardSecurityHandler _securityHandler;
 
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             // Delete /XRefStm entry, if any.
             // HACK: 

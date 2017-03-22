@@ -451,7 +451,7 @@ namespace PdfSharper.Pdf.Content.Objects  // TODO: split into single files
             return obj;
         }
 
-        //internal override void WriteObject(ContentWriter writer)
+        //protected override void WriteObject(ContentWriter writer)
         //{
         //  throw new Exception("Must not come here.");
         //}

@@ -64,7 +64,7 @@ namespace PdfSharper.Pdf
         /// <summary>
         /// Writes the keyword «null».
         /// </summary>
-        internal override void WriteObject(PdfWriter writer)
+        protected override void WriteObject(PdfWriter writer)
         {
             writer.WriteBeginObject(this);
             writer.WriteRaw(" null ");
