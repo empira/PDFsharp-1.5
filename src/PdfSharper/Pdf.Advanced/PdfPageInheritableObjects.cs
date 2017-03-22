@@ -64,7 +64,7 @@ namespace PdfSharper.Pdf.Advanced
             set
             {
                 if (value % 90 != 0)
-                    throw new ArgumentException("Rotate", "The value must be a multiple of 90.");
+                    throw new ArgumentException("The value must be a multiple of 90.", "Rotate");
                 _rotate = value;
             }
         }

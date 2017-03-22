@@ -300,7 +300,7 @@ namespace PdfSharper.Pdf
             get { return _elements.GetInteger(InheritablePageKeys.Rotate); }
             set
             {
-                if (value / 90 * 90 != value)
+                if (value % 90 != 0)
                     throw new ArgumentException("Value must be a multiple of 90.");
                 _elements.SetInteger(InheritablePageKeys.Rotate, value);
             }

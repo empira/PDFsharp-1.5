@@ -110,7 +110,8 @@ namespace PdfSharper.Drawing
                 _gs = 0;
             else if (gray > 1)
                 _gs = 1;
-            _gs = (float)gray;
+            else
+                _gs = (float)gray;
 
             _a = 1;
             _r = 0;

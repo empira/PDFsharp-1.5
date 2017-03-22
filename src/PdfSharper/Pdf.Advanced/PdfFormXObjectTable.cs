@@ -214,9 +214,9 @@ namespace PdfSharper.Pdf.Advanced
             public override bool Equals(object obj)
             {
                 Selector selector = obj as Selector;
-                if (obj == null)
+                if (selector == null)
                     return false;
-                return _path == selector._path; ;
+                return _path == selector._path;
             }
 
             public override int GetHashCode()

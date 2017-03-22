@@ -367,6 +367,33 @@ namespace PdfSharper.Pdf.AcroForms
         }
         string _uncheckedName = "/Off";
 
+        internal override void Flatten()
+        {
+            base.Flatten();
+
+            if (!HasKids && Checked)
+            {
+                var appearance = Elements.GetDictionary(PdfAnnotation.Keys.AP);
+                if (appearance != null)
+                {
+                    // /N -> Normal appearance, /R -> Rollover appearance, /D -> Down appearance
+                    var apps = appearance.Elements.GetDictionary("/N");
+                    if (apps != null)
+                    {
+                        var appSelRef = apps.Elements.GetReference(GetNonOffValue());
+                        if (appSelRef != null)
+                        {
+                            var appSel = appSelRef.Value as PdfDictionary;
+                            if (appSel != null)
+                            {
+                                RenderContentStream(appSel.Stream);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Predefined keys of this dictionary. 
         /// The description comes from PDF 1.4 Reference.

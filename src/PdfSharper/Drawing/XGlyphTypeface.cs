@@ -477,7 +477,7 @@ namespace PdfSharper.Drawing
                     case XStyleSimulations.ItalicSimulation: simulationSuffix = "|b-/i+"; break;
                     case XStyleSimulations.BoldItalicSimulation: simulationSuffix = "|b+/i+"; break;
                     case XStyleSimulations.None: break;
-                    default: throw new ArgumentOutOfRangeException();
+                    default: throw new ArgumentOutOfRangeException("fontResolvingOptions");
                 }
             }
             string key = KeyPrefix + familyName.ToLowerInvariant()

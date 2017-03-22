@@ -66,6 +66,19 @@ namespace PdfSharper.Pdf.AcroForms
         PdfAcroField.PdfAcroFieldCollection _fields;
 
         /// <summary>
+        /// Flattens the AcroForm by rendering Field-contents directly onto the page.
+        /// </summary>
+        public void Flatten()
+        {
+            for (var i = 0; i < Fields.Elements.Count; i++)
+            {
+                var field = Fields[i];
+                field.Flatten();
+            }
+            _document.Catalog.AcroForm = null;
+        }
+
+        /// <summary>
         /// Predefined keys of this dictionary. 
         /// The description comes from PDF 1.4 Reference.
         /// </summary>

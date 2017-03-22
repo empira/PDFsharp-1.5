@@ -1109,7 +1109,7 @@ namespace PdfSharper.Drawing  // #??? aufräumen
             if (points == null)
                 throw new ArgumentNullException("points");
             if (points.Length < 2)
-                throw new ArgumentException("points", PSSR.PointArrayAtLeast(2));
+                throw new ArgumentException(PSSR.PointArrayAtLeast(2), "points");
 
             if (_drawGraphics)
             {
@@ -1136,7 +1136,7 @@ namespace PdfSharper.Drawing  // #??? aufräumen
             if (points == null)
                 throw new ArgumentNullException("points");
             if (points.Length < 2)
-                throw new ArgumentException("points", PSSR.PointArrayAtLeast(2));
+                throw new ArgumentException(PSSR.PointArrayAtLeast(2), "points");
 
             if (_drawGraphics)
             {
@@ -2499,7 +2499,7 @@ namespace PdfSharper.Drawing  // #??? aufräumen
             if (points == null)
                 throw new ArgumentNullException("points");
             if (points.Length < 2)
-                throw new ArgumentException("points", PSSR.PointArrayAtLeast(2));
+                throw new ArgumentException(PSSR.PointArrayAtLeast(2), "points");
 
             if (_drawGraphics)
             {
@@ -2568,7 +2568,7 @@ namespace PdfSharper.Drawing  // #??? aufräumen
             if (points == null)
                 throw new ArgumentNullException("points");
             if (points.Length < 2)
-                throw new ArgumentException("points", PSSR.PointArrayAtLeast(2));
+                throw new ArgumentException(PSSR.PointArrayAtLeast(2), "points");
 
             if (_drawGraphics)
             {
@@ -2635,7 +2635,7 @@ namespace PdfSharper.Drawing  // #??? aufräumen
             if (points == null)
                 throw new ArgumentNullException("points");
             if (points.Length < 2)
-                throw new ArgumentException("points", PSSR.PointArrayAtLeast(2));
+                throw new ArgumentException(PSSR.PointArrayAtLeast(2), "points");
 
             if (_drawGraphics)
             {
@@ -3479,7 +3479,7 @@ namespace PdfSharper.Drawing  // #??? aufräumen
                     {
                         Lock.EnterGdiPlus();
                         GdiRectF rect = layoutRectangle.ToRectangleF();
-                        if (format.LineAlignment == XLineAlignment.BaseLine)
+                        if (format != null && format.LineAlignment == XLineAlignment.BaseLine)
                         {
                             double lineSpace = font.GetHeight(); //old: font.GetHeight(this);
                             int cellSpace = font.FontFamily.GetLineSpacing(font.Style);

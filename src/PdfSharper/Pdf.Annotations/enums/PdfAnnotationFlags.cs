@@ -32,6 +32,7 @@ namespace PdfSharper.Pdf.Annotations
     /// <summary>
     /// Specifies the annotation flags.
     /// </summary>
+    [System.Flags]
     public enum PdfAnnotationFlags
     {
         /// <summary>

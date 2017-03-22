@@ -31,6 +31,7 @@ using PdfSharper.Drawing;
 using PdfSharper.Pdf.Advanced;
 using PdfSharper.Pdf.Annotations;
 using PdfSharper.Pdf.Internal;
+using System;
 
 namespace PdfSharper.Pdf.AcroForms
 {
@@ -58,36 +59,6 @@ namespace PdfSharper.Pdf.AcroForms
             get { return Elements.GetString(Keys.V); }
             set { Elements.SetString(Keys.V, value); RenderAppearance(); } //HACK in PdfTextField
         }
-
-        /// <summary>
-        /// Gets or sets the font used to draw the text of the field.
-        /// </summary>
-        public XFont Font
-        {
-            get { return _font; }
-            set { _font = value; }
-        }
-        XFont _font = new XFont("Courier New", 10);
-
-        /// <summary>
-        /// Gets or sets the foreground color of the field.
-        /// </summary>
-        public XColor ForeColor
-        {
-            get { return _foreColor; }
-            set { _foreColor = value; }
-        }
-        XColor _foreColor = XColors.Black;
-
-        /// <summary>
-        /// Gets or sets the background color of the field.
-        /// </summary>
-        public XColor BackColor
-        {
-            get { return _backColor; }
-            set { _backColor = value; }
-        }
-        XColor _backColor = XColor.Empty;
 
         /// <summary>
         /// Gets or sets the maximum length of the field.
@@ -126,6 +97,22 @@ namespace PdfSharper.Pdf.AcroForms
                     SetFlags |= PdfAcroFieldFlags.Password;
                 else
                     SetFlags &= ~PdfAcroFieldFlags.Password;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this field is a combined field.
+        /// A combined field is a text field made up of multiple "combs" of equal width. The number of combs is determined by <see cref="MaxLength"/>.
+        /// </summary>
+        public bool Combined
+        {
+            get { return (Flags & PdfAcroFieldFlags.Comb) != 0; }
+            set
+            {
+                if (value)
+                    SetFlags |= PdfAcroFieldFlags.Comb;
+                else
+                    SetFlags &= ~PdfAcroFieldFlags.Comb;
             }
         }
 
@@ -239,13 +226,33 @@ namespace PdfSharper.Pdf.AcroForms
             XForm form = new XForm(_document, rect.Size);
             XGraphics gfx = XGraphics.FromForm(form);
 
-            if (_backColor != XColor.Empty)
+            if (BackColor != XColor.Empty)
                 gfx.DrawRectangle(new XSolidBrush(BackColor), rect.ToXRect() - rect.Location);
+            // Draw Border
+            if (!BorderColor.IsEmpty)
+                gfx.DrawRectangle(new XPen(BorderColor), rect.ToXRect() - rect.Location);
 
             string text = Text;
             if (text.Length > 0)
-                gfx.DrawString(Text, Font, new XSolidBrush(ForeColor),
-                  rect.ToXRect() - rect.Location + new XPoint(2, 0), XStringFormats.TopLeft);
+            {
+                var xRect = rect.ToXRect();
+                if ((Flags & PdfAcroFieldFlags.Comb) != 0 && MaxLength > 0)
+                {
+                    var combWidth = xRect.Width / MaxLength;
+                    var format = XStringFormats.TopLeft;
+                    format.Comb = true;
+                    format.CombWidth = combWidth;
+                    gfx.Save();
+                    gfx.IntersectClip(xRect);
+                    gfx.DrawString(text, Font, new XSolidBrush(ForeColor), xRect + new XPoint(0, 1.5), format);
+                    gfx.Restore();
+                }
+                else
+                {
+                    gfx.DrawString(Text, Font, new XSolidBrush(ForeColor),
+                      rect.ToXRect() - rect.Location + new XPoint(2, 0), XStringFormats.TopLeft);
+                }
+            }
 
             form.DrawingFinished();
             form.PdfForm.Elements.Add("/FormType", new PdfLiteral("1"));
@@ -262,6 +269,9 @@ namespace PdfSharper.Pdf.AcroForms
             ap.Elements["/N"] = form.PdfForm.Reference;
 
             PdfFormXObject xobj = form.PdfForm;
+            if (xobj.Stream == null)
+                xobj.CreateStream(new byte[] { });
+
             string s = xobj.Stream.ToString();
             // Thank you Adobe: Without putting the content in 'EMC brackets'
             // the text is not rendered by PDF Reader 9 or higher.
@@ -274,6 +284,120 @@ namespace PdfSharper.Pdf.AcroForms
         {
             base.PrepareForSave();
             RenderAppearance();
+        }
+
+        internal override void Flatten()
+        {
+            base.Flatten();
+
+            if (HasKids)
+            {
+                for (int i = 0; i < Fields.Elements.Count; i++)
+                {
+                    var rect = Fields[i].Rectangle;
+                    var page = Fields[i].Page;
+                    var font = GetFontFromElement(Fields[i]);
+                    XStringFormat format = GetAlignment(Fields[i].Elements);
+                    DrawToPDF(rect, page, font, format);
+                }
+            }
+            else
+            {
+            var rect = Rectangle;
+                var page = Page;
+                XStringFormat format = GetAlignment(Elements);
+                DrawToPDF(rect, page, Font, format);
+            }
+        }
+
+        internal void DrawToPDF(PdfRectangle rect, PdfPage elementPage, XFont font, XStringFormat format)
+        {
+            if (!rect.IsEmpty)
+            {
+                using (var gfx = XGraphics.FromPdfPage(elementPage))
+                {
+                    // Note: Page origin [0,0] is bottom left !
+                    var text = Text;
+                    if (text.Length > 0)
+                    {
+                        var xRect = new XRect(rect.X1, elementPage.Height.Point - rect.Y2, rect.Width, rect.Height);
+                        if ((Flags & PdfAcroFieldFlags.Comb) != 0 && MaxLength > 0)
+                        {
+                            var combWidth = xRect.Width / MaxLength;
+                            format.Comb = true;
+                            format.CombWidth = combWidth;
+                            gfx.Save();
+                            gfx.IntersectClip(xRect);
+                            gfx.DrawString(text, font, new XSolidBrush(ForeColor), xRect + new XPoint(0, 1.5), format);
+                            gfx.Restore();
+                        }
+                        else
+                        {
+                            gfx.Save();
+                            gfx.IntersectClip(xRect);
+                            gfx.DrawString(text, font, new XSolidBrush(ForeColor), xRect + new XPoint(2, 2), format);
+                            gfx.Restore();
+                        }
+                    }
+                }
+            }
+        }
+
+        internal XFont GetFontFromElement(PdfAcroField element)
+        {
+            string[] name = element.Font.FamilyName.Split(',');
+            double size = element.Font.Size;
+            XFontStyle style;
+
+            if (name.Length > 1)
+            {
+                switch (name[1])
+                {
+                    case "Bold":
+                        style = XFontStyle.Bold;
+                        break;
+                    case "Italic":
+                        style = XFontStyle.Italic;
+                        break;
+                    case "BoldItalic":
+                        style = XFontStyle.BoldItalic;
+                        break;
+                    default:
+                        style = XFontStyle.Regular;
+                        break;
+                }
+            }
+            else
+            {
+                style = XFontStyle.Regular;
+            }
+
+            return new XFont(name[0], size, style);
+        }
+
+        internal XStringFormat GetAlignment(DictionaryElements dict)
+        {
+            PdfItem item = dict.GetValue("/Q");
+            if (item != null)
+            {
+                int alignment = Int32.Parse(item.ToString());
+
+                switch (alignment)
+                {
+                    case 0:
+                        return XStringFormats.TopLeft;
+                    case 1:
+                        return XStringFormats.TopCenter;
+                    case 2:
+                        return XStringFormats.TopRight;
+                    default:
+                        return XStringFormats.TopLeft;
+                    }
+                }
+            else
+            {
+                return XStringFormats.TopLeft;
+            }
         }
 
         /// <summary>

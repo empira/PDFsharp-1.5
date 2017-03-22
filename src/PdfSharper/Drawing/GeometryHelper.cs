@@ -259,7 +259,7 @@ namespace PdfSharper.Drawing
             {
                 int currentQuadrant = startQuadrant;
                 bool firstLoop = true;
-                do
+                while (true)
                 {
                     if (currentQuadrant == startQuadrant && firstLoop)
                     {
@@ -289,7 +289,7 @@ namespace PdfSharper.Drawing
                         currentQuadrant = currentQuadrant == 0 ? 3 : currentQuadrant - 1;
 
                     firstLoop = false;
-                } while (true);
+                }
             }
             return points;
         }

@@ -60,7 +60,7 @@ namespace PdfSharper.Pdf.IO
 #if UWP
             _stream.Dispose();
 #else
-            _stream.Close();
+                _stream.Close();
 #endif
             _stream = null;
         }
@@ -621,7 +621,7 @@ namespace PdfSharper.Pdf.IO
             NewLine,
             Character,
             Delimiter,
-        };
+        }
         CharCat _lastCat;
 
         /// <summary>

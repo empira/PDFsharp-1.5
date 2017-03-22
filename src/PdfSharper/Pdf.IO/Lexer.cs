@@ -86,7 +86,7 @@ namespace PdfSharper.Pdf.IO
         // /// <param name="testReference">Indicates whether to test the next token if it is a reference.</param>
         public Symbol ScanNextToken()
         {
-        Again:
+            Again:
             _token = new StringBuilder();
 
             char ch = MoveToNonWhiteSpace();
@@ -194,9 +194,13 @@ namespace PdfSharper.Pdf.IO
             byte[] bytes = new byte[length];
             int read = _pdfSteam.Read(bytes, 0, length);
             Debug.Assert(read == length);
+            if (bytes.Length != read)
+            {
+                Array.Resize(ref bytes, read);
+            }
 
             // Synchronize idxChar etc.
-            Position = pos + length;
+            Position = pos + read;
             return bytes;
         }
 
@@ -670,7 +674,7 @@ namespace PdfSharper.Pdf.IO
             Position = positon;
             return true;
 
-        False:
+            False:
             Position = positon;
             return false;
         }

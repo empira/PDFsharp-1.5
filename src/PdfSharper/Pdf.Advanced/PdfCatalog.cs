@@ -166,6 +166,18 @@ namespace PdfSharper.Pdf.Advanced
                     _acroForm = (PdfAcroForm)Elements.GetValue(Keys.AcroForm);
                 return _acroForm;
             }
+            internal set
+            {
+                if (value != null)
+                    Elements.SetValue(Keys.AcroForm, value);
+                else
+                {
+                    if (_acroForm != null && _acroForm.Reference != null)
+                        _document._irefTable.Remove(_acroForm.Reference);
+                    Elements.Remove(Keys.AcroForm);
+        }
+                _acroForm = value;
+            }
         }
         PdfAcroForm _acroForm;
 

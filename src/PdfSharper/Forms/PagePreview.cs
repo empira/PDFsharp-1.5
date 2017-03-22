@@ -384,8 +384,7 @@ namespace PdfSharper.Forms
         /// </summary>
         protected virtual void OnZoomChanged(EventArgs e)
         {
-            if (ZoomChanged != null)
-                ZoomChanged(this, e);
+            ZoomChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -543,7 +542,7 @@ namespace PdfSharper.Forms
             switch (_zoom)
             {
                 case Zoom.BestFit:
-                BestFit:
+                    BestFit:
                     //zoomPercent = Convert.ToInt32(25400.0 * (rcCanvas.Width - (leftBorder + rightBorder)) / (this.pageSize.Width * xdpiScreen));
                     _zoomPercent = (int)(7200f * (rcCanvas.Width - horzBorders) / (_pageSize.Width * xdpiScreen));
                     //--zoomPercent;  // prevend round up errors

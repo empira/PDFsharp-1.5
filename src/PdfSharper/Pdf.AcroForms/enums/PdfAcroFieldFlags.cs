@@ -114,6 +114,19 @@ namespace PdfSharper.Pdf.AcroForms
         /// </summary>
         DoNotScroll = 1 << (24 - 1),
 
+        /// <summary>
+        /// (PDF 1.5) May be set only if the MaxLen entry is present in the text field dictionary (see Table 229) and if the Multiline, Password, and
+        /// FileSelect flags are clear. If set, the field shall be automatically divided into as many equally spaced positions, or combs, as the
+        /// value of MaxLen, and the text is laid out into those combs.
+        /// </summary>
+        Comb = 1 << (25 - 1),
+
+        /// <summary>
+        /// (PDF 1.5) If set, the value of this field shall be a rich text string (see 12.7.3.4, “Rich Text Strings”).
+        /// If the field has a value, the RV entry of the field dictionary (Table 222) shall specify the rich text string.
+        /// </summary>
+        RichText = 1 << (26 - 1),
+
         // ----- Specific to choice fields ------------------------------------------------------------
 
         /// <summary>

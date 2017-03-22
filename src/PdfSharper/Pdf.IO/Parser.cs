@@ -631,6 +631,8 @@ namespace PdfSharper.Pdf.IO
             {
                 Skip:
                 char ch = _lexer.MoveToNonWhiteSpace();
+                if (ch == Chars.EOF)
+                    ParserDiagnostics.HandleUnexpectedCharacter(ch);
                 if (ch != 'e')
                 {
                     _lexer.ScanNextChar(false);

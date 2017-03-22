@@ -122,8 +122,6 @@ namespace PdfSharper.Fonts.OpenType
 
             UnderlinePosition = FontFace.post.underlinePosition;
             UnderlineThickness = FontFace.post.underlineThickness;
-            StrikeoutPosition = FontFace.os2.yStrikeoutPosition;
-            StrikeoutSize = FontFace.os2.yStrikeoutSize;
 
             // No documetation found how to get the set vertical stems width from the
             // TrueType tables.
@@ -135,6 +133,9 @@ namespace PdfSharper.Fonts.OpenType
 
             // PDFlib states that some Apple fonts miss the OS/2 table.
             Debug.Assert(FontFace.os2 != null, "TrueType font has no OS/2 table.");
+
+            StrikeoutPosition = FontFace.os2.yStrikeoutPosition;
+            StrikeoutSize = FontFace.os2.yStrikeoutSize;
 
             UnitsPerEm = FontFace.head.unitsPerEm;
 
