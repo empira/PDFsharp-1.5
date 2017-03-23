@@ -40,7 +40,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>PEX.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\PEX.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -406,10 +406,6 @@
     <Folder Include="Drawing\internal\" />
     <Folder Include="Resources\images\" />
     <Folder Include="SharpZipLib\SharpZip\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
-    <None Include="PEX.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
