@@ -62,6 +62,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\Release\PdfSharp-wpf.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore">
@@ -587,7 +588,7 @@
     </Compile>
     <Compile Include="..\PdfSharper\Pdf.Advanced\PdfExtGStateTable.cs">
       <Link>Pdf.Advanced\PdfExtGStateTable.cs</Link>
-    </Compile>    
+    </Compile>
     <Compile Include="..\PdfSharper\Pdf.Advanced\PdfFileSpecification.cs">
       <Link>Pdf.Advanced\PdfFileSpecification.cs</Link>
     </Compile>
@@ -695,7 +696,7 @@
     </Compile>
     <Compile Include="..\PdfSharper\Pdf.Annotations\PdfGenericAnnotation.cs">
       <Link>Pdf.Annotations\PdfGenericAnnotation.cs</Link>
-    </Compile>	
+    </Compile>
     <Compile Include="..\PdfSharper\Pdf.Annotations\PdfFileAttachmentAnnotation.cs">
       <Link>Pdf.Annotations\PdfFileAttachmentAnnotation.cs</Link>
     </Compile>
@@ -860,7 +861,7 @@
     </Compile>
     <Compile Include="..\PdfSharper\Pdf.Signatures\PositionTracker.cs">
       <Link>Pdf.Signatures\PositionTracker.cs</Link>
-    </Compile>    
+    </Compile>
     <Compile Include="..\PdfSharper\Pdf\EntryInfoAttribute.cs">
       <Link>Pdf\EntryInfoAttribute.cs</Link>
     </Compile>
