@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -204,6 +204,11 @@ namespace PdfSharper.Pdf.AcroForms
         public PdfRectangle Rectangle
         {
             get { return Elements.GetRectangle(PdfAnnotation.Keys.Rect); }
+
+            set
+            {
+                Elements.SetRectangle(PdfAnnotation.Keys.Rect, value);
+            }
         }
 
         /// <summary>
@@ -871,7 +876,7 @@ namespace PdfSharper.Pdf.AcroForms
             /// (Optional; PDF 1.3) An alternate field name, to be used in place of the actual
             /// field name wherever the field must be identified in the user interface (such as
             /// in error or status messages referring to the field). This text is also useful
-            /// when extracting the document’s contents in support of accessibility to disabled
+            /// when extracting the documentï¿½s contents in support of accessibility to disabled
             /// users or for other purposes.
             /// </summary>
             [KeyInfo(KeyType.TextString | KeyType.Optional)]
@@ -892,7 +897,7 @@ namespace PdfSharper.Pdf.AcroForms
             public const string Ff = "/Ff";
 
             /// <summary>
-            /// (Optional; inheritable) The field’s value, whose format varies depending on
+            /// (Optional; inheritable) The fieldï¿½s value, whose format varies depending on
             /// the field type; see the descriptions of individual field types for further information.
             /// </summary>
             [KeyInfo(KeyType.Various | KeyType.Optional)]
@@ -906,7 +911,7 @@ namespace PdfSharper.Pdf.AcroForms
             public const string DV = "/DV";
 
             /// <summary>
-            /// (Optional; PDF 1.2) An additional-actions dictionary defining the field’s behavior
+            /// (Optional; PDF 1.2) An additional-actions dictionary defining the fieldï¿½s behavior
             /// in response to various trigger events. This entry has exactly the same meaning as
             /// the AA entry in an annotation dictionary.
             /// </summary>
@@ -919,7 +924,7 @@ namespace PdfSharper.Pdf.AcroForms
             /// (Required; inheritable) A resource dictionary containing default resources
             /// (such as fonts, patterns, or color spaces) to be used by the appearance stream.
             /// At a minimum, this dictionary must contain a Font entry specifying the resource
-            /// name and font dictionary of the default font for displaying the field’s text.
+            /// name and font dictionary of the default font for displaying the fieldï¿½s text.
             /// </summary>
             [KeyInfo(KeyType.Dictionary | KeyType.Required)]
             public const string DR = "/DR";
@@ -927,7 +932,7 @@ namespace PdfSharper.Pdf.AcroForms
             /// <summary>
             /// (Required; inheritable) The default appearance string, containing a sequence of
             /// valid page-content graphics or text state operators defining such properties as
-            /// the field’s text size and color.
+            /// the fieldï¿½s text size and color.
             /// </summary>
             [KeyInfo(KeyType.String | KeyType.Required)]
             public const string DA = "/DA";

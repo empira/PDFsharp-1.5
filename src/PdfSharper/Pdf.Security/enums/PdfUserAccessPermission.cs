@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -42,7 +42,7 @@ namespace PdfSharper.Pdf.Security
         /// </summary>
         PermitAll = -3, // = 0xFFFFFFFC,
 
-        // Bit 1–2 Reserved; must be 0.
+        // Bit 1ï¿½2 Reserved; must be 0.
 
         // Bit 3 (Revision 2) Print the document.
         // (Revision 3 or greater) Print the document (possibly not at the highest
@@ -65,7 +65,7 @@ namespace PdfSharper.Pdf.Security
         // signature fields).
         PermitAnnotations = 0x00000020,  //1 << (6 - 1),
 
-        // Bit 7–8 Reserved; must be 1.
+        // Bit 7ï¿½8 Reserved; must be 1.
 
         // 9 (Revision 3 or greater) Fill in existing interactive form fields (including
         // signature fields), even if bit 6 is clear.
@@ -87,6 +87,6 @@ namespace PdfSharper.Pdf.Security
         // (See implementation note 24 in Appendix H.)
         PermitFullQualityPrint = 0x00000800,  //1 << (12 - 1),
 
-        //Bit 13–32 (Revision 3 or greater) Reserved; must be 1.
+        //Bit 13ï¿½32 (Revision 3 or greater) Reserved; must be 1.
     }
 }

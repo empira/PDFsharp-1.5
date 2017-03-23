@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -67,8 +67,8 @@ namespace PdfSharper.Pdf.Advanced
             /// <summary>
             /// (Required) A subtype specifying the method to be used in deriving the mask values
             /// from the transparency group specified by the G entry:
-            /// Alpha: Use the group’s computed alpha, disregarding its color.
-            /// Luminosity: Convert the group’s computed color to a single-component luminosity value.
+            /// Alpha: Use the groupï¿½s computed alpha, disregarding its color.
+            /// Luminosity: Convert the groupï¿½s computed color to a single-component luminosity value.
             /// </summary>
             [KeyInfo(KeyType.Name | KeyType.Required)]
             public const string S = "/S";
@@ -88,7 +88,7 @@ namespace PdfSharper.Pdf.Advanced
             /// This entry is consulted only if the subtype S is Luminosity. The array consists of
             /// n numbers, where n is the number of components in the color space specified
             /// by the CS entry in the group attributes dictionary.
-            /// Default value: the color space’s initial value, representing black.
+            /// Default value: the color spaceï¿½s initial value, representing black.
             /// </summary>
             [KeyInfo(KeyType.Array | KeyType.Optional)]
             public const string BC = "/BC";

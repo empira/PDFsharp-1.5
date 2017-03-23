@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -87,7 +87,7 @@ namespace PdfSharper.Pdf.AcroForms
             // ReSharper disable InconsistentNaming
 
             /// <summary>
-            /// (Required) An array of references to the document’s root fields (those with
+            /// (Required) An array of references to the documentï¿½s root fields (those with
             /// no ancestors in the field hierarchy).
             /// </summary>
             [KeyInfo(KeyType.Array | KeyType.Required, typeof(PdfAcroField.PdfAcroFieldCollection))]

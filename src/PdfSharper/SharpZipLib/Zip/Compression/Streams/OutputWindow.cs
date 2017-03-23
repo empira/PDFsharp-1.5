@@ -1,4 +1,4 @@
-// OutputWindow.cs
+﻿// OutputWindow.cs
 //
 // Copyright (C) 2001 Mike Krueger
 //

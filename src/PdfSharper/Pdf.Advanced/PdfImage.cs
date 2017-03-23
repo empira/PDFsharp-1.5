@@ -1,8 +1,8 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
-//   Thomas Hövel
+//   Thomas Hï¿½vel
 //
 // Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
 //
@@ -1457,8 +1457,8 @@ namespace PdfSharper.Pdf.Advanced
             /// (Required for images, except those that use the JPXDecode filter; not allowed for image masks)
             /// The color space in which image samples are specified; it can be any type of color space except
             /// Pattern. If the image uses the JPXDecode filter, this entry is optional:
-            /// • If ColorSpace is present, any color space specifications in the JPEG2000 data are ignored.
-            /// • If ColorSpace is absent, the color space specifications in the JPEG2000 data are used.
+            /// ï¿½ If ColorSpace is present, any color space specifications in the JPEG2000 data are ignored.
+            /// ï¿½ If ColorSpace is absent, the color space specifications in the JPEG2000 data are used.
             ///   The Decode array is also ignored unless ImageMask is true.
             /// </summary>
             [KeyInfo(KeyType.NameOrArray | KeyType.Required)]
@@ -1508,10 +1508,10 @@ namespace PdfSharper.Pdf.Advanced
 
             /// <summary>
             /// (Optional) An array of numbers describing how to map image samples into the range of values
-            /// appropriate for the image’s color space. If ImageMask is true, the array must be either
+            /// appropriate for the imageï¿½s color space. If ImageMask is true, the array must be either
             /// [0 1] or [1 0]; otherwise, its length must be twice the number of color components required 
             /// by ColorSpace. If the image uses the JPXDecode filter and ImageMask is false, Decode is ignored.
-            /// Default value: see “Decode Arrays”.
+            /// Default value: see ï¿½Decode Arraysï¿½.
             /// </summary>
             [KeyInfo(KeyType.Array | KeyType.Optional)]
             public const string Decode = "/Decode";
@@ -1536,8 +1536,8 @@ namespace PdfSharper.Pdf.Advanced
             /// source of mask shape or mask opacity values in the transparent imaging model. The alpha 
             /// source parameter in the graphics state determines whether the mask values are interpreted as
             /// shape or opacity. If present, this entry overrides the current soft mask in the graphics state,
-            /// as well as the image’s Mask entry, if any. (However, the other transparency related graphics 
-            /// state parameters — blend mode and alpha constant — remain in effect.) If SMask is absent, the 
+            /// as well as the imageï¿½s Mask entry, if any. (However, the other transparency related graphics 
+            /// state parameters ï¿½ blend mode and alpha constant ï¿½ remain in effect.) If SMask is absent, the 
             /// image has no associated soft mask (although the current soft mask in the graphics state may
             /// still apply).
             /// </summary>
@@ -1548,10 +1548,10 @@ namespace PdfSharper.Pdf.Advanced
             /// (Optional for images that use the JPXDecode filter, meaningless otherwise; PDF 1.5)
             /// A code specifying how soft-mask information encoded with image samples should be used:
             /// 0 If present, encoded soft-mask image information should be ignored.
-            /// 1 The image’s data stream includes encoded soft-mask values. An application can create
+            /// 1 The imageï¿½s data stream includes encoded soft-mask values. An application can create
             ///   a soft-mask image from the information to be used as a source of mask shape or mask 
             ///   opacity in the transparency imaging model.
-            /// 2 The image’s data stream includes color channels that have been preblended with a 
+            /// 2 The imageï¿½s data stream includes color channels that have been preblended with a 
             ///   background; the image data also includes an opacity channel. An application can create
             ///   a soft-mask image with a Matte entry from the opacity channel information to be used as
             ///   a source of mask shape or mask opacity in the transparency model. If this entry has a 
@@ -1570,13 +1570,13 @@ namespace PdfSharper.Pdf.Advanced
 
             /// <summary>
             /// (Required if the image is a structural content item; PDF 1.3) The integer key of the 
-            /// image’s entry in the structural parent tree.
+            /// imageï¿½s entry in the structural parent tree.
             /// </summary>
             [KeyInfo(KeyType.Integer | KeyType.Required)]
             public const string StructParent = "/StructParent";
 
             /// <summary>
-            /// (Optional; PDF 1.3; indirect reference preferred) The digital identifier of the image’s
+            /// (Optional; PDF 1.3; indirect reference preferred) The digital identifier of the imageï¿½s
             /// parent Web Capture content set.
             /// </summary>
             [KeyInfo(KeyType.String | KeyType.Optional)]

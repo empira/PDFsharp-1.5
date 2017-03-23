@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -112,67 +112,67 @@ namespace PdfSharper
 
                 // The non-ISO sizes ...
 
-                case PageSize.Quarto:           // 8 x 10 inch²
+                case PageSize.Quarto:           // 8 x 10 inchï¿½
                     return new XSize(576, 720);
 
-                case PageSize.Foolscap:         // 8 x 13 inch²
+                case PageSize.Foolscap:         // 8 x 13 inchï¿½
                     return new XSize(576, 936);
 
-                case PageSize.Executive:        // 7.5 x 10 inch²
+                case PageSize.Executive:        // 7.5 x 10 inchï¿½
                     return new XSize(540, 720);
 
-                case PageSize.GovernmentLetter: // 8 x 10.5 inch²
+                case PageSize.GovernmentLetter: // 8 x 10.5 inchï¿½
                     return new XSize(576, 756);
 
-                case PageSize.Letter:           // 8.5 x 11 inch²
+                case PageSize.Letter:           // 8.5 x 11 inchï¿½
                     return new XSize(612, 792);
 
-                case PageSize.Legal:            // 8.5 x 14 inch²
+                case PageSize.Legal:            // 8.5 x 14 inchï¿½
                     return new XSize(612, 1008);
 
-                case PageSize.Ledger:           // 17 x 11 inch²
+                case PageSize.Ledger:           // 17 x 11 inchï¿½
                     return new XSize(1224, 792);
 
-                case PageSize.Tabloid:          // 11 x 17 inch²
+                case PageSize.Tabloid:          // 11 x 17 inchï¿½
                     return new XSize(792, 1224);
 
-                case PageSize.Post:             // 15.5 x 19.25 inch²
+                case PageSize.Post:             // 15.5 x 19.25 inchï¿½
                     return new XSize(1126, 1386);
 
-                case PageSize.Crown:            // 20 x 15 inch²
+                case PageSize.Crown:            // 20 x 15 inchï¿½
                     return new XSize(1440, 1080);
 
-                case PageSize.LargePost:        // 16.5 x 21 inch²
+                case PageSize.LargePost:        // 16.5 x 21 inchï¿½
                     return new XSize(1188, 1512);
 
-                case PageSize.Demy:             // 17.5 x 22 inch²
+                case PageSize.Demy:             // 17.5 x 22 inchï¿½
                     return new XSize(1260, 1584);
 
-                case PageSize.Medium:           // 18 x 23 inch²
+                case PageSize.Medium:           // 18 x 23 inchï¿½
                     return new XSize(1296, 1656);
 
-                case PageSize.Royal:            // 20 x 25 inch²
+                case PageSize.Royal:            // 20 x 25 inchï¿½
                     return new XSize(1440, 1800);
 
-                case PageSize.Elephant:         // 23 x 28 inch²
+                case PageSize.Elephant:         // 23 x 28 inchï¿½
                     return new XSize(1565, 2016);
 
-                case PageSize.DoubleDemy:       // 23.5 x 35 inch²
+                case PageSize.DoubleDemy:       // 23.5 x 35 inchï¿½
                     return new XSize(1692, 2520);
 
-                case PageSize.QuadDemy:         // 35 x 45 inch²
+                case PageSize.QuadDemy:         // 35 x 45 inchï¿½
                     return new XSize(2520, 3240);
 
-                case PageSize.STMT:             // 5.5 x 8.5 inch²
+                case PageSize.STMT:             // 5.5 x 8.5 inchï¿½
                     return new XSize(396, 612);
 
-                case PageSize.Folio:            // 8.5 x 13 inch²
+                case PageSize.Folio:            // 8.5 x 13 inchï¿½
                     return new XSize(612, 936);
 
-                case PageSize.Statement:        // 5.5 x 8.5 inch²
+                case PageSize.Statement:        // 5.5 x 8.5 inchï¿½
                     return new XSize(396, 612);
 
-                case PageSize.Size10x14:        // 10 x 14 inch²
+                case PageSize.Size10x14:        // 10 x 14 inchï¿½
                     return new XSize(720, 1008);
             }
             throw new ArgumentException("Invalid PageSize.", "value");

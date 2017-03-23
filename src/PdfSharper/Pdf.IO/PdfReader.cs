@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -65,7 +65,7 @@ namespace PdfSharper.Pdf.IO
     {
         /// <summary>
         /// Determines whether the file specified by its path is a PDF file by inspecting the first eight
-        /// bytes of the data. If the file header has the form «%PDF-x.y» the function returns the version
+        /// bytes of the data. If the file header has the form ï¿½%PDF-x.yï¿½ the function returns the version
         /// number as integer (e.g. 14 for PDF 1.4). If the file header is invalid or inaccessible
         /// for any reason, 0 is returned. The function never throws an exception. 
         /// </summary>
@@ -111,7 +111,7 @@ namespace PdfSharper.Pdf.IO
 
         /// <summary>
         /// Determines whether the specified stream is a PDF file by inspecting the first eight
-        /// bytes of the data. If the data begins with «%PDF-x.y» the function returns the version
+        /// bytes of the data. If the data begins with ï¿½%PDF-x.yï¿½ the function returns the version
         /// number as integer (e.g. 14 for PDF 1.4). If the data is invalid or inaccessible
         /// for any reason, 0 is returned. The function never throws an exception. 
         /// </summary>
@@ -142,7 +142,7 @@ namespace PdfSharper.Pdf.IO
 
         /// <summary>
         /// Determines whether the specified data is a PDF file by inspecting the first eight
-        /// bytes of the data. If the data begins with «%PDF-x.y» the function returns the version
+        /// bytes of the data. If the data begins with ï¿½%PDF-x.yï¿½ the function returns the version
         /// number as integer (e.g. 14 for PDF 1.4). If the data is invalid or inaccessible
         /// for any reason, 0 is returned. The function never throws an exception. 
         /// </summary>
@@ -158,7 +158,7 @@ namespace PdfSharper.Pdf.IO
         {
             try
             {
-                // Acrobat accepts headers like «%!PS-Adobe-N.n PDF-M.m»...
+                // Acrobat accepts headers like ï¿½%!PS-Adobe-N.n PDF-M.mï¿½...
                 string header = PdfEncoders.RawEncoding.GetString(bytes, 0, bytes.Length);  // Encoding.ASCII.GetString(bytes);
                 if (header[0] == '%' || header.IndexOf("%PDF", StringComparison.Ordinal) >= 0)
                 {

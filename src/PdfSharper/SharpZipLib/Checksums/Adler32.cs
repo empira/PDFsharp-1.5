@@ -1,4 +1,4 @@
-// Adler32.cs - Computes Adler32 data checksum of a data stream
+﻿// Adler32.cs - Computes Adler32 data checksum of a data stream
 // Copyright (C) 2001 Mike Krueger
 //
 // This file was translated from java, it was part of the GNU Classpath

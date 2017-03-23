@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -69,7 +69,7 @@ namespace PdfSharper.Pdf.AcroForms
 				{
 					string key = ValueInOptArray(value, true);
 					Elements.SetString(Keys.V, key);
-					Elements.SetInteger("/I", value); //R080304 !!!!!!! sonst reagiert die Combobox überhaupt nicht !!!!!
+					Elements.SetInteger("/I", value); //R080304 !!!!!!! sonst reagiert die Combobox ï¿½berhaupt nicht !!!!!
 				}
 			}
 		}
@@ -94,7 +94,7 @@ namespace PdfSharper.Pdf.AcroForms
 						//R080317 noch nicht rund
 						try
 						{
-							//anhängen
+							//anhï¿½ngen
 							((PdfArray)(((PdfItem[])(Elements.Values))[2])).Elements.Add(Value);
 							SelectedIndex = SelectedIndex;
 						}

@@ -1,4 +1,4 @@
-// StreamManipulator.cs
+﻿// StreamManipulator.cs
 //
 // Copyright (C) 2001 Mike Krueger
 //

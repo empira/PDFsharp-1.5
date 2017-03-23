@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -151,9 +151,9 @@ namespace PdfSharper.Pdf.Content
             // TODO: Implement inline images.
             // Skip this:
             // BI
-            // … Key-value pairs …
+            // ï¿½ Key-value pairs ï¿½
             // ID
-            // … Image data …
+            // ï¿½ Image data ï¿½
             // EI
 
             bool ascii85 = false;

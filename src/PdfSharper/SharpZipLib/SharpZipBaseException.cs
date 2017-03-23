@@ -1,4 +1,4 @@
-// SharpZipBaseException.cs
+﻿// SharpZipBaseException.cs
 //
 // Copyright 2004 John Reilly
 //

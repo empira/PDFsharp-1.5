@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -177,8 +177,8 @@ namespace PdfSharper.Pdf.Advanced
 
             /// <summary>
             /// (Optional) An array of four numbers giving the left, bottom, right, and top coordinates, 
-            /// respectively, of the shading’s bounding box. The coordinates are interpreted in the 
-            /// shading’s target coordinate space. If present, this bounding box is applied as a temporary 
+            /// respectively, of the shadingï¿½s bounding box. The coordinates are interpreted in the 
+            /// shadingï¿½s target coordinate space. If present, this bounding box is applied as a temporary 
             /// clipping boundary when the shading is painted, in addition to the current clipping path
             /// and any other clipping boundaries in effect at that time.
             /// </summary>
@@ -188,7 +188,7 @@ namespace PdfSharper.Pdf.Advanced
             /// <summary>
             /// (Optional) A flag indicating whether to filter the shading function to prevent aliasing 
             /// artifacts. The shading operators sample shading functions at a rate determined by the 
-            /// resolution of the output device. Aliasing can occur if the function is not smooth—that
+            /// resolution of the output device. Aliasing can occur if the function is not smoothï¿½that
             /// is, if it has a high spatial frequency relative to the sampling rate. Anti-aliasing can
             /// be computationally expensive and is usually unnecessary, since most shading functions
             /// are smooth enough or are sampled at a high enough frequency to avoid aliasing effects.
@@ -203,7 +203,7 @@ namespace PdfSharper.Pdf.Advanced
 
             /// <summary>
             /// (Required) An array of four numbers [x0 y0 x1 y1] specifying the starting and
-            /// ending coordinates of the axis, expressed in the shading’s target coordinate space.
+            /// ending coordinates of the axis, expressed in the shadingï¿½s target coordinate space.
             /// </summary>
             [KeyInfo(KeyType.Array | KeyType.Required)]
             public const string Coords = "/Coords";
@@ -220,9 +220,9 @@ namespace PdfSharper.Pdf.Advanced
 
             /// <summary>
             /// (Required) A 1-in, n-out function or an array of n 1-in, 1-out functions (where n
-            /// is the number of color components in the shading dictionary’s color space). The
+            /// is the number of color components in the shading dictionaryï¿½s color space). The
             /// function(s) are called with values of the parametric variable t in the domain defined
-            /// by the Domain entry. Each function’s domain must be a superset of that of the shading
+            /// by the Domain entry. Each functionï¿½s domain must be a superset of that of the shading
             /// dictionary. If the value returned by the function for a given color component is out
             /// of range, it is adjusted to the nearest valid value.
             /// </summary>

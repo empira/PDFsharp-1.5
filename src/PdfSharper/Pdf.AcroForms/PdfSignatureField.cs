@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -39,8 +39,6 @@ namespace PdfSharper.Pdf.AcroForms
     /// </summary>
     public sealed class PdfSignatureField : PdfAcroField
     {
-        private bool visible;
-
         public string Reason
         {
             get
@@ -90,22 +88,6 @@ namespace PdfSharper.Pdf.AcroForms
             }
         }
 
-
-        public PdfRectangle Rectangle
-        {
-            get
-            {
-                return (PdfRectangle)Elements[Keys.Rect];
-            }
-            set
-            {
-                Elements.Add(Keys.Rect, value);
-                this.visible = !(value.X1 + value.X2 + value.Y1 + value.Y2 == 0);
-
-            }
-        }
-
-
         public ISignatureAppearanceHandler AppearanceHandler { get; internal set; }
 
         /// <summary>
@@ -143,7 +125,7 @@ namespace PdfSharper.Pdf.AcroForms
 
         internal override void PrepareForSave()
         {
-            if (!this.visible)
+            if (Rectangle.X1 + Rectangle.X2 + Rectangle.Y1 + Rectangle.Y2 == 0)
                 return;
 
             if (this.AppearanceHandler == null)
@@ -180,7 +162,7 @@ namespace PdfSharper.Pdf.AcroForms
 
             /// <summary>
             /// (Required; inheritable) The name of the signature handler to be used for
-            /// authenticating the field’s contents, such as Adobe.PPKLite, Entrust.PPKEF,
+            /// authenticating the fieldï¿½s contents, such as Adobe.PPKLite, Entrust.PPKEF,
             /// CICI.SignIt, or VeriSign.PPKVS.
             /// </summary>
             [KeyInfo(KeyType.Name | KeyType.Required)]
@@ -228,7 +210,7 @@ namespace PdfSharper.Pdf.AcroForms
             public const string Location = "/Location";
 
             /// <summary>
-            /// (Optional) The reason for the signing, such as (I agree…).
+            /// (Optional) The reason for the signing, such as (I agreeï¿½).
             /// </summary>
             [KeyInfo(KeyType.TextString | KeyType.Optional)]
             public const string Reason = "/Reason";

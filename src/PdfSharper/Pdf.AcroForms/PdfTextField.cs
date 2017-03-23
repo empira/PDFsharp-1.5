@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -515,7 +515,7 @@ namespace PdfSharper.Pdf.AcroForms
         public new class Keys : PdfAcroField.Keys
         {
             /// <summary>
-            /// (Optional; inheritable) The maximum length of the field’s text, in characters.
+            /// (Optional; inheritable) The maximum length of the fieldï¿½s text, in characters.
             /// </summary>
             [KeyInfo(KeyType.Integer | KeyType.Optional)]
             public const string MaxLen = "/MaxLen";

@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -262,7 +262,7 @@ namespace PdfSharper.Pdf.Internal
                 case '\u0178':
                     return '\u009F';
             }
-            return '\u00A4';  // Char 164 is ANSI value of '¤'.
+            return '\u00A4';  // Char 164 is ANSI value of 'ï¿½'.
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-// ZipException.cs
+﻿// ZipException.cs
 //
 // Copyright (C) 2001 Mike Krueger
 //

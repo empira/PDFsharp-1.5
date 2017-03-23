@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -205,7 +205,7 @@ namespace PdfSharper.Pdf.AcroForms
                 opt2 = Elements[Keys.Opt] as PdfArray;
             else if (Elements[Keys.Opt] is Advanced.PdfReference)
             {
-                //falls das Array nicht direkt am Element hängt, 
+                //falls das Array nicht direkt am Element hï¿½ngt, 
                 //das Array aus dem referenzierten Element holen
                 opt2 = ((Advanced.PdfReference)Elements[Keys.Opt]).Value as PdfArray;
             }
@@ -274,7 +274,7 @@ namespace PdfSharper.Pdf.AcroForms
             /// (Required; inheritable) An array of options to be presented to the user. Each element of
             /// the array is either a text string representing one of the available options or a two-element
             /// array consisting of a text string together with a default appearance string for constructing
-            /// the item’s appearance dynamically at viewing time.
+            /// the itemï¿½s appearance dynamically at viewing time.
             /// </summary>
             [KeyInfo(KeyType.Array | KeyType.Optional)]
             public const string Opt = "/Opt";

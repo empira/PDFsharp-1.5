@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -62,7 +62,7 @@ namespace PdfSharper.Pdf
         }
 
         /// <summary>
-        /// Writes the keyword «null».
+        /// Writes the keyword ï¿½nullï¿½.
         /// </summary>
         protected override void WriteObject(PdfWriter writer)
         {

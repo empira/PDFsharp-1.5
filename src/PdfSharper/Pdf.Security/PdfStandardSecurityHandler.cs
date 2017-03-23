@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -673,12 +673,12 @@ namespace PdfSharper.Pdf.Security
             /// <summary>
             /// (Required) A number specifying which revision of the standard security handler
             /// should be used to interpret this dictionary:
-            /// • 2 if the document is encrypted with a V value less than 2 and does not have any of
+            /// ï¿½ 2 if the document is encrypted with a V value less than 2 and does not have any of
             ///   the access permissions set (by means of the P entry, below) that are designated 
             ///   "Revision 3 or greater".
-            /// • 3 if the document is encrypted with a V value of 2 or 3, or has any "Revision 3 or 
+            /// ï¿½ 3 if the document is encrypted with a V value of 2 or 3, or has any "Revision 3 or 
             ///   greater" access permissions set.
-            /// • 4 if the document is encrypted with a V value of 4
+            /// ï¿½ 4 if the document is encrypted with a V value of 4
             /// </summary>
             [KeyInfo(KeyType.Integer | KeyType.Required)]
             public const string R = "/R";

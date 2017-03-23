@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -56,12 +56,12 @@ namespace PdfSharper.Pdf.Annotations
         internal new class Keys : PdfAnnotation.Keys
         {
             /// <summary>
-            /// (Optional) The annotation’s highlighting mode, the visual effect to be used when
+            /// (Optional) The annotationï¿½s highlighting mode, the visual effect to be used when
             /// the mouse button is pressed or held down inside its active area:
             ///   N (None) No highlighting.
             ///   I (Invert) Invert the contents of the annotation rectangle.
-            ///   O (Outline) Invert the annotation’s border.
-            ///   P (Push) Display the annotation’s down appearance, if any. If no down appearance is defined,
+            ///   O (Outline) Invert the annotationï¿½s border.
+            ///   P (Push) Display the annotationï¿½s down appearance, if any. If no down appearance is defined,
             ///     offset the contents of the annotation rectangle to appear as if it were being pushed below
             ///     the surface of the page.
             ///   T (Toggle) Same as P (which is preferred).
@@ -73,7 +73,7 @@ namespace PdfSharper.Pdf.Annotations
 
             /// <summary>
             /// (Optional) An appearance characteristics dictionary to be used in constructing a dynamic 
-            /// appearance stream specifying the annotation’s visual presentation on the page.
+            /// appearance stream specifying the annotationï¿½s visual presentation on the page.
             /// The name MK for this entry is of historical significance only and has no direct meaning.
             /// </summary>
             [KeyInfo(KeyType.Dictionary | KeyType.Optional)]

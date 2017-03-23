@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -80,7 +80,7 @@ namespace PdfSharper.Pdf.AcroForms
         // ----- Specific to text fields --------------------------------------------------------------
 
         /// <summary>
-        /// If set, the field may contain multiple lines of text; if clear, the field’s text
+        /// If set, the field may contain multiple lines of text; if clear, the fieldï¿½s text
         /// is restricted to a single line.
         /// </summary>
         Multiline = 1 << (13 - 1),
@@ -122,7 +122,7 @@ namespace PdfSharper.Pdf.AcroForms
         Comb = 1 << (25 - 1),
 
         /// <summary>
-        /// (PDF 1.5) If set, the value of this field shall be a rich text string (see 12.7.3.4, “Rich Text Strings”).
+        /// (PDF 1.5) If set, the value of this field shall be a rich text string (see 12.7.3.4, ï¿½Rich Text Stringsï¿½).
         /// If the field has a value, the RV entry of the field dictionary (Table 222) shall specify the rich text string.
         /// </summary>
         RichText = 1 << (26 - 1),
@@ -142,7 +142,7 @@ namespace PdfSharper.Pdf.AcroForms
         Edit = 1 << (19 - 1),
 
         /// <summary>
-        /// If set, the field’s option items should be sorted alphabetically. This flag is
+        /// If set, the fieldï¿½s option items should be sorted alphabetically. This flag is
         /// intended for use by form authoring tools, not by PDF viewer applications;
         /// viewers should simply display the options in the order in which they occur 
         /// in the Opt array.
@@ -150,7 +150,7 @@ namespace PdfSharper.Pdf.AcroForms
         Sort = 1 << (20 - 1),
 
         /// <summary>
-        /// (PDF 1.4) If set, more than one of the field’s option items may be selected
+        /// (PDF 1.4) If set, more than one of the fieldï¿½s option items may be selected
         /// simultaneously; if clear, no more than one item at a time may be selected.
         /// </summary>
         MultiSelect = 1 << (22 - 1),

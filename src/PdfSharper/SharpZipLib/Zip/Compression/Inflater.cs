@@ -1,4 +1,4 @@
-// Inflater.cs
+﻿// Inflater.cs
 //
 // Copyright (C) 2001 Mike Krueger
 // Copyright (C) 2004 John Reilly

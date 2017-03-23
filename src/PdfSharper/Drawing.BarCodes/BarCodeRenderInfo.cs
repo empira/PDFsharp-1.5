@@ -1,4 +1,4 @@
-//
+﻿//
 // PDFsharp - A library for processing PDF
 //
 // Authors:

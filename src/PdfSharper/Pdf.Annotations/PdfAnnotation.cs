@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -116,7 +116,7 @@ namespace PdfSharper.Pdf.Annotations
         }
 
         /// <summary>
-        /// Gets or sets the text label to be displayed in the title bar of the annotation’s
+        /// Gets or sets the text label to be displayed in the title bar of the annotationï¿½s
         /// pop-up window when open and active. By convention, this entry identifies
         /// the user who added the annotation.
         /// </summary>
@@ -146,7 +146,7 @@ namespace PdfSharper.Pdf.Annotations
 
         /// <summary>
         /// Gets or sets the text to be displayed for the annotation or, if this type of
-        /// annotation does not display text, an alternate description of the annotation’s
+        /// annotation does not display text, an alternate description of the annotationï¿½s
         /// contents in human-readable form.
         /// </summary>
         public string Contents
@@ -244,9 +244,9 @@ namespace PdfSharper.Pdf.Annotations
 
             /// <summary>
             /// (Optional) Text to be displayed for the annotation or, if this type of annotation
-            /// does not display text, an alternate description of the annotation’s contents
+            /// does not display text, an alternate description of the annotationï¿½s contents
             /// in human-readable form. In either case, this text is useful when
-            /// extracting the document’s contents in support of accessibility to users with
+            /// extracting the documentï¿½s contents in support of accessibility to users with
             /// disabilities or for other purposes.
             /// </summary>
             [KeyInfo(KeyType.TextString | KeyType.Optional)]
@@ -278,7 +278,7 @@ namespace PdfSharper.Pdf.Annotations
 
             /// <summary>
             /// (Optional; PDF 1.2) A border style dictionary specifying the characteristics of
-            /// the annotation’s border.
+            /// the annotationï¿½s border.
             /// </summary>
             [KeyInfo("1.2", KeyType.Dictionary | KeyType.Optional)]
             public const string BS = "/BS";
@@ -293,14 +293,14 @@ namespace PdfSharper.Pdf.Annotations
 
             /// <summary>
             /// (Required if the appearance dictionary AP contains one or more subdictionaries; PDF 1.2)
-            /// The annotation’s appearance state, which selects the applicable appearance stream from 
+            /// The annotationï¿½s appearance state, which selects the applicable appearance stream from 
             /// an appearance subdictionary.
             /// </summary>
             [KeyInfo("1.2", KeyType.Dictionary | KeyType.Optional)]
             public const string AS = "/AS";
 
             /// <summary>
-            /// (Optional) An array specifying the characteristics of the annotation’s border.
+            /// (Optional) An array specifying the characteristics of the annotationï¿½s border.
             /// The border is specified as a rounded rectangle.
             /// In PDF 1.0, the array consists of three numbers defining the horizontal corner 
             /// radius, vertical corner radius, and border width, all in default user space units.
@@ -321,9 +321,9 @@ namespace PdfSharper.Pdf.Annotations
             /// (Optional; PDF 1.1) An array of three numbers in the range 0.0 to 1.0, representing
             /// the components of a color in the DeviceRGB color space. This color is used for the
             /// following purposes:
-            /// • The background of the annotation’s icon when closed
-            /// • The title bar of the annotation’s pop-up window
-            /// • The border of a link annotation
+            /// ï¿½ The background of the annotationï¿½s icon when closed
+            /// ï¿½ The title bar of the annotationï¿½s pop-up window
+            /// ï¿½ The border of a link annotation
             /// </summary>
             [KeyInfo("1.1", KeyType.Array | KeyType.Optional)]
             public const string C = "/C";
@@ -343,7 +343,7 @@ namespace PdfSharper.Pdf.Annotations
             // ----- Excerpt of entries specific to markup annotations ----------------------------------
 
             /// <summary>
-            /// (Optional; PDF 1.1) The text label to be displayed in the title bar of the annotation’s
+            /// (Optional; PDF 1.1) The text label to be displayed in the title bar of the annotationï¿½s
             /// pop-up window when open and active. By convention, this entry identifies
             /// the user who added the annotation.
             /// </summary>
@@ -364,8 +364,8 @@ namespace PdfSharper.Pdf.Annotations
             /// the annotation is opened.
             /// The specified value is not used if the annotation has an appearance stream; in that
             /// case, the appearance stream must specify any transparency. (However, if the viewer
-            /// regenerates the annotation’s appearance stream, it may incorporate the CA value
-            /// into the stream’s content.)
+            /// regenerates the annotationï¿½s appearance stream, it may incorporate the CA value
+            /// into the streamï¿½s content.)
             /// The implicit blend mode is Normal.
             /// Default value: 1.0.
             /// </summary>
