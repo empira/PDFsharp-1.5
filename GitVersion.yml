@@ -1,4 +1,4 @@
-mode: ContinuousDelivery
+mode: ContinuousDeployment
 next-version: 1.6.0
 branches: {}
 ignore:
