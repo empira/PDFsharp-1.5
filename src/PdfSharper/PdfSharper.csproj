@@ -400,7 +400,7 @@
     <EmbeddedResource Include="Resources\Messages.restext" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SharpZipLib\ReadMe.txt" />
+    <None Include="SharpZipLib\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Drawing\internal\" />
