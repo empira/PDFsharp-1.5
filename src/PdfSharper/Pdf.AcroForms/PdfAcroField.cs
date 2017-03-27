@@ -689,7 +689,7 @@ namespace PdfSharper.Pdf.AcroForms
         /// <summary>
         /// Holds a collection of interactive fields.
         /// </summary>
-        public sealed class PdfAcroFieldCollection : PdfArray
+        public sealed class PdfAcroFieldCollection : PdfArray, IEnumerable<PdfAcroField>
         {
             PdfAcroFieldCollection(PdfArray array)
                 : base(array)
@@ -824,6 +824,20 @@ namespace PdfSharper.Pdf.AcroForms
                     default:
                         return new PdfGenericField(dict);
                 }
+            }
+
+            private IEnumerable<PdfAcroField> Fields()
+            {
+                int count = Elements.Count;
+                for (int idx = 0; idx < count; idx++)
+                {
+                    yield return this[idx];
+                }
+            }
+
+            public new IEnumerator<PdfAcroField> GetEnumerator()
+            {
+                return Fields().GetEnumerator();
             }
         }
 
