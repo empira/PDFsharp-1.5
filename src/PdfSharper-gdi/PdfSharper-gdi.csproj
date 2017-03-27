@@ -564,6 +564,9 @@
     <Compile Include="..\PdfSharper\Pdf.AcroForms\enums\PdfAcroFieldFlags.cs">
       <Link>Pdf.AcroForms\enums\PdfAcroFieldFlags.cs</Link>
     </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\enums\PdfAcroFieldType.cs">
+      <Link>Pdf.AcroForms\enums\PdfAcroFieldType.cs</Link>
+    </Compile>
     <Compile Include="..\PdfSharper\Pdf.AcroForms\PdfAcroField.cs">
       <Link>Pdf.AcroForms\PdfAcroField.cs</Link>
     </Compile>
@@ -1076,7 +1079,7 @@
     </Compile>
     <Compile Include="..\PdfSharper\Pdf\TrimMargins.cs">
       <Link>Pdf\TrimMargins.cs</Link>
-    </Compile>    
+    </Compile>
     <Compile Include="..\PdfSharper\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
@@ -1206,7 +1209,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties\" />
     <Folder Include="Resources\images\" />
     <Folder Include="SharpZipLib\SharpZip\" />
   </ItemGroup>

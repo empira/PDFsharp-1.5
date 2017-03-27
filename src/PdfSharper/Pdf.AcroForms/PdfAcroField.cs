@@ -37,6 +37,7 @@ using PdfSharper.Pdf.Annotations;
 using PdfSharper.Pdf.Content;
 using System.IO;
 using PdfSharper.Pdf.Internal;
+using PdfSharper.Pdf.AcroForms.enums;
 
 namespace PdfSharper.Pdf.AcroForms
 {
@@ -686,6 +687,48 @@ namespace PdfSharper.Pdf.AcroForms
             }
         }
 
+
+        /// <summary>Attempts to determine which type of field a PdfDictionary represents</summary>
+        /// <param name="dict"></param>
+        /// <returns></returns>
+        public static PdfAcroFieldType DetermineFieldType(PdfDictionary dict)
+        {
+            if (!dict.Elements.ContainsKey(Keys.FT))
+            {
+                return PdfAcroFieldType.Unknown;
+            }
+
+            string ft = dict.Elements.GetName(Keys.FT);
+            PdfAcroFieldFlags flags = (PdfAcroFieldFlags)dict.Elements.GetInteger(Keys.Ff);
+            switch (ft)
+            {
+                case "/Btn":
+                    if ((flags & PdfAcroFieldFlags.Pushbutton) != 0)
+                        return PdfAcroFieldType.PushButton;
+
+                    if ((flags & PdfAcroFieldFlags.Radio) != 0)
+                        return PdfAcroFieldType.RadioButton;
+
+                    return PdfAcroFieldType.CheckBox;
+
+                case "/Tx":
+                    return PdfAcroFieldType.Text;
+
+                case "/Ch":
+                    if ((flags & PdfAcroFieldFlags.Combo) != 0)
+                        return PdfAcroFieldType.ComboBox;
+                    else
+                        return PdfAcroFieldType.ListBox;
+
+                case "/Sig":
+                    return PdfAcroFieldType.Signature;
+
+                default:
+                    return PdfAcroFieldType.Unknown;
+            }
+        }
+
+
         /// <summary>
         /// Holds a collection of interactive fields.
         /// </summary>
@@ -796,31 +839,22 @@ namespace PdfSharper.Pdf.AcroForms
             /// </summary>
             internal static PdfAcroField CreateAcroField(PdfDictionary dict)
             {
-                string ft = dict.Elements.GetName(Keys.FT);
-                PdfAcroFieldFlags flags = (PdfAcroFieldFlags)dict.Elements.GetInteger(Keys.Ff);
-                switch (ft)
+                switch (PdfAcroField.DetermineFieldType(dict))
                 {
-                    case "/Btn":
-                        if ((flags & PdfAcroFieldFlags.Pushbutton) != 0)
-                            return new PdfPushButtonField(dict);
-
-                        if ((flags & PdfAcroFieldFlags.Radio) != 0)
-                            return new PdfRadioButtonField(dict);
-
+                    case PdfAcroFieldType.PushButton:
+                        return new PdfPushButtonField(dict);
+                    case PdfAcroFieldType.RadioButton:
+                        return new PdfRadioButtonField(dict);
+                    case PdfAcroFieldType.CheckBox:
                         return new PdfCheckBoxField(dict);
-
-                    case "/Tx":
+                    case PdfAcroFieldType.Text:
                         return new PdfTextField(dict);
-
-                    case "/Ch":
-                        if ((flags & PdfAcroFieldFlags.Combo) != 0)
-                            return new PdfComboBoxField(dict);
-                        else
-                            return new PdfListBoxField(dict);
-
-                    case "/Sig":
+                    case PdfAcroFieldType.ComboBox:
+                        return new PdfComboBoxField(dict);
+                    case PdfAcroFieldType.ListBox:
+                        return new PdfListBoxField(dict);
+                    case PdfAcroFieldType.Signature:
                         return new PdfSignatureField(dict);
-
                     default:
                         return new PdfGenericField(dict);
                 }
@@ -986,6 +1020,17 @@ namespace PdfSharper.Pdf.AcroForms
             /// </summary>
             [KeyInfo(KeyType.Rectangle | KeyType.Required)]
             public const string Rect = "/Rect";
+        }
+
+        /// <summary>
+        /// Strings used in the Dictionaries for the various types of fields.
+        /// </summary>
+        public static class PdfAcroFieldTypes
+        {
+            public const string Button = "/Btn";
+            public const string Text = "/Tx";
+            public const string Choice = "/Ch";
+            public const string Signature = "/Sig";
         }
     }
 }

@@ -511,6 +511,9 @@
     <Compile Include="..\PdfSharper\Pdf.AcroForms\enums\PdfAcroFieldFlags.cs">
       <Link>Pdf.AcroForms\enums\PdfAcroFieldFlags.cs</Link>
     </Compile>
+    <Compile Include="..\PdfSharper\Pdf.AcroForms\enums\PdfAcroFieldType.cs">
+      <Link>Pdf.AcroForms\enums\PdfAcroFieldType.cs</Link>
+    </Compile>
     <Compile Include="..\PdfSharper\Pdf.AcroForms\PdfAcroField.cs">
       <Link>Pdf.AcroForms\PdfAcroField.cs</Link>
     </Compile>
