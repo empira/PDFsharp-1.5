@@ -230,13 +230,13 @@ namespace PdfSharper.Drawing
         /// </summary>
         internal virtual void Finish()
         {
-#if GDI
+
             if (_formState == FormState.NotATemplate || _formState == FormState.Finished)
                 return;
-
+#if GDI
             if (Gfx.Metafile != null)
                 _gdiImage = Gfx.Metafile;
-
+#endif
             Debug.Assert(_formState == FormState.Created || _formState == FormState.UnderConstruction);
             _formState = FormState.Finished;
             Gfx.Dispose();
@@ -256,9 +256,6 @@ namespace PdfSharper.Drawing
                 int length = _pdfForm.Stream.Length;
                 _pdfForm.Elements.SetInteger("/Length", length);
             }
-#endif
-#if WPF
-#endif
         }
 
         /// <summary>
