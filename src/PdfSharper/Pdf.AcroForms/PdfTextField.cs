@@ -391,6 +391,24 @@ namespace PdfSharper.Pdf.AcroForms
         internal override void PrepareForSave()
         {
             base.PrepareForSave();
+
+            //set or update the default appearance stream
+            string textAppearanceStream = string.Format("/{0} {1:0.##} Tf", Font.FamilyName, Font.Size);
+
+            string colorStream = string.Empty;
+
+            switch (ForeColor.ColorSpace)
+            {
+                case XColorSpace.Rgb:
+                    colorStream = string.Format("{0:0.#} {1:0.#} {2:0.#} rg", ForeColor.R / 255d, ForeColor.G / 255d, ForeColor.B / 255);
+                    break;
+                case XColorSpace.GrayScale:
+                    colorStream = string.Format("{0:0.#} g", ForeColor.GS);
+                    break;
+            }
+
+            Elements.SetString(Keys.DA, textAppearanceStream + " " + colorStream);
+
             RenderAppearance();
         }
 

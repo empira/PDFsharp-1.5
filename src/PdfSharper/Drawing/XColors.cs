@@ -64,7 +64,7 @@ namespace PdfSharper.Drawing
         public static XColor Bisque { get { return new XColor(XKnownColor.Bisque); } }
 
         ///<summary>Gets a predefined color.</summary>
-        public static XColor Black { get { return new XColor(XKnownColor.Black); } }
+        public static XColor Black { get { return XColor.FromGrayScale(0d); } }
 
         ///<summary>Gets a predefined color.</summary>
         public static XColor BlanchedAlmond { get { return new XColor(XKnownColor.BlanchedAlmond); } }
@@ -115,7 +115,7 @@ namespace PdfSharper.Drawing
         public static XColor DarkGoldenrod { get { return new XColor(XKnownColor.DarkGoldenrod); } }
 
         ///<summary>Gets a predefined color.</summary>
-        public static XColor DarkGray { get { return new XColor(XKnownColor.DarkGray); } }
+        public static XColor DarkGray { get { return XColor.FromGrayScale(0.66d); } }
 
         ///<summary>Gets a predefined color.</summary>
         public static XColor DarkGreen { get { return new XColor(XKnownColor.DarkGreen); } }
@@ -163,7 +163,7 @@ namespace PdfSharper.Drawing
         public static XColor DeepSkyBlue { get { return new XColor(XKnownColor.DeepSkyBlue); } }
 
         ///<summary>Gets a predefined color.</summary>
-        public static XColor DimGray { get { return new XColor(XKnownColor.DimGray); } }
+        public static XColor DimGray { get { return XColor.FromGrayScale(0.43d); } }
 
         ///<summary>Gets a predefined color.</summary>
         public static XColor DodgerBlue { get { return new XColor(XKnownColor.DodgerBlue); } }
@@ -193,7 +193,7 @@ namespace PdfSharper.Drawing
         public static XColor Goldenrod { get { return new XColor(XKnownColor.Goldenrod); } }
 
         ///<summary>Gets a predefined color.</summary>
-        public static XColor Gray { get { return new XColor(XKnownColor.Gray); } }
+        public static XColor Gray { get { return XColor.FromGrayScale(0.5d); } }
 
         ///<summary>Gets a predefined color.</summary>
         public static XColor Green { get { return new XColor(XKnownColor.Green); } }
@@ -244,7 +244,7 @@ namespace PdfSharper.Drawing
         public static XColor LightGoldenrodYellow { get { return new XColor(XKnownColor.LightGoldenrodYellow); } }
 
         ///<summary>Gets a predefined color.</summary>
-        public static XColor LightGray { get { return new XColor(XKnownColor.LightGray); } }
+        public static XColor LightGray { get { return XColor.FromGrayScale(0.88d); } }
 
         ///<summary>Gets a predefined color.</summary>
         public static XColor LightGreen { get { return new XColor(XKnownColor.LightGreen); } }
@@ -454,7 +454,7 @@ namespace PdfSharper.Drawing
         public static XColor Wheat { get { return new XColor(XKnownColor.Wheat); } }
 
         ///<summary>Gets a predefined color.</summary>
-        public static XColor White { get { return new XColor(XKnownColor.White); } }
+        public static XColor White { get { return XColor.FromGrayScale(1d); } }
 
         ///<summary>Gets a predefined color.</summary>
         public static XColor WhiteSmoke { get { return new XColor(XKnownColor.WhiteSmoke); } }
