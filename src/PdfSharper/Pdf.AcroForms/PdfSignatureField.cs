@@ -118,7 +118,7 @@ namespace PdfSharper.Pdf.AcroForms
 
         }
 
-        internal PdfSignatureField(PdfDictionary dict)
+        public PdfSignatureField(PdfDictionary dict)
             : base(dict)
         { }
 

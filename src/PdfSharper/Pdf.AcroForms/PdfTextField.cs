@@ -48,7 +48,7 @@ namespace PdfSharper.Pdf.AcroForms
             : base(document)
         { }
 
-        internal PdfTextField(PdfDictionary dict)
+        public PdfTextField(PdfDictionary dict)
             : base(dict)
         { }
 

@@ -32,52 +32,52 @@ using System;
 
 namespace PdfSharper.Pdf.AcroForms
 {
-	/// <summary>
-	/// Represents a generic field. Used for AcroForm dictionaries unknown to PdfSharper.
-	/// </summary>
-	public sealed class PdfGenericField : PdfAcroField
-	{
-		/// <summary>
-		/// Initializes a new instance of PdfGenericField.
-		/// </summary>
-		internal PdfGenericField(PdfDocument document)
-			: base(document)
-		{ }
+    /// <summary>
+    /// Represents a generic field. Used for AcroForm dictionaries unknown to PdfSharper.
+    /// </summary>
+    public sealed class PdfGenericField : PdfAcroField
+    {
+        /// <summary>
+        /// Initializes a new instance of PdfGenericField.
+        /// </summary>
+        internal PdfGenericField(PdfDocument document)
+            : base(document)
+        { }
 
-		internal PdfGenericField(PdfDictionary dict)
-			: base(dict)
-		{ }
+        public PdfGenericField(PdfDictionary dict)
+            : base(dict)
+        { }
 
-		internal override void Flatten()
-		{
-			base.Flatten();
+        internal override void Flatten()
+        {
+            base.Flatten();
 
-			var appearances = Elements.GetDictionary(PdfAnnotation.Keys.AP);
-			var normalAppearance = appearances != null ? appearances.Elements.GetDictionary("/N") : null;
-			var activeAppearance = Elements.GetString(PdfAnnotation.Keys.AS);
-			if (!String.IsNullOrEmpty(activeAppearance) && normalAppearance != null && normalAppearance.Elements.ContainsKey(activeAppearance))
-				RenderContentStream(normalAppearance.Elements.GetDictionary(activeAppearance).Stream);
-		}
+            var appearances = Elements.GetDictionary(PdfAnnotation.Keys.AP);
+            var normalAppearance = appearances != null ? appearances.Elements.GetDictionary("/N") : null;
+            var activeAppearance = Elements.GetString(PdfAnnotation.Keys.AS);
+            if (!String.IsNullOrEmpty(activeAppearance) && normalAppearance != null && normalAppearance.Elements.ContainsKey(activeAppearance))
+                RenderContentStream(normalAppearance.Elements.GetDictionary(activeAppearance).Stream);
+        }
 
-		/// <summary>
-		/// Predefined keys of this dictionary. 
-		/// The description comes from PDF 1.4 Reference.
-		/// </summary>
-		public new class Keys : PdfAcroField.Keys
-		{
-			internal static DictionaryMeta Meta
-			{
-				get { return _meta ?? (_meta = CreateMeta(typeof(Keys))); }
-			}
-			static DictionaryMeta _meta;
-		}
+        /// <summary>
+        /// Predefined keys of this dictionary. 
+        /// The description comes from PDF 1.4 Reference.
+        /// </summary>
+        public new class Keys : PdfAcroField.Keys
+        {
+            internal static DictionaryMeta Meta
+            {
+                get { return _meta ?? (_meta = CreateMeta(typeof(Keys))); }
+            }
+            static DictionaryMeta _meta;
+        }
 
-		/// <summary>
-		/// Gets the KeysMeta of this dictionary type.
-		/// </summary>
-		internal override DictionaryMeta Meta
-		{
-			get { return Keys.Meta; }
-		}
-	}
+        /// <summary>
+        /// Gets the KeysMeta of this dictionary type.
+        /// </summary>
+        internal override DictionaryMeta Meta
+        {
+            get { return Keys.Meta; }
+        }
+    }
 }

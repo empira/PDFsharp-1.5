@@ -46,7 +46,7 @@ namespace PdfSharper.Pdf.AcroForms
             _document = document;
         }
 
-        internal PdfCheckBoxField(PdfDictionary dict)
+        public PdfCheckBoxField(PdfDictionary dict)
             : base(dict)
         { }
 
