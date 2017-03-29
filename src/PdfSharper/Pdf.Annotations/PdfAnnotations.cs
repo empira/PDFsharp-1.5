@@ -121,10 +121,60 @@ namespace PdfSharper.Pdf.Annotations
                 if (annotation == null)
                 {
                     annotation = new PdfGenericAnnotation(dict);
+                    if (!_annotationsLookup.ContainsKey(annotation.Title))
+                    {
+                        _annotationsLookup.Add(annotation.Title, annotation);
+                    }
                     if (iref == null)
                         Elements[index] = annotation;
                 }
                 return annotation;
+            }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="PdfSharper.Pdf.Annotations.PdfAnnotation"/> with the specified title. Returns null if not found
+        /// </summary>
+        public PdfAnnotation this[string name]
+        {
+            get
+            {
+                if (_annotationsLookup.ContainsKey(name))
+                {
+                    return _annotationsLookup[name];
+                }
+
+                PdfReference iref;
+                PdfDictionary dict;
+                for (int i = 0; i < Elements.Count; i++)
+                {
+
+                    if ((iref = Elements[i] as PdfReference) != null)
+                    {
+                        dict = (PdfDictionary)iref.Value;
+                    }
+                    else
+                    {
+                        dict = (PdfDictionary)Elements[i];
+                    }
+                    if (!string.Equals(name, dict.Elements.GetString(PdfAnnotation.Keys.T)))
+                    {
+                        continue;
+                    }
+
+                    // Found it. Track it for quicker lookup in the future.
+                    PdfAnnotation annotation = dict as PdfAnnotation;
+                    if (annotation == null)
+                    {
+                        annotation = new PdfGenericAnnotation(dict);
+                        if (iref == null)
+                            Elements[i] = annotation;
+                    }
+                    _annotationsLookup.Add(annotation.Title, annotation);
+                    return annotation;
+                }
+
+                return null;
             }
         }
 
@@ -155,6 +205,11 @@ namespace PdfSharper.Pdf.Annotations
         PdfPage _page;
 
         /// <summary>
+        /// Caches all examined annotations by their title. Allows fast lookup on multiple access.
+        /// </summary>
+        Dictionary<string, PdfAnnotation> _annotationsLookup = new Dictionary<string, PdfAnnotation>();
+
+        /// <summary>
         /// Fixes the /P element in imported annotation.
         /// </summary>
         internal static void FixImportedAnnotation(PdfPage page)
@@ -181,10 +236,10 @@ namespace PdfSharper.Pdf.Annotations
         }
         // THHO4STLA: AnnotationsIterator: Implementation does not work http://forum.PdfSharper.net/viewtopic.php?p=3285#p3285
         // Code using the enumerator like this will crash:
-            //foreach (var annotation in page.Annotations)
-            //{
-            //    annotation.GetType();
-            //}
+        //foreach (var annotation in page.Annotations)
+        //{
+        //    annotation.GetType();
+        //}
 
         //!!!new 2015-10-15: use PdfItem instead of PdfAnnotation. 
         // TODO Should we change this to "public new IEnumerator<PdfAnnotation> GetEnumerator()"?
