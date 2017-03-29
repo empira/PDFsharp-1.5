@@ -603,9 +603,7 @@ namespace PdfSharper.Pdf.Content
         {
             if (ContLength <= _charIndex)
             {
-                _currChar = Chars.EOF;
-                if (IsOperatorChar(_nextChar))
-                    _token.Append(_nextChar);
+                _currChar = _nextChar;
                 _nextChar = Chars.EOF;
             }
             else
@@ -649,6 +647,7 @@ namespace PdfSharper.Pdf.Content
         internal char AppendAndScanNextChar()
         {
             _token.Append(_currChar);
+
             return ScanNextChar();
         }
 
