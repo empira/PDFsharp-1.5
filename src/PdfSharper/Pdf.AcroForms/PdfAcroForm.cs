@@ -27,6 +27,9 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace PdfSharper.Pdf.AcroForms
 {
     /// <summary>
@@ -76,6 +79,38 @@ namespace PdfSharper.Pdf.AcroForms
                 field.Flatten();
             }
             _document.Catalog.AcroForm = null;
+        }
+
+        internal override void PrepareForSave()
+        {
+            base.PrepareForSave();
+
+            IEnumerable<PdfAcroField> typedFields = Fields;
+
+            var allFields = typedFields.Concat(typedFields.SelectMany(tf => WalkAllFields(tf)));
+            foreach (var element in allFields)
+            {
+                element.PrepareForSave();
+            }
+        }
+
+        public IEnumerable<PdfAcroField> WalkAllFields(PdfAcroField current)
+        {
+            if (!current.HasKids)
+            {
+                yield return current;
+                yield break;
+            }
+
+
+            foreach (var child in current.Fields)
+            {
+                var subchildren = WalkAllFields(child);
+                foreach (var subChild in subchildren)
+                {
+                    yield return subChild;
+                }
+            }
         }
 
         /// <summary>

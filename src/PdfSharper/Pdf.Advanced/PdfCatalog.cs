@@ -208,6 +208,11 @@ namespace PdfSharper.Pdf.Advanced
             if (_pages != null)
                 _pages.PrepareForSave();
 
+            if (AcroForm != null)
+            {
+                AcroForm.PrepareForSave();
+            }
+
             if (_outline != null && _outline.Outlines.Count > 0)
             {
                 if (Elements[Keys.PageMode] == null)

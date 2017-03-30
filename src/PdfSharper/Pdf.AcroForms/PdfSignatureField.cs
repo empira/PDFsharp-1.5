@@ -129,7 +129,7 @@ namespace PdfSharper.Pdf.AcroForms
                 return;
 
             if (this.AppearanceHandler == null)
-                throw new Exception("AppearanceHandler is null");
+                return;
 
 
 
