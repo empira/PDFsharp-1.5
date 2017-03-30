@@ -40,7 +40,7 @@ namespace PdfSharper.Pdf.AcroForms
         /// <summary>
         /// Initializes a new instance of PdfGenericField.
         /// </summary>
-        internal PdfGenericField(PdfDocument document)
+        public PdfGenericField(PdfDocument document)
             : base(document)
         { }
 

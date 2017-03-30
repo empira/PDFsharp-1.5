@@ -887,7 +887,7 @@ namespace PdfSharper.Pdf.AcroForms
             /// If the actual cannot be guessed by PDFsharp the function returns an instance
             /// of PdfGenericField.
             /// </summary>
-            internal static PdfAcroField CreateAcroField(PdfDictionary dict)
+            public static PdfAcroField CreateAcroField(PdfDictionary dict)
             {
                 switch (PdfAcroField.DetermineFieldType(dict))
                 {

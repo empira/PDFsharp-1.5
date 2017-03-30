@@ -731,7 +731,7 @@ namespace PdfSharper.Pdf
         /// <summary>
         /// Predefined keys of this dictionary.
         /// </summary>
-        internal sealed class Keys : InheritablePageKeys
+        public sealed class Keys : InheritablePageKeys
         {
             /// <summary>
             /// (Required) The type of PDF object that this dictionary describes;
@@ -951,7 +951,7 @@ namespace PdfSharper.Pdf
         /// <summary>
         /// Predefined keys common to PdfPage and PdfPages.
         /// </summary>
-        internal class InheritablePageKeys : KeysBase
+        public class InheritablePageKeys : KeysBase
         {
             /// <summary>
             /// (Required; inheritable) A dictionary containing any resources required by the page. 

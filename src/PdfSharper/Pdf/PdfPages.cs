@@ -454,7 +454,7 @@ namespace PdfSharper.Pdf
         /// <summary>
         /// Helper function for ImportExternalPage.
         /// </summary>
-        void CloneElement(PdfPage page, PdfPage importPage, string key, bool deepcopy)
+        public void CloneElement(PdfPage page, PdfPage importPage, string key, bool deepcopy)
         {
             Debug.Assert(page != null);
             Debug.Assert(page.Owner == _document);
