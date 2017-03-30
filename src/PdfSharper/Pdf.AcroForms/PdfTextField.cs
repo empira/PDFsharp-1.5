@@ -235,6 +235,11 @@ namespace PdfSharper.Pdf.AcroForms
         /// </summary>
         void RenderAppearance()
         {
+            if (string.IsNullOrEmpty(Text))
+            {
+                Elements.Remove(PdfAnnotation.Keys.AP);
+                return;
+            }
 #if true_
             PdfFormXObject xobj = new PdfFormXObject(Owner);
             Owner.Internals.AddObject(xobj);
