@@ -44,9 +44,20 @@ namespace PdfSharper.Pdf.AcroForms
         /// <summary>
         /// Initializes a new instance of PdfTextField.
         /// </summary>
-        internal PdfTextField(PdfDocument document)
+        public PdfTextField(PdfDocument document)
             : base(document)
-        { }
+        {
+            Elements.SetName(Keys.FT, PdfAcroFieldTypes.Text);
+            Elements.SetString(Keys.TU, string.Empty);
+            Elements.SetInteger(Keys.Ff, 0);
+
+            //annotation elements            
+            Elements.SetInteger(PdfAnnotation.Keys.F, (int)PdfAnnotationFlags.Print);
+            Elements.Add(PdfWidgetAnnotation.Keys.MK, new PdfDictionary(document));
+            Elements.SetName(PdfAnnotation.Keys.Subtype, "/Widget");
+            Elements.SetName(PdfAnnotation.Keys.Type, "/Annot");
+
+        }
 
         public PdfTextField(PdfDictionary dict)
             : base(dict)
@@ -209,6 +220,16 @@ namespace PdfSharper.Pdf.AcroForms
         }
 
         /// <summary>
+        /// Sets the font size by constructing a copy with the same options
+        /// and updating the default appearance stream.
+        /// </summary>
+        /// <param name="size">Em size of the font</param>
+        public void SetFontSize(double size)
+        {
+            Font = new XFont(Font.FamilyName, size, Font.Style, Font.PdfOptions, Font.StyleSimulations);
+        }
+
+        /// <summary>
         /// Creates the normal appearance form X object for the annotation that represents
         /// this acro form text field.
         /// </summary>
@@ -358,7 +379,7 @@ namespace PdfSharper.Pdf.AcroForms
                 else
                 {
                     gfx.DrawString(Text, Font, new XSolidBrush(ForeColor),
-                      rect.ToXRect() - rect.Location + new XPoint(2, 0), XStringFormats.TopLeft);
+                      rect.ToXRect() - rect.Location + new XPoint(2, 0), Alignment);
                 }
             }
 

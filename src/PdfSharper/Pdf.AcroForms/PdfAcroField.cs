@@ -72,6 +72,11 @@ namespace PdfSharper.Pdf.AcroForms
                 string name = Elements.GetString(Keys.T);
                 return name;
             }
+
+            set
+            {
+                Elements.SetString(Keys.T, value);
+            }
         }
 
         /// <summary>
@@ -261,6 +266,29 @@ namespace PdfSharper.Pdf.AcroForms
                     return ((PdfArray)item).Elements.Count > 0;
                 return false;
             }
+        }
+
+        public void AddKid(PdfAcroField kid)
+        {
+            if (kid.Elements.ContainsKey(Keys.Parent))
+                throw new ArgumentException("Field already belongs to another parent.");
+
+
+            PdfItem item = Elements[Keys.Kids];
+            PdfArray kidArray;
+            if (item == null)
+            {
+                kidArray = new PdfArray(_document);
+                Elements.SetObject(Keys.Kids, kidArray);
+            }
+            else
+            {
+                kidArray = (PdfArray)item;
+            }
+
+            Fields.Add(kid, this.Page);
+
+            kid.Elements.SetReference(Keys.Parent, this.Reference);
         }
 
         /// <summary>
@@ -839,6 +867,19 @@ namespace PdfSharper.Pdf.AcroForms
                         return field.GetValue(suffix);
                 }
                 return null;
+            }
+
+            public void Add(PdfAcroField field, int pageNumber)
+            {
+                Add(field, _document.Pages[pageNumber - 1]);
+            }
+
+            internal void Add(PdfAcroField field, PdfPage page)
+            {
+                field.Elements.Add(Keys.Page, page.Reference);
+                _document._irefTable.Add(field);
+                page.Annotations.Elements.Add(field); //directly adding to elements prevents cast
+                Elements.Add(field);
             }
 
             /// <summary>
