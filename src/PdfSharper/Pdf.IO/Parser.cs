@@ -1336,7 +1336,7 @@ namespace PdfSharper.Pdf.IO
                             datetime = datetime.Subtract(ts);
                     }
                     // Now that we converted datetime to UTC, mark it as UTC.
-                    DateTime.SpecifyKind(datetime, DateTimeKind.Utc);
+                    datetime = DateTime.SpecifyKind(datetime, DateTimeKind.Utc);
                 }
                 else
                 {
