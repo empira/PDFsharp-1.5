@@ -273,19 +273,6 @@ namespace PdfSharper.Pdf.AcroForms
             if (kid.Elements.ContainsKey(Keys.Parent))
                 throw new ArgumentException("Field already belongs to another parent.");
 
-
-            PdfItem item = Elements[Keys.Kids];
-            PdfArray kidArray;
-            if (item == null)
-            {
-                kidArray = new PdfArray(_document);
-                Elements.SetObject(Keys.Kids, kidArray);
-            }
-            else
-            {
-                kidArray = (PdfArray)item;
-            }
-
             Fields.Add(kid, this.Page);
 
             kid.Elements.SetReference(Keys.Parent, this.Reference);
@@ -435,7 +422,7 @@ namespace PdfSharper.Pdf.AcroForms
             {
                 if (_fields == null)
                 {
-                    object o = Elements.GetValue(Keys.Kids, VCF.CreateIndirect);
+                    object o = Elements.GetValue(Keys.Kids, VCF.Create);
                     _fields = (PdfAcroFieldCollection)o;
                 }
                 return _fields;
@@ -775,6 +762,10 @@ namespace PdfSharper.Pdf.AcroForms
                 : base(array)
             { }
 
+            internal PdfAcroFieldCollection(PdfDocument document)
+                : base(document)
+            { }
+
             /// <summary>
             /// Gets the names of all fields in the collection.
             /// </summary>
@@ -876,7 +867,7 @@ namespace PdfSharper.Pdf.AcroForms
 
             internal void Add(PdfAcroField field, PdfPage page)
             {
-                field.Elements.Add(Keys.Page, page.Reference);
+                field.Elements.SetReference(Keys.Page, page.Reference);
                 _document._irefTable.Add(field);
                 page.Annotations.Elements.Add(field); //directly adding to elements prevents cast
                 Elements.Add(field);
