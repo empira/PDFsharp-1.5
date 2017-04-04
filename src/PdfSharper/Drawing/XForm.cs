@@ -42,6 +42,11 @@ using PdfSharper.Drawing.Pdf;
 using PdfSharper.Pdf;
 using PdfSharper.Pdf.Advanced;
 using PdfSharper.Pdf.Filters;
+using PdfSharper.Pdf.AcroForms;
+using System.Linq;
+using PdfSharper.Fonts.OpenType;
+using PdfSharper.Fonts;
+using System.Collections.Generic;
 
 namespace PdfSharper.Drawing
 {
@@ -432,11 +437,74 @@ namespace PdfSharper.Drawing
         internal string GetFontName(XFont font, out PdfFont pdfFont)
         {
             Debug.Assert(IsTemplate, "This function is for form templates only.");
-            pdfFont = _document.FontTable.GetFont(font);
-            Debug.Assert(pdfFont != null);
-            string name = Resources.AddFont(pdfFont);
+            string name = GetFontNameFromResources(font.FamilyName, font.Bold, font.Italic);
+
+            if (string.IsNullOrEmpty(name)) //sure go ahead and try your broken embedding
+            {
+                pdfFont = _document.FontTable.GetFont(font);
+                Debug.Assert(pdfFont != null);
+                name = Resources.AddFont(pdfFont);
+            }
+            else
+            {
+                pdfFont = GetFontFromResources(font);
+                Debug.Assert(pdfFont != null);
+            }
             return name;
         }
+        private string GetFontNameFromResources(string familyName, bool isBold, bool isItalic)
+        {
+            //TODO: Check that bold an italic are found through just their font names
+            var defaultFormResources = Owner.AcroForm.Elements.GetDictionary(PdfAcroForm.Keys.DR);
+            if (defaultFormResources != null && defaultFormResources.Elements.ContainsKey(PdfResources.Keys.Font))
+            {
+                return GetFontResourceItem(familyName, defaultFormResources).Key;
+            }
+
+            return string.Empty;
+        }
+
+        private PdfFont GetFontFromResources(XFont xFont)
+        {
+            //TODO: Check that bold an italic are found through just their font names
+            var defaultFormResources = Owner.AcroForm.Elements.GetDictionary(PdfAcroForm.Keys.DR);
+            if (defaultFormResources != null && defaultFormResources.Elements.ContainsKey(PdfResources.Keys.Font))
+            {
+                var fontList = defaultFormResources.Elements.GetDictionary(PdfResources.Keys.Font);
+
+                var font = GetFontResourceItem(xFont.FamilyName, defaultFormResources);
+
+                PdfItem value = font.Value;
+
+                if (value is PdfReference)
+                {
+                    value = ((PdfReference)value).Value;
+                }
+
+                PdfFont systemFont = new PdfFont(value as PdfDictionary);
+                if (systemFont.FontEncoding == PdfFontEncoding.Unicode)
+                {
+                    OpenTypeDescriptor ttDescriptor = (OpenTypeDescriptor)FontDescriptorCache.GetOrCreateDescriptorFor(xFont);
+                    systemFont.FontDescriptor = new PdfFontDescriptor(Owner, ttDescriptor);
+                }
+
+                return systemFont;
+            }
+
+            return null;
+        }
+
+        internal static KeyValuePair<string, PdfItem> GetFontResourceItem(string familyName, PdfDictionary defaultFormResources)
+        {
+            var fontList = defaultFormResources.Elements.GetDictionary(PdfResources.Keys.Font);
+
+            var font = fontList.Elements.FirstOrDefault(e => e.Key == familyName ||
+                                                        fontList.Elements.GetDictionary(e.Key).Elements.GetName(PdfFont.Keys.BaseFont) ==
+                                                        "/" + familyName);
+            return font;
+        }
+
+
 
         string IContentStream.GetFontName(XFont font, out PdfFont pdfFont)
         {

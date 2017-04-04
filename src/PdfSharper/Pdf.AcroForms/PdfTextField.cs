@@ -383,8 +383,10 @@ namespace PdfSharper.Pdf.AcroForms
                 }
                 else
                 {
-                    gfx.DrawString(Text, Font, new XSolidBrush(ForeColor),
-                      rect.ToXRect() - rect.Location + new XPoint(2, 0), Alignment);
+                    XTextFormatter formatter = new XTextFormatter(gfx);
+                    formatter.Text = text;
+
+                    formatter.DrawString(text, Font, new XSolidBrush(ForeColor), rect.ToXRect() - rect.Location, Alignment);
                 }
             }
 
@@ -400,7 +402,22 @@ namespace PdfSharper.Pdf.AcroForms
             }
 
             // Set XRef to normal state
-            ap.Elements["/N"] = form.PdfForm.Reference;
+            ap.Elements["/N"] = PdfObject.DeepCopyClosure(Owner, form.PdfForm);
+
+            var normalStateDict = ap.Elements.GetDictionary("/N");
+            var resourceDict = new PdfDictionary(Owner);
+            resourceDict.Elements[PdfResources.Keys.ProcSet] = new PdfArray(Owner, new PdfName("/PDF"), new PdfName("/Text"));
+
+            var defaultFormResources = Owner.AcroForm.Elements.GetDictionary(PdfAcroForm.Keys.DR);
+            if (defaultFormResources != null && defaultFormResources.Elements.ContainsKey(PdfResources.Keys.Font))
+            {
+                var fontResourceItem = XForm.GetFontResourceItem(Font.FamilyName, defaultFormResources);
+                PdfDictionary fontDict = new PdfDictionary(Owner);
+                resourceDict.Elements[PdfResources.Keys.Font] = fontDict;
+                fontDict.Elements[fontResourceItem.Key] = fontResourceItem.Value;
+            }
+
+            normalStateDict.Elements.SetObject(PdfPage.Keys.Resources, resourceDict);
 
             PdfFormXObject xobj = form.PdfForm;
             if (xobj.Stream == null)
@@ -410,7 +427,7 @@ namespace PdfSharper.Pdf.AcroForms
             // Thank you Adobe: Without putting the content in 'EMC brackets'
             // the text is not rendered by PDF Reader 9 or higher.
             s = "/Tx BMC\n" + s + "\nEMC";
-            xobj.Stream.Value = new RawEncoding().GetBytes(s);
+            ap.Elements.GetDictionary("/N").Stream.Value = new RawEncoding().GetBytes(s);
 #endif
         }
 

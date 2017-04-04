@@ -287,26 +287,34 @@ namespace PdfSharper.Drawing.Pdf
         {
             color = ColorSpaceHelper.EnsureColorMode(colorMode, color);
 
-            if (colorMode != PdfColorMode.Cmyk)
+            switch (color.ColorSpace)
             {
-                if (_realizedFillColor.IsEmpty || _realizedFillColor.Rgb != color.Rgb)
-                {
-                    _renderer.Append(PdfEncoders.ToString(color, PdfColorMode.Rgb));
-                    _renderer.Append(" rg\n");
-                }
+                case XColorSpace.Rgb:
+                    if (_realizedFillColor.IsEmpty || _realizedFillColor.Rgb != color.Rgb)
+                    {
+                        _renderer.Append(PdfEncoders.ToString(color, PdfColorMode.Rgb));
+                        _renderer.Append(" rg\n");
+                    }
+                    break;
+                case XColorSpace.Cmyk:
+                    if (_realizedFillColor.IsEmpty || !ColorSpaceHelper.IsEqualCmyk(_realizedFillColor, color))
+                    {
+                        _renderer.Append(PdfEncoders.ToString(color, PdfColorMode.Cmyk));
+                        _renderer.Append(" k\n");
+                    }
+                    break;
+                case XColorSpace.GrayScale:
+                    if (_realizedFillColor.IsEmpty || _realizedFillColor.GS != color.GS)
+                    {
+                        _renderer.Append(PdfEncoders.ToString(color, PdfColorMode.Undefined));
+                        _renderer.Append(" g\n");
+                    }
+                    break;
+                default:
+                    break;
             }
-            else
-            {
-                Debug.Assert(colorMode == PdfColorMode.Cmyk);
 
-                if (_realizedFillColor.IsEmpty || !ColorSpaceHelper.IsEqualCmyk(_realizedFillColor, color))
-                {
-                    _renderer.Append(PdfEncoders.ToString(color, PdfColorMode.Cmyk));
-                    _renderer.Append(" k\n");
-                }
-            }
-
-            if (_renderer.Owner.Version >= 14 && (_realizedFillColor.A != color.A || _realizedNonStrokeOverPrint != overPrint))
+            if (_renderer.Owner.Version >= 14 && color.ColorSpace != XColorSpace.GrayScale && (_realizedFillColor.A != color.A || _realizedNonStrokeOverPrint != overPrint))
             {
 
                 PdfExtGState extGState = _renderer.Owner.ExtGStateTable.GetExtGStateNonStroke(color.A, overPrint);
@@ -341,9 +349,6 @@ namespace PdfSharper.Drawing.Pdf
         public void RealizeFont(XFont font, XBrush brush, int renderingMode)
         {
             const string format = Config.SignificantFigures3;
-
-            // So far rendering mode 0 (fill text) and 2 (fill, then stroke text) only.
-            RealizeBrush(brush, _renderer._colorMode, renderingMode, font.Size); // _renderer.page.document.Options.ColorMode);
 
             // Realize rendering mode.
             if (_realizedRenderingMode != renderingMode)
@@ -382,6 +387,9 @@ namespace PdfSharper.Drawing.Pdf
                 _realizedFontName = fontName;
                 _realizedFontSize = font.Size;
             }
+
+            // So far rendering mode 0 (fill text) and 2 (fill, then stroke text) only.
+            RealizeBrush(brush, PdfColorMode.Undefined, renderingMode, font.Size); // _renderer.page.document.Options.ColorMode);
         }
 
         public XPoint RealizedTextPosition;

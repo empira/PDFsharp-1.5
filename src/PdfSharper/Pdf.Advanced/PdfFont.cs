@@ -46,6 +46,10 @@ namespace PdfSharper.Pdf.Advanced
             : base(document)
         { }
 
+        public PdfFont(PdfDictionary dict)
+            : base(dict)
+        { }
+
         internal PdfFontDescriptor FontDescriptor
         {
             get

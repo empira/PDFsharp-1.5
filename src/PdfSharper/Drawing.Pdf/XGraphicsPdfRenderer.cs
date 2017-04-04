@@ -456,7 +456,7 @@ namespace PdfSharper.Drawing.Pdf
                         break;
 
                     case XStringAlignment.Far:
-                        x += rect.Width - width;
+                        x += rect.Width - (width + x);
                         break;
                 }
             }
@@ -470,7 +470,8 @@ namespace PdfSharper.Drawing.Pdf
 
                     case XLineAlignment.Center:
                         // TODO: Use CapHeight. PDFlib also uses 3/4 of ascent
-                        y += (cyAscent * 3 / 4) / 2 + rect.Height / 2;
+                        //Insane magic number we calculated from HELV bold, its a starting point?
+                        y += (cyAscent * 0.8416421845574388) / 2 + rect.Height / 2;
                         break;
 
                     case XLineAlignment.Far:
@@ -510,11 +511,12 @@ namespace PdfSharper.Drawing.Pdf
             realizedFont.AddChars(s);
 
             const string format2 = Config.SignificantFigures4;
-            OpenTypeDescriptor descriptor = realizedFont.FontDescriptor._descriptor;
+
 
             string text = null;
             if (font.Unicode)
             {
+                OpenTypeDescriptor descriptor = realizedFont.FontDescriptor._descriptor;
                 StringBuilder sb = new StringBuilder();
                 bool isSymbolFont = descriptor.FontFace.cmap.symbol;
                 for (int idx = 0; idx < s.Length; idx++)
@@ -1848,7 +1850,7 @@ namespace PdfSharper.Drawing.Pdf
         void Realize(XFont font, XBrush brush, int renderingMode)
         {
             BeginPage();
-            RealizeTransform();
+            //RealizeTransform();
             BeginTextMode();
             _gfxState.RealizeFont(font, brush, renderingMode);
         }

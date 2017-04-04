@@ -60,7 +60,7 @@ namespace PdfSharper
         /// Factor of the em size of a regular font to look bold. Used for bold simulation.
         /// Value of 2% found in original XPS 1.0 documentation.
         /// </summary>
-        public const double BoldEmphasis = 0.02;
+        public const double BoldEmphasis = 0.0273;//0.0412;
 
         // The κ (kappa) for drawing a circle or an ellipse with four Bézier splines, specifying the distance of the influence point from the starting or end point of a spline.
         // Petzold: 4/3 * tan(α / 4)

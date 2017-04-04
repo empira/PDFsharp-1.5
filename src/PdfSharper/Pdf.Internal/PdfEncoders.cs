@@ -410,7 +410,7 @@ namespace PdfSharper.Pdf.Internal
             }
             else
             {
-            Hex:
+                Hex:
                 if (hex)
                 {
                     pdf.Append(prefix ? "<FEFF" : "<");
@@ -603,7 +603,13 @@ namespace PdfSharper.Pdf.Internal
 
             // If not defined let color decide
             if (colorMode == PdfColorMode.Undefined)
+            {
+                if (color.ColorSpace == XColorSpace.GrayScale)
+                {
+                    return string.Format(CultureInfo.InvariantCulture, "{0:" + format + "}", color.GS);
+                }
                 colorMode = color.ColorSpace == XColorSpace.Cmyk ? PdfColorMode.Cmyk : PdfColorMode.Rgb;
+            }
 
             switch (colorMode)
             {

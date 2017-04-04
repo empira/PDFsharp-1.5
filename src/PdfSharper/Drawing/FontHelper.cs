@@ -101,7 +101,8 @@ namespace PdfSharper.Drawing
                 size.Width = width * font.Size / descriptor.UnitsPerEm;
 
                 // Adjust bold simulation.
-                if ((font.GlyphTypeface.StyleSimulations & XStyleSimulations.BoldSimulation) == XStyleSimulations.BoldSimulation)
+                if ((font.GlyphTypeface.StyleSimulations & XStyleSimulations.BoldSimulation) == XStyleSimulations.BoldSimulation ||
+                    DoApplyBoldHack(font.FamilyName)) //BOLD hacks for helvetica
                 {
                     // Add 2% of the em-size for each character.
                     // Unsure how to deal with white space. Currently count as regular character.
@@ -110,6 +111,18 @@ namespace PdfSharper.Drawing
             }
             Debug.Assert(descriptor != null, "No OpenTypeDescriptor.");
             return size;
+        }
+
+        private static bool DoApplyBoldHack(string familyName)
+        {
+            //TODO: remove when we parse afm files from adobe
+            switch (familyName)
+            {
+                case "Helvetica-Bold":
+                    return true;
+                default:
+                    return false; ;
+            }
         }
 
 #if CORE || GDI
