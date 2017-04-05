@@ -36,12 +36,11 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 //
 [assembly: AssemblyTitle("PDFsharp Charting")]
-[assembly: AssemblyVersion(PdfSharper.ProductVersionInfo.Version)]
 [assembly: AssemblyDescription("A .NET charting library based on PdfSharp.")]
 [assembly: AssemblyConfiguration(PdfSharper.ProductVersionInfo.Configuration)]
 [assembly: AssemblyCompany(PdfSharper.ProductVersionInfo.Company)]
 #if DEBUG
-  [assembly: AssemblyProduct(PdfSharper.ProductVersionInfo.Product + " (Debug Build)")]
+[assembly: AssemblyProduct(PdfSharper.ProductVersionInfo.Product + " (Debug Build)")]
 #else
   [assembly: AssemblyProduct(PdfSharper.ProductVersionInfo.Product)]
 #endif
