@@ -20,6 +20,7 @@ namespace PDFsharper.UnitTests
             Assert.AreEqual(da, actual, "ContentReader missed an operator");
         }
 
+
         [TestMethod]
         public void MultiCharOperatorAtEndOfStream()
         {
