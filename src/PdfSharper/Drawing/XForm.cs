@@ -499,8 +499,8 @@ namespace PdfSharper.Drawing
             var fontList = defaultFormResources.Elements.GetDictionary(PdfResources.Keys.Font);
 
             var font = fontList.Elements.FirstOrDefault(e => e.Key == familyName ||
-                                                        fontList.Elements.GetDictionary(e.Key).Elements.GetName(PdfFont.Keys.BaseFont) ==
-                                                        "/" + familyName);
+                                                        fontList.Elements.GetDictionary(e.Key).Elements.GetName(PdfFont.Keys.BaseFont).TrimStart('/') ==
+                                                        familyName);
             return font;
         }
 
