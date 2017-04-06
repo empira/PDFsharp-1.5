@@ -219,15 +219,11 @@ namespace PdfSharper.Pdf.AcroForms
             }
         }
 
-        /// <summary>
-        /// Sets the font size by constructing a copy with the same options
-        /// and updating the default appearance stream.
-        /// </summary>
-        /// <param name="size">Em size of the font</param>
-        public void SetFontSize(double size)
+        protected override void FontChanged()
         {
-            Font = new XFont(Font.FamilyName, size, Font.Style, Font.PdfOptions, Font.StyleSimulations);
+            RenderAppearance();
         }
+
 
         /// <summary>
         /// Creates the normal appearance form X object for the annotation that represents
@@ -431,29 +427,6 @@ namespace PdfSharper.Pdf.AcroForms
 #endif
         }
 
-        internal override void PrepareForSave()
-        {
-            base.PrepareForSave();
-
-            //set or update the default appearance stream
-            string textAppearanceStream = string.Format("/{0} {1:0.##} Tf", Font.FamilyName, Font.Size);
-
-            string colorStream = string.Empty;
-
-            switch (ForeColor.ColorSpace)
-            {
-                case XColorSpace.Rgb:
-                    colorStream = string.Format("{0:0.#} {1:0.#} {2:0.#} rg", ForeColor.R / 255d, ForeColor.G / 255d, ForeColor.B / 255);
-                    break;
-                case XColorSpace.GrayScale:
-                    colorStream = string.Format("{0:0.#} g", ForeColor.GS);
-                    break;
-            }
-
-            Elements.SetString(Keys.DA, textAppearanceStream + " " + colorStream);
-
-            RenderAppearance();
-        }
 
         internal override void Flatten()
         {

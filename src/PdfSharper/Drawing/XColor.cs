@@ -31,6 +31,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.ComponentModel;
+using PdfSharper.Pdf;
 #if GDI
 using System.Drawing;
 #endif
@@ -768,6 +769,31 @@ namespace PdfSharper.Drawing
                     _gs = (float)value;
                 GrayChanged();
             }
+        }
+
+        public PdfArray ToArray()
+        {
+            var array = new PdfArray();
+
+            switch (ColorSpace)
+            {
+                case XColorSpace.Rgb:
+                    array.Elements.Add(new PdfReal(R / 255d));
+                    array.Elements.Add(new PdfReal(G / 255d));
+                    array.Elements.Add(new PdfReal(B / 255d));
+                    break;
+                case XColorSpace.Cmyk:
+                    array.Elements.Add(new PdfReal(C));
+                    array.Elements.Add(new PdfReal(M));
+                    array.Elements.Add(new PdfReal(Y));
+                    array.Elements.Add(new PdfReal(K));
+                    break;
+                case XColorSpace.GrayScale:
+                    array.Elements.Add(new PdfReal(GS));
+                    break;
+            }
+
+            return array;
         }
 
         /// <summary>
