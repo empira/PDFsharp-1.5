@@ -69,16 +69,6 @@ namespace PdfSharper.Pdf.Annotations
         }
 
         /// <summary>
-        /// Removes an annotation from the document
-        /// <seealso cref="PdfAnnotations.Remove(PdfAnnotation)"/>
-        /// </summary>
-        [Obsolete("Use 'Parent.Remove(this)'")]
-        public void Delete()
-        {
-            Parent.Remove(this);
-        }
-
-        /// <summary>
         /// Gets or sets the annotation flags of this instance.
         /// </summary>
         public PdfAnnotationFlags Flags
@@ -90,16 +80,6 @@ namespace PdfSharper.Pdf.Annotations
                 Elements.SetDateTime(Keys.M, DateTime.Now);
             }
         }
-
-        /// <summary>
-        /// Gets or sets the PdfAnnotations object that this annotation belongs to.
-        /// </summary>
-        public PdfAnnotations Parent
-        {
-            get { return _parent; }
-            set { _parent = value; }
-        }
-        PdfAnnotations _parent;
 
         /// <summary>
         /// Gets or sets the annotation rectangle, defining the location of the annotation

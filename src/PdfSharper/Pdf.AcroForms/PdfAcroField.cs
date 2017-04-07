@@ -44,8 +44,9 @@ namespace PdfSharper.Pdf.AcroForms
     /// <summary>
     /// Represents the base class for all interactive field dictionaries.
     /// </summary>
-    public abstract class PdfAcroField : PdfDictionary
+    public abstract class PdfAcroField : PdfWidgetAnnotation
     {
+        protected bool _needsAppearances = false;
         /// <summary>
         /// Initializes a new instance of PdfAcroField.
         /// </summary>
@@ -116,7 +117,7 @@ namespace PdfSharper.Pdf.AcroForms
         /// <summary>
         /// Gets the field flags of this instance.
         /// </summary>
-        public PdfAcroFieldFlags Flags
+        public PdfAcroFieldFlags FieldFlags
         {
             // TODO: This entry is inheritable, thus the implementation is incorrect...
             get { return (PdfAcroFieldFlags)Elements.GetInteger(Keys.Ff); }
@@ -138,12 +139,8 @@ namespace PdfSharper.Pdf.AcroForms
             {
                 this.font = value;
                 PrepareForSave();
-                FontChanged();
+                _needsAppearances = true;
             }
-        }
-
-        protected virtual void FontChanged()
-        {
         }
 
         XFont font = new XFont("Arial", 10);
@@ -168,6 +165,7 @@ namespace PdfSharper.Pdf.AcroForms
             {
                 this.foreColor = value;
                 PrepareForSave();
+                _needsAppearances = true;
             }
         }
         XColor foreColor = XColors.Black;
@@ -182,6 +180,7 @@ namespace PdfSharper.Pdf.AcroForms
             {
                 this.backColor = value;
                 PrepareForSave();
+                _needsAppearances = true;
             }
         }
         XColor backColor = XColor.Empty;
@@ -196,6 +195,7 @@ namespace PdfSharper.Pdf.AcroForms
             {
                 this.borderColor = value;
                 PrepareForSave();
+                _needsAppearances = true;
             }
         }
         XColor borderColor = XColor.Empty;
@@ -227,24 +227,11 @@ namespace PdfSharper.Pdf.AcroForms
         }
 
         /// <summary>
-        /// Gets the Rectangle of the field
-        /// </summary>
-        public PdfRectangle Rectangle
-        {
-            get { return Elements.GetRectangle(PdfAnnotation.Keys.Rect); }
-
-            set
-            {
-                Elements.SetRectangle(PdfAnnotation.Keys.Rect, value);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating whether the field is read only.
         /// </summary>
         public bool ReadOnly
         {
-            get { return (Flags & PdfAcroFieldFlags.ReadOnly) != 0; }
+            get { return (FieldFlags & PdfAcroFieldFlags.ReadOnly) != 0; }
             set
             {
                 if (value)
@@ -273,6 +260,8 @@ namespace PdfSharper.Pdf.AcroForms
                 return Fields.GetValue(name);
             return null;
         }
+
+        protected virtual void RenderAppearance() { }
 
         /// <summary>
         /// Indicates whether the field has child fields.
@@ -598,6 +587,12 @@ namespace PdfSharper.Pdf.AcroForms
             }
 
             Elements.SetString(Keys.DA, textAppearanceStream + " " + colorStream);
+
+            if (_needsAppearances)
+            {
+                RenderAppearance();
+                _needsAppearances = false;
+            }
         }
 
         /// <summary>
@@ -911,7 +906,7 @@ namespace PdfSharper.Pdf.AcroForms
                     {
                         // Do type transformation
                         field = CreateAcroField(dict);
-                        //Elements[index] = field.XRef;
+                        Elements[index] = field.Reference;
                     }
                     return field;
                 }
@@ -1004,7 +999,7 @@ namespace PdfSharper.Pdf.AcroForms
         /// Predefined keys of this dictionary. 
         /// The description comes from PDF 1.4 Reference.
         /// </summary>
-        public class Keys : KeysBase
+        public new class Keys : PdfWidgetAnnotation.Keys
         {
             // ReSharper disable InconsistentNaming
 
@@ -1043,7 +1038,7 @@ namespace PdfSharper.Pdf.AcroForms
             /// (Optional) The partial field name.
             /// </summary>
             [KeyInfo(KeyType.TextString | KeyType.Optional)]
-            public const string T = "/T";
+            public new const string T = "/T";
 
             /// <summary>
             /// (Optional; PDF 1.3) An alternate field name, to be used in place of the actual
@@ -1132,19 +1127,7 @@ namespace PdfSharper.Pdf.AcroForms
             /// must be Sig for a signature dictionary.
             /// </summary>
             [KeyInfo(KeyType.Name | KeyType.Optional)]
-            public const string Type = "/Type";
-
-            /// <summary>
-            /// 
-            /// </summary>
-            [KeyInfo(KeyType.Name | KeyType.Required)]
-            public const string Subtype = "/Subtype";
-
-            /// <summary>
-            /// 
-            /// </summary>
-            [KeyInfo(KeyType.Rectangle | KeyType.Required)]
-            public const string Rect = "/Rect";
+            public new const string Type = "/Type";
         }
 
         /// <summary>

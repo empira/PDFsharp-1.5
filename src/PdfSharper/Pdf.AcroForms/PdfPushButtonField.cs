@@ -79,7 +79,7 @@ namespace PdfSharper.Pdf.AcroForms
         /// </summary>
         public new class Keys : PdfAcroField.Keys
         {
-            internal static DictionaryMeta Meta
+            internal static  new DictionaryMeta Meta
             {
                 get { return _meta ?? (_meta = CreateMeta(typeof(Keys))); }
             }

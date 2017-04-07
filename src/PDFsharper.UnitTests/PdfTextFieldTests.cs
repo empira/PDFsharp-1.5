@@ -53,7 +53,7 @@ namespace PDFsharper.UnitTests
 
             tf.PrepareForSave();
 
-            Assert.IsFalse(tf.Elements.ContainsKey(PdfAnnotation.Keys.AP), "Empty Text Field should NOT have an appearance stream.");
+            Assert.IsTrue(tf.Elements.ContainsKey(PdfAnnotation.Keys.AP), "Empty Text Field should have an appearance stream, used for background colors.");
         }
     }
 }

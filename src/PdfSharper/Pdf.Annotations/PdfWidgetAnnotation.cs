@@ -32,14 +32,20 @@ namespace PdfSharper.Pdf.Annotations
     /// <summary>
     /// Represents a text annotation.
     /// </summary>
-    internal sealed class PdfWidgetAnnotation : PdfAnnotation
+    public class PdfWidgetAnnotation : PdfAnnotation
     {
-        public PdfWidgetAnnotation()
+        internal PdfWidgetAnnotation()
         {
             Initialize();
         }
 
-        public PdfWidgetAnnotation(PdfDocument document)
+        internal PdfWidgetAnnotation(PdfDictionary dict)
+            : base(dict)
+        {
+        }
+
+
+        internal PdfWidgetAnnotation(PdfDocument document)
             : base(document)
         {
             Initialize();
@@ -53,7 +59,7 @@ namespace PdfSharper.Pdf.Annotations
         /// <summary>
         /// Predefined keys of this dictionary.
         /// </summary>
-        internal new class Keys : PdfAnnotation.Keys
+        public new class Keys : PdfAnnotation.Keys
         {
             /// <summary>
             /// (Optional) The annotation�s highlighting mode, the visual effect to be used when
@@ -79,7 +85,7 @@ namespace PdfSharper.Pdf.Annotations
             [KeyInfo(KeyType.Dictionary | KeyType.Optional)]
             public const string MK = "/MK";
 
-            public static DictionaryMeta Meta
+            internal static DictionaryMeta Meta
             {
                 get { return _meta ?? (_meta = CreateMeta(typeof(Keys))); }
             }

@@ -141,7 +141,7 @@ namespace PdfSharper.Pdf.AcroForms
         {
             // Combo boxes have no additional entries.
 
-            internal static DictionaryMeta Meta
+            internal static new DictionaryMeta Meta
             {
                 get
                 {

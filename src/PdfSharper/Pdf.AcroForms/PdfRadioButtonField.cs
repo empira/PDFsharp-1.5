@@ -160,7 +160,7 @@ namespace PdfSharper.Pdf.AcroForms
             /// <summary>
             /// Gets the KeysMeta for these keys.
             /// </summary>
-            internal static DictionaryMeta Meta
+            internal static new DictionaryMeta Meta
             {
                 get { return _meta ?? (_meta = CreateMeta(typeof(Keys))); }
             }

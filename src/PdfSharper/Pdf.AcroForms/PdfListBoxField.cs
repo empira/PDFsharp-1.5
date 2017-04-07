@@ -210,7 +210,7 @@ namespace PdfSharper.Pdf.AcroForms
         {
             // List boxes have no additional entries.
 
-            internal static DictionaryMeta Meta
+            internal static new DictionaryMeta Meta
             {
                 get { return _meta ?? (_meta = CreateMeta(typeof(Keys))); }
             }

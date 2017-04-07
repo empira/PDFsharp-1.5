@@ -63,7 +63,7 @@ namespace PdfSharper.Pdf.AcroForms
             }
         }
 
-        public PdfItem Contents
+        public new PdfItem Contents
         {
             get
             {
@@ -187,7 +187,7 @@ namespace PdfSharper.Pdf.AcroForms
             /// (Required) The encrypted signature token.
             /// </summary>
             [KeyInfo(KeyType.String | KeyType.Required)]
-            public const string Contents = "/Contents";
+            public new const string Contents = "/Contents";
 
             /// <summary>
             /// (Optional) The name of the person or authority signing the document.
@@ -201,7 +201,7 @@ namespace PdfSharper.Pdf.AcroForms
             /// way from a secure time server.
             /// </summary>
             [KeyInfo(KeyType.Date | KeyType.Optional)]
-            public const string M = "/M";
+            public new const string M = "/M";
 
             /// <summary>
             /// (Optional) The CPU host name or physical location of the signing.
@@ -224,7 +224,7 @@ namespace PdfSharper.Pdf.AcroForms
             /// <summary>
             /// Gets the KeysMeta for these keys.
             /// </summary>
-            internal static DictionaryMeta Meta
+            internal static new DictionaryMeta Meta
             {
                 get { return _meta ?? (_meta = CreateMeta(typeof(Keys))); }
             }
