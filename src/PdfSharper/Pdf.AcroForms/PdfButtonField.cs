@@ -42,8 +42,8 @@ namespace PdfSharper.Pdf.AcroForms
         /// <summary>
         /// Initializes a new instance of the <see cref="PdfButtonField"/> class.
         /// </summary>
-        protected PdfButtonField(PdfDocument document)
-            : base(document)
+        protected PdfButtonField(PdfDocument document, bool needsAppearance = false)
+            : base(document, needsAppearance)
         { }
 
         /// <summary>

@@ -50,9 +50,11 @@ namespace PdfSharper.Pdf.AcroForms
         /// <summary>
         /// Initializes a new instance of PdfAcroField.
         /// </summary>
-        internal PdfAcroField(PdfDocument document)
+        internal PdfAcroField(PdfDocument document, bool needsAppearance = false)
             : base(document)
-        { }
+        {
+            _needsAppearances = needsAppearance;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PdfAcroField"/> class. Used for type transformation.
@@ -138,7 +140,7 @@ namespace PdfSharper.Pdf.AcroForms
             set
             {
                 this.font = value;
-                PrepareForSave();
+                PrepareForSaveLocal();
                 _needsAppearances = true;
             }
         }
@@ -164,7 +166,7 @@ namespace PdfSharper.Pdf.AcroForms
             set
             {
                 this.foreColor = value;
-                PrepareForSave();
+                PrepareForSaveLocal();
                 _needsAppearances = true;
             }
         }
@@ -179,7 +181,7 @@ namespace PdfSharper.Pdf.AcroForms
             set
             {
                 this.backColor = value;
-                PrepareForSave();
+                PrepareForSaveLocal();
                 _needsAppearances = true;
             }
         }
@@ -194,7 +196,7 @@ namespace PdfSharper.Pdf.AcroForms
             set
             {
                 this.borderColor = value;
-                PrepareForSave();
+                PrepareForSaveLocal();
                 _needsAppearances = true;
             }
         }
@@ -538,10 +540,8 @@ namespace PdfSharper.Pdf.AcroForms
             Font = new XFont(Font.FamilyName, size, Font.Style, Font.PdfOptions, Font.StyleSimulations);
         }
 
-
-        internal override void PrepareForSave()
+        protected virtual void PrepareForSaveLocal()
         {
-            base.PrepareForSave();
             //set or update the default appearance stream
             string textAppearanceStream = string.Format("/{0} {1:0.##} Tf", Font.FamilyName, Font.Size);
 
@@ -587,6 +587,13 @@ namespace PdfSharper.Pdf.AcroForms
             }
 
             Elements.SetString(Keys.DA, textAppearanceStream + " " + colorStream);
+        }
+
+        internal override void PrepareForSave()
+        {
+            base.PrepareForSave();
+
+            PrepareForSaveLocal();
 
             if (_needsAppearances)
             {

@@ -40,8 +40,8 @@ namespace PdfSharper.Pdf.AcroForms
         /// <summary>
         /// Initializes a new instance of PdfComboBoxField.
         /// </summary>
-        internal PdfComboBoxField(PdfDocument document)
-            : base(document)
+        public PdfComboBoxField(PdfDocument document, bool needsAppearance = false)
+            : base(document, needsAppearance)
         { }
 
         public PdfComboBoxField(PdfDictionary dict)

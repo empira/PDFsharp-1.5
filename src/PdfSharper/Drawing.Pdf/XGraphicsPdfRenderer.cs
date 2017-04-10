@@ -1804,6 +1804,7 @@ namespace PdfSharper.Drawing.Pdf
                 // Text matrix is empty after BT
                 _gfxState.RealizedTextPosition = new XPoint();
                 _gfxState.ItalicSimulationOn = false;
+                _gfxState._realizedFillColor = XColor.Empty;
             }
         }
 

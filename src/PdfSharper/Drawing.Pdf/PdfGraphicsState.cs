@@ -232,7 +232,7 @@ namespace PdfSharper.Drawing.Pdf
 
         #region Fill
 
-        XColor _realizedFillColor = XColor.Empty;
+        internal XColor _realizedFillColor = XColor.Empty;
         bool _realizedNonStrokeOverPrint;
 
         public void RealizeBrush(XBrush brush, PdfColorMode colorMode, int renderingMode, double fontEmSize)

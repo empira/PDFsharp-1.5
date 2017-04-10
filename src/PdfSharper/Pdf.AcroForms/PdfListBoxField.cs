@@ -41,8 +41,8 @@ namespace PdfSharper.Pdf.AcroForms
         /// <summary>
         /// Initializes a new instance of PdfListBoxField.
         /// </summary>
-        internal PdfListBoxField(PdfDocument document)
-            : base(document)
+        public PdfListBoxField(PdfDocument document, bool needsAppearance = false)
+            : base(document, needsAppearance)
         { }
 
         public PdfListBoxField(PdfDictionary dict)

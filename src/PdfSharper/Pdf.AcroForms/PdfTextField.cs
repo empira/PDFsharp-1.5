@@ -44,8 +44,8 @@ namespace PdfSharper.Pdf.AcroForms
         /// <summary>
         /// Initializes a new instance of PdfTextField.
         /// </summary>
-        public PdfTextField(PdfDocument document)
-            : base(document)
+        public PdfTextField(PdfDocument document, bool needsAppearance = false)
+            : base(document, needsAppearance)
         {
             Elements.SetName(Keys.FT, PdfAcroFieldTypes.Text);
             Elements.SetString(Keys.TU, string.Empty);

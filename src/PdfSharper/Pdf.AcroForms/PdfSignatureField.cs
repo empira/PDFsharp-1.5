@@ -93,7 +93,7 @@ namespace PdfSharper.Pdf.AcroForms
         /// <summary>
         /// Initializes a new instance of PdfSignatureField.
         /// </summary>
-        internal PdfSignatureField(PdfDocument document)
+        public PdfSignatureField(PdfDocument document)
             : base(document)
         {
             Elements.Add(Keys.FT, new PdfName("/Sig"));

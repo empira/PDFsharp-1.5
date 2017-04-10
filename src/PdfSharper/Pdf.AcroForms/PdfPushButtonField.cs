@@ -39,7 +39,7 @@ namespace PdfSharper.Pdf.AcroForms
         /// <summary>
         /// Initializes a new instance of PdfPushButtonField.
         /// </summary>
-        internal PdfPushButtonField(PdfDocument document)
+        public PdfPushButtonField(PdfDocument document, bool needsAppearance = false)
             : base(document)
         {
             _document = document;
@@ -77,9 +77,10 @@ namespace PdfSharper.Pdf.AcroForms
         /// Predefined keys of this dictionary. 
         /// The description comes from PDF 1.4 Reference.
         /// </summary>
-        public new class Keys : PdfAcroField.Keys
+        public new class Keys
+            : PdfAcroField.Keys
         {
-            internal static  new DictionaryMeta Meta
+            internal static new DictionaryMeta Meta
             {
                 get { return _meta ?? (_meta = CreateMeta(typeof(Keys))); }
             }

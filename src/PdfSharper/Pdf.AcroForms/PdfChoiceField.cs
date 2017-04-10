@@ -41,8 +41,8 @@ namespace PdfSharper.Pdf.AcroForms
         /// <summary>
         /// Initializes a new instance of the <see cref="PdfChoiceField"/> class.
         /// </summary>
-        protected PdfChoiceField(PdfDocument document)
-            : base(document)
+        public PdfChoiceField(PdfDocument document, bool needsAppearance = false)
+            : base(document, needsAppearance)
         { }
 
         /// <summary>
