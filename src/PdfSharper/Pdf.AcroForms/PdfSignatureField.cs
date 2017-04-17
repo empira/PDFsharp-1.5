@@ -93,29 +93,14 @@ namespace PdfSharper.Pdf.AcroForms
         /// <summary>
         /// Initializes a new instance of PdfSignatureField.
         /// </summary>
-        public PdfSignatureField(PdfDocument document)
-            : base(document)
+        public PdfSignatureField(PdfDocument document, bool needsAppearance = false)
+            : base(document, needsAppearance)
         {
             Elements.Add(Keys.FT, new PdfName("/Sig"));
             Elements.Add(Keys.T, new PdfString("Signature1"));
             Elements.Add(Keys.Ff, new PdfInteger(132));
             Elements.Add(Keys.DR, new PdfDictionary());
-            Elements.Add(Keys.Type, new PdfName("/Annot"));
-            Elements.Add(Keys.Subtype, new PdfName("/Widget"));
             Elements.Add(Keys.Page, document.Pages[0]);
-
-
-            PdfDictionary sign = new PdfDictionary(document);
-            sign.Elements.Add(Keys.Type, new PdfName("/Sig"));
-            sign.Elements.Add(Keys.Filter, new PdfName("/Adobe.PPKLite"));
-            sign.Elements.Add(Keys.SubFilter, new PdfName("/adbe.pkcs7.detached"));
-            sign.Elements.Add(Keys.M, new PdfDate(DateTime.Now));
-
-            document._irefTable.Add(sign);
-            document._irefTable.Add(this);
-
-            Elements.Add(Keys.V, sign);
-
         }
 
         public PdfSignatureField(PdfDictionary dict)

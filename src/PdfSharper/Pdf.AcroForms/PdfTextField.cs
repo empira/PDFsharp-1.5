@@ -61,7 +61,8 @@ namespace PdfSharper.Pdf.AcroForms
 
         public PdfTextField(PdfDictionary dict)
             : base(dict)
-        { }
+        {
+        }
 
         /// <summary>
         /// Gets or sets the text value of the text field.
