@@ -804,12 +804,22 @@ namespace PdfSharper.Pdf.AcroForms
         /// <returns></returns>
         public static PdfAcroFieldType DetermineFieldType(PdfDictionary dict)
         {
+            string ft = string.Empty;
+
             if (!dict.Elements.ContainsKey(Keys.FT))
             {
-                return PdfAcroFieldType.Unknown;
+                if (!dict.Elements.ContainsKey(Keys.Parent))
+                {
+                    return PdfAcroFieldType.Unknown;
+                }
+
+                ft = dict.Elements.GetDictionary(Keys.Parent).Elements.GetName(Keys.FT);
+            }
+            else
+            {
+                ft = dict.Elements.GetName(Keys.FT);
             }
 
-            string ft = dict.Elements.GetName(Keys.FT);
             PdfAcroFieldFlags flags = (PdfAcroFieldFlags)dict.Elements.GetInteger(Keys.Ff);
             switch (ft)
             {
