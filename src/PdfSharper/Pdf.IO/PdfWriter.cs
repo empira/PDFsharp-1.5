@@ -184,7 +184,7 @@ namespace PdfSharper.Pdf.IO
             PdfStringEncoding encoding = (PdfStringEncoding)(value.Flags & PdfStringFlags.EncodingMask);
             string pdf = (value.Flags & PdfStringFlags.HexLiteral) == 0 ?
                 PdfEncoders.ToStringLiteral(value.Value, encoding, SecurityHandler) :
-                PdfEncoders.ToHexStringLiteral(value.Value, encoding, SecurityHandler, value.PaddingLeft);
+                PdfEncoders.ToHexStringLiteral(value.Value, encoding, SecurityHandler, value.PaddingLeft, value.HexUpperCase);
             WriteRaw(pdf);
 #else
             switch (value.Flags & PdfStringFlags.EncodingMask)
@@ -314,6 +314,7 @@ namespace PdfSharper.Pdf.IO
         /// </summary>
         public void WriteBeginObject(PdfObject obj)
         {
+            PdfDictionary dict = obj as PdfDictionary;
             bool indirect = obj.IsIndirect;
             if (indirect)
             {
@@ -325,10 +326,18 @@ namespace PdfSharper.Pdf.IO
             if (indirect)
             {
                 if (obj is PdfArray)
+                {
                     WriteRaw("[\n");
+                }
                 else if (obj is PdfDictionary)
-                    WriteRaw("<<\n");
-                _lastCat = CharCat.NewLine;
+                {
+                    WriteRaw("<<");
+
+                    if (_layout != PdfWriterLayout.Compact)
+                    {
+                        NewLine();
+                    }
+                }
             }
             else
             {
@@ -336,14 +345,19 @@ namespace PdfSharper.Pdf.IO
                 {
                     WriteSeparator(CharCat.Delimiter);
                     WriteRaw('[');
-                    _lastCat = CharCat.Delimiter;
                 }
                 else if (obj is PdfDictionary)
                 {
-                    NewLine();
-                    WriteSeparator(CharCat.Delimiter);
-                    WriteRaw("<<\n");
-                    _lastCat = CharCat.NewLine;
+                    if (_layout != PdfWriterLayout.Compact)
+                    {
+                        NewLine();
+                        WriteSeparator(CharCat.Delimiter);
+                        WriteRaw("<<\n");
+                    }
+                    else
+                    {
+                        WriteRaw("<<");
+                    }
                 }
             }
             if (_layout == PdfWriterLayout.Verbose)
@@ -383,20 +397,38 @@ namespace PdfSharper.Pdf.IO
                 if (indirect)
                 {
                     if (!stackItem.HasStream)
-                        WriteRaw(_lastCat == CharCat.NewLine ? ">>\n" : " >>\n");
+                    {
+                        if (_layout == PdfWriterLayout.Compact)
+                        {
+                            WriteRaw(">>\r");
+                        }
+                        else
+                        {
+                            WriteRaw(_lastCat == CharCat.NewLine ? ">>\r" : " >>\r");
+                        }
+                    }
                 }
                 else
                 {
                     Debug.Assert(!stackItem.HasStream, "Direct object with stream??");
-                    WriteSeparator(CharCat.NewLine);
-                    WriteRaw(">>\n");
-                    _lastCat = CharCat.NewLine;
+                    if (_layout != PdfWriterLayout.Compact)
+                    {
+                        WriteSeparator(CharCat.NewLine);
+                        WriteRaw(">>\n");
+                    }
+                    else
+                    {
+                        WriteRaw(">>");
+                    }
+
                 }
             }
             if (indirect)
             {
-                NewLine();
-                WriteRaw("endobj\n");
+                if (_lastCat != CharCat.NewLine)
+                    NewLine();
+
+                WriteRaw("endobj\r");
                 if (_layout == PdfWriterLayout.Verbose)
                     WriteRaw("%--------------------------------------------------------------------------------------------------\n");
             }
@@ -411,8 +443,14 @@ namespace PdfSharper.Pdf.IO
             Debug.Assert(stackItem.Object is PdfDictionary);
             Debug.Assert(stackItem.Object.IsIndirect);
             stackItem.HasStream = true;
-
-            WriteRaw(_lastCat == CharCat.NewLine ? ">>\nstream\n" : " >>\nstream\n");
+            if (value.IsCompact)
+            {
+                WriteRaw(">>stream\r\n");
+            }
+            else
+            {
+                WriteRaw(_lastCat == CharCat.NewLine ? ">>\nstream\n" : " >>\nstream\n");
+            }
 
             if (omitStream)
             {
@@ -429,11 +467,15 @@ namespace PdfSharper.Pdf.IO
                         bytes = _securityHandler.EncryptBytes(bytes);
                     }
                     Write(bytes);
+                    if (!string.IsNullOrEmpty(value.Stream.Trailer))
+                    {
+                        WriteRaw(value.Stream.Trailer);
+                    }
                     if (_lastCat != CharCat.NewLine)
-                        WriteRaw('\n');
+                        WriteRaw('\r');
                 }
             }
-            WriteRaw("endstream\n");
+            WriteRaw("endstream\r");
         }
 
         public void WriteRaw(string rawString)
@@ -465,12 +507,12 @@ namespace PdfSharper.Pdf.IO
 
         void WriteObjectAddress(PdfObject value)
         {
-            if (_layout == PdfWriterLayout.Verbose)
-                WriteRaw(String.Format("{0} {1} obj   % {2}\n",
-                    value.ObjectID.ObjectNumber, value.ObjectID.GenerationNumber,
-                    value.GetType().FullName));
-            else
-                WriteRaw(String.Format("{0} {1} obj\n", value.ObjectID.ObjectNumber, value.ObjectID.GenerationNumber));
+            //if (_layout == PdfWriterLayout.Verbose)
+            //    WriteRaw(String.Format("{0} {1} obj   % {2}\n",
+            //        value.ObjectID.ObjectNumber, value.ObjectID.GenerationNumber,
+            //        value.GetType().FullName));
+            //else
+            WriteRaw(String.Format("{0} {1} obj\r", value.ObjectID.ObjectNumber, value.ObjectID.GenerationNumber));
         }
 
         public void WriteFileHeader(PdfDocument document)
@@ -480,45 +522,18 @@ namespace PdfSharper.Pdf.IO
             header.Append((version / 10).ToString(CultureInfo.InvariantCulture) + "." +
               (version % 10).ToString(CultureInfo.InvariantCulture) + "\n%\xD3\xF4\xCC\xE1\n");
             WriteRaw(header.ToString());
-
-            if (_layout == PdfWriterLayout.Verbose)
-            {
-                WriteRaw(String.Format("% PDFsharp Version {0} (verbose mode)\n", VersionInfo.Version));
-                // Keep some space for later fix-up.
-                _commentPosition = (int)_stream.Position + 2;
-                WriteRaw("%                                                \n");
-                WriteRaw("%                                                \n");
-                WriteRaw("%                                                \n");
-                WriteRaw("%                                                \n");
-                WriteRaw("%                                                \n");
-                WriteRaw("%--------------------------------------------------------------------------------------------------\n");
-            }
         }
 
         public void WriteEof(PdfDocument document, int startxref)
         {
-            WriteRaw("startxref\n");
-            WriteRaw(startxref.ToString(CultureInfo.InvariantCulture));
-            WriteRaw("\n%%EOF\n");
-            int fileSize = (int)_stream.Position;
-            if (_layout == PdfWriterLayout.Verbose)
+            if (_lastCat != CharCat.NewLine)
             {
-                TimeSpan duration = DateTime.Now - document._creation;
-
-                _stream.Position = _commentPosition;
-                // Without InvariantCulture parameter the following line fails if the current culture is e.g.
-                // a Far East culture, because the date string contains non-ASCII characters.
-                // So never never never never use ToString without a culture info.
-                WriteRaw("Creation date: " + document._creation.ToString("G", CultureInfo.InvariantCulture));
-                _stream.Position = _commentPosition + 50;
-                WriteRaw("Creation time: " + duration.TotalSeconds.ToString("0.000", CultureInfo.InvariantCulture) + " seconds");
-                _stream.Position = _commentPosition + 100;
-                WriteRaw("File size: " + fileSize.ToString(CultureInfo.InvariantCulture) + " bytes");
-                _stream.Position = _commentPosition + 150;
-                WriteRaw("Pages: " + document.Pages.Count.ToString(CultureInfo.InvariantCulture));
-                _stream.Position = _commentPosition + 200;
-                WriteRaw("Objects: " + document._irefTable.ObjectTable.Count.ToString(CultureInfo.InvariantCulture));
+                WriteRaw("\r\n");
             }
+            WriteRaw("startxref\r\n");
+            WriteRaw(startxref.ToString(CultureInfo.InvariantCulture));
+            WriteRaw("\r\n%%EOF\r\n");
+            int fileSize = (int)_stream.Position;
         }
 
         /// <summary>
@@ -590,7 +605,11 @@ namespace PdfSharper.Pdf.IO
                     else
                     {
                         if (cat == CharCat.Character)
-                            _stream.WriteByte((byte)' ');
+                        {
+                            Stream.Seek(-1, SeekOrigin.End);
+                            if (Stream.ReadByte() != 32)//space 
+                                _stream.WriteByte((byte)' ');
+                        }
                     }
                     break;
             }
@@ -611,7 +630,7 @@ namespace PdfSharper.Pdf.IO
         {
             if (Lexer.IsDelimiter(ch))
                 return CharCat.Delimiter;
-            if (ch == Chars.LF)
+            if (ch == Chars.LF || ch == Chars.CR)
                 return CharCat.NewLine;
             return CharCat.Character;
         }
@@ -652,6 +671,5 @@ namespace PdfSharper.Pdf.IO
         }
 
         readonly List<StackItem> _stack = new List<StackItem>();
-        int _commentPosition;
     }
 }

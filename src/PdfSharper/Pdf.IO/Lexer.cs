@@ -76,6 +76,8 @@ namespace PdfSharper.Pdf.IO
             }
         }
 
+        internal bool HasReadNewLineOrCarriageReturn = false;
+
         /// <summary>
         /// Reads the next token and returns its type. If the token starts with a digit, the parameter
         /// testReference specifies how to treat it. If it is false, the lexer scans for a single integer.
@@ -175,9 +177,8 @@ namespace PdfSharper.Pdf.IO
         {
             int pos;
 
-            // Skip illegal blanks behind �stream�.
-            while (_currChar == Chars.SP)
-                ScanNextChar(true);
+            // Skip illegal blanks behind �stream�.            
+            MoveToNonSpace();
 
             // Skip new line behind �stream�.
             if (_currChar == Chars.CR)
@@ -198,9 +199,9 @@ namespace PdfSharper.Pdf.IO
             {
                 Array.Resize(ref bytes, read);
             }
-
             // Synchronize idxChar etc.
-            Position = pos + read;
+            Position = (int)_pdfSteam.Position;
+
             return bytes;
         }
 
@@ -556,6 +557,7 @@ namespace PdfSharper.Pdf.IO
             Debug.Assert(_currChar == Chars.Less);
 
             _token = new StringBuilder();
+            _hexUpper = false;
             char[] hex = new char[2];
             ScanNextChar(true);
             while (true)
@@ -568,8 +570,13 @@ namespace PdfSharper.Pdf.IO
                 }
                 if (char.IsLetterOrDigit(_currChar))
                 {
-                    hex[0] = char.ToUpper(_currChar);
-                    hex[1] = char.ToUpper(_nextChar);
+                    if (_hexUpper == false && (Char.IsUpper(_currChar) || Char.IsUpper(_nextChar)))
+                    {
+                        _hexUpper = true;
+                    }
+
+                    hex[0] = _currChar;
+                    hex[1] = _nextChar;
                     int ch = int.Parse(new string(hex), NumberStyles.AllowHexSpecifier);
                     _token.Append(Convert.ToChar(ch));
                     ScanNextChar(true);
@@ -700,6 +707,11 @@ namespace PdfSharper.Pdf.IO
         {
             while (_currChar != Chars.EOF)
             {
+                if (_currChar == Chars.LF || _currChar == Chars.CR)
+                {
+                    HasReadNewLineOrCarriageReturn = true;
+                }
+
                 switch (_currChar)
                 {
                     case Chars.NUL:
@@ -717,6 +729,43 @@ namespace PdfSharper.Pdf.IO
                         break;
 
 
+                    default:
+                        return _currChar;
+                }
+            }
+            return _currChar;
+        }
+
+        /// <summary>
+        /// Used to calculate padding put on elements by adobe reader.
+        /// </summary>
+        /// <returns></returns>
+        public char MoveToNonSpace()
+        {
+            while (_currChar != Chars.EOF)
+            {
+                switch (_currChar)
+                {
+                    case Chars.SP:
+                        ScanNextChar(true);
+                        break;
+                    default:
+                        return _currChar;
+                }
+            }
+            return _currChar;
+        }
+
+        public char MoveToNonLineEnding()
+        {
+            while (_currChar != Chars.EOF)
+            {
+                switch (_currChar)
+                {
+                    case Chars.LF:
+                    case Chars.CR:
+                        ScanNextChar(true);
+                        break;
                     default:
                         return _currChar;
                 }
@@ -880,6 +929,7 @@ namespace PdfSharper.Pdf.IO
         char _nextChar;
         StringBuilder _token;
         Symbol _symbol = Symbol.None;
+        internal bool _hexUpper = false;
 
         readonly Stream _pdfSteam;
     }

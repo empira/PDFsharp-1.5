@@ -70,7 +70,7 @@ namespace PdfSharper.Pdf
                 Elements.Add(item);
         }
 
-        
+
         public PdfArray(params PdfItem[] items)
         {
             foreach (PdfItem item in items)
@@ -131,7 +131,9 @@ namespace PdfSharper.Pdf
             get { return _elements ?? (_elements = new ArrayElements(this)); }
         }
 
-        public int PaddingRight { get; private set; }
+        public int PaddingRight { get; internal set; }
+
+        public int PaddingLeft { get; internal set; }
 
         /// <summary>
         /// Returns an enumerator that iterates through a collection.
@@ -163,6 +165,11 @@ namespace PdfSharper.Pdf
         protected override void WriteObject(PdfWriter writer)
         {
             writer.WriteBeginObject(this);
+            if (PaddingLeft > 0)
+            {
+                writer.WriteRaw(new string(' ', PaddingLeft));
+            }
+
             int count = Elements.Count;
             for (int idx = 0; idx < count; idx++)
             {
@@ -172,11 +179,7 @@ namespace PdfSharper.Pdf
             writer.WriteEndObject();
             if (PaddingRight > 0)
             {
-                var bytes = new byte[PaddingRight];
-                for (int i = 0; i < PaddingRight; i++)
-                    bytes[i] = 32;
-
-                writer.Write(bytes);
+                writer.WriteRaw(new string(' ', PaddingRight));
             }
         }
 

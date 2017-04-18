@@ -31,6 +31,8 @@ using System;
 using System.Diagnostics;
 using PdfSharper.Pdf.Advanced;
 using PdfSharper.Pdf.IO;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PdfSharper.Pdf
 {
@@ -172,7 +174,7 @@ namespace PdfSharper.Pdf
                     if (_iref != null)
                         _iref.Document = value;
                 }
-            }            
+            }
         }
         internal PdfDocument _document;
 
@@ -200,26 +202,13 @@ namespace PdfSharper.Pdf
         /// </summary>
         internal virtual void PrepareForSave()
         { }
-
         /// <summary>
         /// Saves the stream position. 2nd Edition.
         /// </summary>
         protected override void WriteObject(PdfWriter writer)
         {
             Debug.Assert(false, "Must not come here!");
-            //Debug.Assert(_inStreamOffset <= 0);
-            //if (_inStreamOffset == 0)
-            //{
-            //    //_InStreamOffset = stream.Position;
-            //    _document.xrefTable.AddObject(this);
-            //    return Format("{0} {1} obj\n", _objectID, _generation);
-            //}
-            //else if (_inStreamOffset == -1)
-            //{
-            //}
-            //return null;
         }
-
         /// <summary>
         /// Gets the object identifier. Returns PdfObjectID.Empty for direct objects,
         /// i.e. never returns null.
@@ -243,6 +232,58 @@ namespace PdfSharper.Pdf
         internal int GenerationNumber
         {
             get { return ObjectID.GenerationNumber; }
+        }
+
+        public virtual void FlagAsDirty()
+        {
+            if (IsDirty)
+            {
+                return; //we have already cloned ourselves for modification
+            }
+
+            PdfTrailer writableTrailer = _document._trailers.SingleOrDefault(t => t.IsReadOnly == false);
+            if (writableTrailer == null)
+            {
+                writableTrailer = _document.MakeNewTrailer();
+            }
+
+            if (IsIndirect)
+            {
+
+                //Gather all references to this object
+
+                PdfObjectID objID = this.ObjectID;
+                PdfReference cloneReference = new PdfReference(Reference.ObjectID, Reference.Position);
+                cloneReference.Document = _document;
+                Reference = null;
+                PdfObject previousRevisionObject = Clone();
+                cloneReference.Value = previousRevisionObject;
+
+                foreach (PdfTrailer trailer in _document._trailers)
+                {
+                    if (trailer == writableTrailer)
+                        continue;
+
+                    if (trailer.XRefTable.Contains(objID) && ReferenceEquals(trailer.XRefTable[objID].Value, this))
+                    {
+                        trailer.XRefTable.Remove(cloneReference);
+                        trailer.XRefTable.Add(cloneReference);
+                    }
+                }
+
+                _document._irefTable[objID].Value = this;
+
+                if (!writableTrailer.XRefTable.Contains(ObjectID))
+                {
+                    writableTrailer.XRefTable.Add(this);
+                }
+                IsDirty = true;
+            }
+            else
+            {
+                //TODO: How to replace a direct object?!
+                IsDirty = true;
+            }
         }
 
         ///// <summary>

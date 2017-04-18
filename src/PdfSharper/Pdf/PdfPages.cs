@@ -74,7 +74,17 @@ namespace PdfSharper.Pdf
 
                 PdfDictionary dict = (PdfDictionary)((PdfReference)PagesArray.Elements[index]).Value;
                 if (!(dict is PdfPage))
-                    dict = new PdfPage(dict);
+                {
+                    Owner.UnderConstruction = true;
+                    try
+                    {
+                        dict = new PdfPage(dict);
+                    }
+                    finally
+                    {
+                        Owner.UnderConstruction = false;
+                    }
+                }
                 return (PdfPage)dict;
             }
         }

@@ -34,6 +34,7 @@ using System.IO;
 using PdfSharper.Pdf.Advanced;
 using PdfSharper.Pdf.Security;
 using PdfSharper.Pdf.Internal;
+using System.Linq;
 
 namespace PdfSharper.Pdf.IO
 {
@@ -300,7 +301,7 @@ namespace PdfSharper.Pdf.IO
                 document._trailer = parser.ReadTrailer();
 
                 Debug.Assert(document._irefTable.IsUnderConstruction);
-                document._irefTable.IsUnderConstruction = false;
+
 
                 // Is document encrypted?
                 PdfReference xrefEncrypt = document._trailer.Elements[PdfTrailer.Keys.Encrypt] as PdfReference;
@@ -357,96 +358,53 @@ namespace PdfSharper.Pdf.IO
                     }
                 }
 
-                PdfReference[] irefs2 = document._irefTable.AllReferences;
-                int count2 = irefs2.Length;
-
-                // 3rd: Create iRefs for all compressed objects.
-                Dictionary<int, object> objectStreams = new Dictionary<int, object>();
-                for (int idx = 0; idx < count2; idx++)
+                foreach (var trailer in document._trailers)
                 {
-                    PdfReference iref = irefs2[idx];
-                    PdfCrossReferenceStream xrefStream = iref.Value as PdfCrossReferenceStream;
-                    if (xrefStream != null)
-                    {
-                        for (int idx2 = 0; idx2 < xrefStream.Entries.Count; idx2++)
-                        {
-                            PdfCrossReferenceStream.CrossReferenceStreamEntry item = xrefStream.Entries[idx2];
-                            // Is type xref to compressed object?
-                            if (item.Type == 2)
-                            {
-                                //PdfReference irefNew = parser.ReadCompressedObject(new PdfObjectID((int)item.Field2), (int)item.Field3);
-                                //document._irefTable.Add(irefNew);
-                                int objectNumber = (int)item.Field2;
-                                if (!objectStreams.ContainsKey(objectNumber))
-                                {
-                                    objectStreams.Add(objectNumber, null);
-                                    PdfObjectID objectID = new PdfObjectID((int)item.Field2);
-                                    parser.ReadIRefsFromCompressedObject(objectID);
-                                }
-                            }
-                        }
-                    }
+                    DecompressObjects(document, parser, trailer.XRefTable);
                 }
 
-                // 4th: Read compressed objects.
-                for (int idx = 0; idx < count2; idx++)
+                //only case where we want to read most recent first
+                //most recent needs to be what goes in the document_ireftable is why we read this first
+                foreach (var trailer in document._trailers)
                 {
-                    PdfReference iref = irefs2[idx];
-                    PdfCrossReferenceStream xrefStream = iref.Value as PdfCrossReferenceStream;
-                    if (xrefStream != null)
-                    {
-                        for (int idx2 = 0; idx2 < xrefStream.Entries.Count; idx2++)
-                        {
-                            PdfCrossReferenceStream.CrossReferenceStreamEntry item = xrefStream.Entries[idx2];
-                            // Is type xref to compressed object?
-                            if (item.Type == 2)
-                            {
-                                PdfReference irefNew = parser.ReadCompressedObject(new PdfObjectID((int)item.Field2),
-                                    (int)item.Field3);
-                                Debug.Assert(document._irefTable.Contains(iref.ObjectID));
-                                //document._irefTable.Add(irefNew);
-                            }
-                        }
-                    }
+                    ReadObjects(document, parser, trailer.XRefTable, trailer is PdfCrossReferenceStream);
                 }
 
+                document._irefTable.IsUnderConstruction = false;
 
-                PdfReference[] irefs = document._irefTable.AllReferences;
-                int count = irefs.Length;
-
-                // Read all indirect objects.
-                for (int idx = 0; idx < count; idx++)
+                bool foundNonCrossRef = false;
+                foreach (var trailer in document._trailers)
                 {
-                    PdfReference iref = irefs[idx];
-                    if (iref.Value == null)
+                    trailer.FixXRefs();
+                    foundNonCrossRef = !(trailer is PdfCrossReferenceStream);
+                }
+
+                //point to the latest version for everything
+                document._irefTable.FixXRefs(true);
+
+                if (foundNonCrossRef)
+                {
+                    foreach (var trailer in document._trailers)
                     {
-#if DEBUG_
-                        if (iref.ObjectNumber == 1074)
-                            iref.GetType();
-#endif
-                        try
-                        {
-                            Debug.Assert(document._irefTable.Contains(iref.ObjectID));
-                            PdfObject pdfObject = parser.ReadObject(null, iref.ObjectID, false, false);
-                            Debug.Assert(pdfObject.Reference == iref);
-                            pdfObject.Reference = iref;
-                            Debug.Assert(pdfObject.Reference.Value != null, "Something went wrong.");
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine(ex.Message);
-                            // 4STLA rethrow exception to notify caller.
-                            throw;
-                        }
+                        trailer.IsReadOnly = true;
                     }
-                    else
-                    {
-                        Debug.Assert(document._irefTable.Contains(iref.ObjectID));
-                        //iref.GetType();
-                    }
-                    // Set maximum object number.
-                    document._irefTable._maxObjectNumber = Math.Max(document._irefTable._maxObjectNumber,
-                        iref.ObjectNumber);
+                }
+                else if (document._trailers.All(t => t is PdfCrossReferenceStream)) //we don't support writing CrossRef streams, flatten them
+                {
+                    document._trailers.Clear();
+                    document._irefTable.Compact();
+
+                    document._trailer = new PdfTrailer((PdfCrossReferenceStream)document._trailer);
+                    document._trailer.XRefTable = document._irefTable;
+
+                    PdfPages pages = document.Pages;
+                    Debug.Assert(pages != null);
+
+                    document._irefTable.CheckConsistence();
+                    document._irefTable.Renumber();
+                    document._irefTable.CheckConsistence();
+
+                    document._trailers.Add(document._trailer);
                 }
 
                 // Encrypt all objects.
@@ -455,7 +413,6 @@ namespace PdfSharper.Pdf.IO
                     document.SecurityHandler.EncryptDocument();
                 }
 
-                // Fix references of trailer values and then objects and irefs are consistent.
                 document._trailer.Finish();
 
 #if DEBUG_
@@ -496,6 +453,8 @@ namespace PdfSharper.Pdf.IO
                     document._irefTable.Renumber();
                     document._irefTable.CheckConsistence();
                 }
+
+                document.UnderConstruction = false;
             }
             catch (Exception ex)
             {
@@ -503,6 +462,111 @@ namespace PdfSharper.Pdf.IO
                 throw;
             }
             return document;
+        }
+
+        private static void DecompressObjects(PdfDocument document, Parser parser, PdfCrossReferenceTable xRefTable)
+        {
+            PdfReference[] irefs2 = xRefTable.AllReferences;
+
+            int count2 = irefs2.Length;
+
+            // 1st: Create iRefs for all compressed objects.
+            Dictionary<int, object> objectStreams = new Dictionary<int, object>();
+            for (int idx = 0; idx < count2; idx++)
+            {
+                PdfReference iref = irefs2[idx];
+                PdfCrossReferenceStream xrefStream = iref.Value as PdfCrossReferenceStream;
+                if (xrefStream != null)
+                {
+                    for (int idx2 = 0; idx2 < xrefStream.Entries.Count; idx2++)
+                    {
+                        PdfCrossReferenceStream.CrossReferenceStreamEntry item = xrefStream.Entries[idx2];
+                        // Is type xref to compressed object?
+                        if (item.Type == 2)
+                        {
+                            //PdfReference irefNew = parser.ReadCompressedObject(new PdfObjectID((int)item.Field2), (int)item.Field3);
+                            //document._irefTable.Add(irefNew);
+                            int objectNumber = (int)item.Field2;
+                            if (!objectStreams.ContainsKey(objectNumber))
+                            {
+                                objectStreams.Add(objectNumber, null);
+                                PdfObjectID objectID = new PdfObjectID((int)item.Field2);
+                                parser.ReadIRefsFromCompressedObject(objectID, xRefTable);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 2nd: Read compressed objects.
+            for (int idx = 0; idx < count2; idx++)
+            {
+                PdfReference iref = irefs2[idx];
+                PdfCrossReferenceStream xrefStream = iref.Value as PdfCrossReferenceStream;
+                if (xrefStream != null)
+                {
+                    for (int idx2 = 0; idx2 < xrefStream.Entries.Count; idx2++)
+                    {
+                        PdfCrossReferenceStream.CrossReferenceStreamEntry item = xrefStream.Entries[idx2];
+                        // Is type xref to compressed object?
+                        if (item.Type == 2)
+                        {
+                            PdfReference irefNew = parser.ReadCompressedObject(new PdfObjectID((int)item.Field2),
+                                (int)item.Field3, xRefTable);
+                            Debug.Assert(xRefTable.Contains(irefNew.ObjectID));
+                            //document._irefTable.Add(irefNew);
+                        }
+                    }
+
+                    xRefTable.Remove(iref); //we have parsed the cross reference stream out go away!
+                }
+            }
+        }
+
+        private static void ReadObjects(PdfDocument document, Parser parser, PdfCrossReferenceTable xRefTable, bool isCrossReferenceStream)
+        {
+            PdfReference[] irefs = xRefTable.AllReferences;
+            int count = irefs.Length;
+
+            // Read all indirect objects.
+            for (int idx = 0; idx < count; idx++)
+            {
+                PdfReference iref = irefs[idx];
+                if (iref.Value == null)
+                {
+#if DEBUG_
+                        if (iref.ObjectNumber == 1074)
+                            iref.GetType();
+#endif
+                    if (isCrossReferenceStream && document._irefTable.Contains(iref.ObjectID) && document._irefTable[iref.ObjectID].Value != null)
+                    {
+                        xRefTable.Remove(iref);
+                        xRefTable.Add(document._irefTable[iref.ObjectID]);
+                        continue;
+                    }
+                    try
+                    {
+                        Debug.Assert(xRefTable.Contains(iref.ObjectID));
+                        PdfObject pdfObject = parser.ReadObject(null, iref.ObjectID, false, false, false, xRefTable);
+
+                        iref.Value = pdfObject;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                        // 4STLA rethrow exception to notify caller.
+                        throw;
+                    }
+                }
+                else
+                {
+                    Debug.Assert(xRefTable.Contains(iref.ObjectID));
+                    //iref.GetType();
+                }
+            }
+
+
+
         }
 
         /// <summary>

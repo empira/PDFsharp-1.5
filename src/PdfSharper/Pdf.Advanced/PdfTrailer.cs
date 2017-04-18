@@ -32,6 +32,7 @@ using System.Diagnostics;
 using PdfSharper.Pdf.IO;
 using PdfSharper.Pdf.Security;
 using PdfSharper.Pdf.Internal;
+using System.Collections.Generic;
 
 namespace PdfSharper.Pdf.Advanced
 {
@@ -41,6 +42,12 @@ namespace PdfSharper.Pdf.Advanced
     /// </summary>
     internal class PdfTrailer : PdfDictionary  // Reference: 3.4.4  File Trailer / Page 96
     {
+        internal PdfCrossReferenceTable XRefTable { get; set; }
+
+        internal bool IsReadOnly { get; set; }
+
+        internal int StartXRef { get; set; } = -1;
+
         /// <summary>
         /// Initializes a new instance of PdfTrailer.
         /// </summary>
@@ -82,6 +89,12 @@ namespace PdfSharper.Pdf.Advanced
             set { Elements.SetInteger(Keys.Size, value); }
         }
 
+        public override void FlagAsDirty()
+        {
+            //trailers are readonly or not
+            //we do not auto clone them for modifications
+        }
+
         // TODO: needed when linearized...
         //public int Prev
         //{
@@ -90,7 +103,25 @@ namespace PdfSharper.Pdf.Advanced
 
         public PdfDocumentInformation Info
         {
-            get { return (PdfDocumentInformation)Elements.GetValue(Keys.Info, VCF.CreateIndirect); }
+            get
+            {
+
+                var infoReference = Elements.GetReference(Keys.Info);
+                if (infoReference != null && infoReference.Value == null)
+                {
+                    if (!XRefTable.Contains(infoReference.ObjectID))
+                    { //the document must contain it!
+                        var documentInfoReference = _document._irefTable[infoReference.ObjectID];
+                        Debug.Assert(documentInfoReference.Value != null, "Document contains no info, cannot fixup!");
+
+                        Elements.SetReference(Keys.Info, documentInfoReference);
+                    }
+                    else
+                        Elements.SetReference(Keys.Info, XRefTable[infoReference.ObjectID]);
+                }
+
+                return (PdfDocumentInformation)Elements.GetValue(Keys.Info, VCF.CreateIndirect);
+            }
         }
 
         /// <summary>
@@ -217,6 +248,33 @@ namespace PdfSharper.Pdf.Advanced
             Debug.Assert(_document._irefTable.IsUnderConstruction == false);
             _document._irefTable.IsUnderConstruction = false;
         }
+
+        internal void FixXRefs(bool forceDocument = false)
+        {
+            IEnumerable<string> keys = Elements.Keys;
+
+            foreach (string key in keys)
+            {
+                PdfItem element = Elements[key];
+                PdfReference iref = element as PdfReference;
+                if (iref != null && iref.Value == null)
+                {
+                    if (forceDocument || !XRefTable.Contains(iref.ObjectID))
+                    { //the document must contain it!
+                        var docIref = _document._irefTable[iref.ObjectID];
+                        Debug.Assert(docIref.Value != null, "Document contains no info, cannot fixup!");
+                        Elements.SetReference(key, docIref);
+                    }
+                    else
+                        Elements.SetReference(key, XRefTable[iref.ObjectID]);
+                }
+            }
+
+            XRefTable.FixXRefs(forceDocument);
+        }
+
+
+
 
         /// <summary>
         /// Predefined keys of this dictionary.

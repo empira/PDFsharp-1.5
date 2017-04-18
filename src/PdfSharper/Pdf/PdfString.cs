@@ -166,11 +166,12 @@ namespace PdfSharper.Pdf
             _flags = (PdfStringFlags)encoding;
         }
 
-        internal PdfString(string value, PdfStringFlags flags, int paddingLeft = 0)
+        internal PdfString(string value, PdfStringFlags flags, int paddingLeft = 0, bool isUpper = false)
         {
             _value = value;
             _flags = flags;
-			this.PaddingLeft = paddingLeft;
+            PaddingLeft = paddingLeft;
+            HexUpperCase = isUpper;
         }
 
         /// <summary>
@@ -202,6 +203,8 @@ namespace PdfSharper.Pdf
             get { return _flags; }
         }
         readonly PdfStringFlags _flags;
+
+        internal bool HexUpperCase { get; private set; }
 
         /// <summary>
         /// Gets the string value.

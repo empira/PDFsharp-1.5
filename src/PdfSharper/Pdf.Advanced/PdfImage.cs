@@ -634,6 +634,7 @@ namespace PdfSharper.Pdf.Advanced
                         // Monochrome mask
                         byte[] maskDataCompressed = fd.Encode(idb.BitmapMask, _document.Options.FlateEncodeMode);
                         PdfDictionary pdfMask = new PdfDictionary(_document);
+                        pdfMask.IsCompact = IsCompact;
                         pdfMask.Elements.SetName(Keys.Type, "/XObject");
                         pdfMask.Elements.SetName(Keys.Subtype, "/Image");
 
@@ -724,6 +725,7 @@ namespace PdfSharper.Pdf.Advanced
                 {
                     PdfDictionary colorPalette = null;
                     colorPalette = new PdfDictionary(_document);
+                    colorPalette.IsCompact = IsCompact;
                     byte[] packedPaletteData = idb.PaletteDataLength >= 48 ? fd.Encode(idb.PaletteData, _document.Options.FlateEncodeMode) : null; // don't compress small palettes
                     if (packedPaletteData != null && packedPaletteData.Length + 20 < idb.PaletteDataLength) // +20: compensate for the overhead (estimated value)
                     {
@@ -771,6 +773,7 @@ namespace PdfSharper.Pdf.Advanced
                 // provided for compatibility with older reader versions
                 byte[] maskDataCompressed = fd.Encode(idb.BitmapMask, _document.Options.FlateEncodeMode);
                 PdfDictionary pdfMask = new PdfDictionary(_document);
+                pdfMask.IsCompact = IsCompact;
                 pdfMask.Elements.SetName(Keys.Type, "/XObject");
                 pdfMask.Elements.SetName(Keys.Subtype, "/Image");
 
@@ -789,6 +792,7 @@ namespace PdfSharper.Pdf.Advanced
                 // The image provides an alpha mask (requires Arcrobat 5.0 or higher)
                 byte[] alphaMaskCompressed = fd.Encode(idb.AlphaMask, _document.Options.FlateEncodeMode);
                 PdfDictionary smask = new PdfDictionary(_document);
+                smask.IsCompact = IsCompact;
                 smask.Elements.SetName(Keys.Type, "/XObject");
                 smask.Elements.SetName(Keys.Subtype, "/Image");
 
@@ -969,6 +973,7 @@ namespace PdfSharper.Pdf.Advanced
                     // provided for compatibility with older reader versions
                     byte[] maskDataCompressed = fd.Encode(mask.MaskData, _document.Options.FlateEncodeMode);
                     PdfDictionary pdfMask = new PdfDictionary(_document);
+                    pdfMask.IsCompact = IsCompact;
                     pdfMask.Elements.SetName(Keys.Type, "/XObject");
                     pdfMask.Elements.SetName(Keys.Subtype, "/Image");
 
@@ -987,6 +992,7 @@ namespace PdfSharper.Pdf.Advanced
                     // The image provides an alpha mask (requires Arcrobat 5.0 or higher)
                     byte[] alphaMaskCompressed = fd.Encode(alphaMask, _document.Options.FlateEncodeMode);
                     PdfDictionary smask = new PdfDictionary(_document);
+                    smask.IsCompact = IsCompact;
                     smask.Elements.SetName(Keys.Type, "/XObject");
                     smask.Elements.SetName(Keys.Subtype, "/Image");
 
@@ -1298,6 +1304,7 @@ namespace PdfSharper.Pdf.Advanced
                         // Monochrome mask
                         byte[] maskDataCompressed = fd.Encode(mask.MaskData, _document.Options.FlateEncodeMode);
                         PdfDictionary pdfMask = new PdfDictionary(_document);
+                        pdfMask.IsCompact = IsCompact;
                         pdfMask.Elements.SetName(Keys.Type, "/XObject");
                         pdfMask.Elements.SetName(Keys.Subtype, "/Image");
 
@@ -1388,6 +1395,7 @@ namespace PdfSharper.Pdf.Advanced
                 {
                     PdfDictionary colorPalette = null;
                     colorPalette = new PdfDictionary(_document);
+                    colorPalette.IsCompact = IsCompact;
                     byte[] packedPaletteData = paletteData.Length >= 48 ? fd.Encode(paletteData, _document.Options.FlateEncodeMode) : null; // don't compress small palettes
                     if (packedPaletteData != null && packedPaletteData.Length + 20 < paletteData.Length) // +20: compensate for the overhead (estimated value)
                     {

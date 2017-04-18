@@ -131,6 +131,7 @@ namespace PdfSharper.Pdf.AcroForms
             if (ap == null)
             {
                 ap = new PdfDictionary(this._document);
+                ap.IsCompact = IsCompact;
                 Elements[PdfAnnotation.Keys.AP] = ap;
             }
 

@@ -563,6 +563,7 @@ namespace PdfSharper.Pdf.AcroForms
             if (mk == null && (BorderColor != XColor.Empty || BackColor != XColor.Empty))
             {
                 mk = new PdfDictionary(_document);
+                mk.IsCompact = IsCompact;
                 Elements.SetObject(PdfWidgetAnnotation.Keys.MK, mk);
             }
 

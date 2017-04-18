@@ -125,6 +125,7 @@ namespace PdfSharper.Pdf.Advanced
             byte[] fontData = subSet.FontSource.Bytes;
 
             PdfDictionary fontStream = new PdfDictionary(Owner);
+            fontStream.IsCompact = IsCompact;
             Owner.Internals.AddObject(fontStream);
             FontDescriptor.Elements[PdfFontDescriptor.Keys.FontFile2] = fontStream.Reference;
 

@@ -103,18 +103,25 @@ namespace PdfSharper.Pdf.Advanced
                 {
                     GetType();
                 }
+
+                if (!_document._irefTable.Contains(iref.ObjectID))
+                {
+                    _document._irefTable.Add(iref);
+                }
+
+                iref.Document = _document;
             }
         }
 
         /// <summary>
         /// Reads the compressed object with the specified index.
         /// </summary>
-        internal PdfReference ReadCompressedObject(int index)
+        internal PdfReference ReadCompressedObject(int index, PdfCrossReferenceTable xRefTable)
         {
             Parser parser = new Parser(_document, new MemoryStream(Stream.Value));
             int objectNumber = _header[index][0];
             int offset = _header[index][1];
-            return parser.ReadCompressedObject(objectNumber, offset);
+            return parser.ReadCompressedObject(objectNumber, offset, xRefTable);
         }
 
         /// <summary>

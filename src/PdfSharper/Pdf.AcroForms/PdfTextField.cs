@@ -388,26 +388,35 @@ namespace PdfSharper.Pdf.AcroForms
             if (ap == null)
             {
                 ap = new PdfDictionary(_document);
+                ap.IsCompact = IsCompact;
                 Elements[PdfAnnotation.Keys.AP] = ap;
             }
 
-            // Set XRef to normal state
-            ap.Elements["/N"] = PdfObject.DeepCopyClosure(Owner, form.PdfForm);
-
-            var normalStateDict = ap.Elements.GetDictionary("/N");
-            var resourceDict = new PdfDictionary(Owner);
-            resourceDict.Elements[PdfResources.Keys.ProcSet] = new PdfArray(Owner, new PdfName("/PDF"), new PdfName("/Text"));
-
-            var defaultFormResources = Owner.AcroForm.Elements.GetDictionary(PdfAcroForm.Keys.DR);
-            if (defaultFormResources != null && defaultFormResources.Elements.ContainsKey(PdfResources.Keys.Font))
+            PdfReference normalStateAppearanceReference = ap.Elements.GetReference("/N");
+            if (normalStateAppearanceReference == null || normalStateAppearanceReference.ObjectNumber == form.PdfForm.ObjectNumber)
             {
-                var fontResourceItem = XForm.GetFontResourceItem(Font.FamilyName, defaultFormResources);
-                PdfDictionary fontDict = new PdfDictionary(Owner);
-                resourceDict.Elements[PdfResources.Keys.Font] = fontDict;
-                fontDict.Elements[fontResourceItem.Key] = fontResourceItem.Value;
-            }
+                //TODO: is this copying too much?
+                // Set XRef to normal state
+                ap.Elements["/N"] = PdfObject.DeepCopyClosure(Owner, form.PdfForm);
 
-            normalStateDict.Elements.SetObject(PdfPage.Keys.Resources, resourceDict);
+
+                var normalStateDict = ap.Elements.GetDictionary("/N");
+                var resourceDict = new PdfDictionary(Owner);
+                resourceDict.IsCompact = IsCompact;
+                resourceDict.Elements[PdfResources.Keys.ProcSet] = new PdfArray(Owner, new PdfName("/PDF"), new PdfName("/Text"));
+
+                var defaultFormResources = Owner.AcroForm.Elements.GetDictionary(PdfAcroForm.Keys.DR);
+                if (defaultFormResources != null && defaultFormResources.Elements.ContainsKey(PdfResources.Keys.Font))
+                {
+                    var fontResourceItem = XForm.GetFontResourceItem(Font.FamilyName, defaultFormResources);
+                    PdfDictionary fontDict = new PdfDictionary(Owner);
+                    fontDict.IsCompact = IsCompact;
+                    resourceDict.Elements[PdfResources.Keys.Font] = fontDict;
+                    fontDict.Elements[fontResourceItem.Key] = fontResourceItem.Value;
+                }
+
+                normalStateDict.Elements.SetObject(PdfPage.Keys.Resources, resourceDict);
+            }
 
             PdfFormXObject xobj = form.PdfForm;
             if (xobj.Stream == null)

@@ -192,6 +192,7 @@
     <Compile Include="Internal\DoubleUtil.cs" />
     <Compile Include="Internal\NativeMethods.cs" />
     <Compile Include="Internal\TokenizerHelper.cs" />
+    <Compile Include="LinqExtensions.cs" />
     <Compile Include="Pdf.AcroForms\enums\PdfAcroFieldFlags.cs" />
     <Compile Include="Pdf.AcroForms\enums\PdfAcroFieldType.cs" />
     <Compile Include="Pdf.AcroForms\PdfAcroField.cs" />
@@ -326,6 +327,7 @@
     <Compile Include="Pdf\enums\PdfPageMode.cs" />
     <Compile Include="Pdf\enums\PdfReadingDirection.cs" />
     <Compile Include="Pdf\enums\PdfTextStringEncoding.cs" />
+    <Compile Include="Pdf\PdfDirty.cs" />
     <Compile Include="Pdf\KeysBase.cs" />
     <Compile Include="Pdf\KeysMeta.cs" />
     <Compile Include="Pdf\PdfArray.cs" />

@@ -32,6 +32,7 @@ using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using PdfSharper.Pdf.IO;
+using System.Linq;
 
 namespace PdfSharper.Pdf.Advanced
 {
@@ -64,10 +65,6 @@ namespace PdfSharper.Pdf.Advanced
         /// </summary>
         public void Add(PdfReference iref)
         {
-#if DEBUG
-            if (iref.ObjectID.ObjectNumber == 948)
-                GetType();
-#endif
             if (iref.ObjectID.IsEmpty)
                 iref.ObjectID = new PdfObjectID(GetNewObjectNumber());
 
@@ -75,6 +72,8 @@ namespace PdfSharper.Pdf.Advanced
                 throw new InvalidOperationException("Object already in table.");
 
             ObjectTable.Add(iref.ObjectID, iref);
+
+            _maxObjectNumber = Math.Max(_maxObjectNumber, iref.ObjectNumber);
         }
 
         /// <summary>
@@ -153,22 +152,46 @@ namespace PdfSharper.Pdf.Advanced
         /// </summary>
         internal void WriteObject(PdfWriter writer)
         {
-            writer.WriteRaw("xref\n");
+            writer.WriteRaw("xref\r\n");
 
             PdfReference[] irefs = AllReferences;
 
-            int count = irefs.Length;
-            writer.WriteRaw(String.Format("0 {0}\n", count + 1));
-            writer.WriteRaw(String.Format("{0:0000000000} {1:00000} {2} \n", 0, 65535, "f"));
-            //PdfEncoders.WriteAnsi(stream, text);
+            var xrefGroupings = irefs.GroupWhile((prev, next) => prev.ObjectNumber + 1 == next.ObjectNumber)
+                .Select(anon => new
+                {
+                    Count = anon.Count(),
+                    Irefs = anon.ToList()
+                }).ToList();
 
-            for (int idx = 0; idx < count; idx++)
+            if (irefs.Min(ir => ir.ObjectNumber) > 1)
             {
-                PdfReference iref = irefs[idx];
-
-                // Acrobat is very pedantic; it must be exactly 20 bytes per line.
-                writer.WriteRaw(String.Format("{0:0000000000} {1:00000} {2} \n", iref.Position, iref.GenerationNumber, "n"));
+                writer.WriteRaw("0 1\r\n");
+                writer.WriteRaw(String.Format("{0:0000000000} {1:00000} {2}\r\n", 0, 65535, "f"));
             }
+
+            foreach (var xrefGroup in xrefGroupings)
+            {
+                int count = xrefGroup.Count;
+                int startingObjectNumber = xrefGroup.Irefs.FirstOrDefault().ObjectNumber;
+
+                if (startingObjectNumber == 1)
+                {
+                    writer.WriteRaw(String.Format("0 {0}\r\n", count + 1));
+                    writer.WriteRaw(String.Format("{0:0000000000} {1:00000} {2}\r\n", 0, 65535, "f"));
+                }
+                else
+                {
+                    writer.WriteRaw(String.Format("{0} {1}\r\n", startingObjectNumber, count));
+                }
+
+                for (int idx = 0; idx < count; idx++)
+                {
+                    PdfReference iref = xrefGroup.Irefs[idx];
+                    // Acrobat is very pedantic; it must be exactly 20 bytes per line.
+                    writer.WriteRaw(String.Format("{0:0000000000} {1:00000} {2}\r\n", iref.Position, iref.GenerationNumber, "n"));
+                }
+            }
+
         }
 
         /// <summary>
@@ -213,7 +236,7 @@ namespace PdfSharper.Pdf.Advanced
             // TODO: remove PdfBooleanObject, PdfIntegerObject etc.
             int removed = ObjectTable.Count;
             //CheckConsistence();
-            // TODO: Is this really so easy?
+            // We can only compact the last trailer, if at all
             PdfReference[] irefs = TransitiveClosure(_document._trailer);
 
 #if DEBUG
@@ -268,7 +291,6 @@ namespace PdfSharper.Pdf.Advanced
             foreach (PdfReference iref in irefs)
             {
                 ObjectTable.Add(iref.ObjectID, iref);
-                _maxObjectNumber = Math.Max(_maxObjectNumber, iref.ObjectNumber);
             }
             //CheckConsistence();
             removed -= ObjectTable.Count;
@@ -382,7 +404,7 @@ namespace PdfSharper.Pdf.Advanced
             Dictionary<PdfItem, object> objects = new Dictionary<PdfItem, object>();
             _overflow = new Dictionary<PdfItem, object>();
             TransitiveClosureImplementation(objects, pdfObject);
-        TryAgain:
+            TryAgain:
             if (_overflow.Count > 0)
             {
                 PdfObject[] array = new PdfObject[_overflow.Count];
@@ -551,34 +573,142 @@ namespace PdfSharper.Pdf.Advanced
             }
         }
         PdfDictionary _deadObject;
+
+        internal void FixXRefs(bool forceDocument = false)
+        {
+            foreach (var item in AllReferences)
+            {
+                if (item.Value != null)
+                {
+                    FixUpObject(item.Value, forceDocument);
+                }
+                else
+                {//what?!
+                }
+            }
+        }
+
+
+        internal void FixUpObject(PdfObject value, bool forceDocument)
+        {
+
+            PdfDictionary dict;
+            PdfArray array;
+            if ((dict = value as PdfDictionary) != null)
+            {
+                // Search for indirect references in all dictionary elements.
+                PdfName[] names = dict.Elements.KeyNames;
+                foreach (PdfName name in names)
+                {
+                    PdfItem item = dict.Elements[name];
+                    Debug.Assert(item != null, "A dictionary element cannot be null.");
+
+                    // Is item an iref?
+                    PdfReference iref = item as PdfReference;
+                    if (iref != null)
+                    {
+                        if (iref.Value == null || (forceDocument && ReferenceEquals(iref.Value, _document._irefTable[iref.ObjectID].Value) == false))
+                        {
+                            PdfObject irefValue = GetObject(iref.ObjectID, forceDocument);
+                            if (irefValue.Reference == null)
+                            {
+                                iref.Value = irefValue;
+                            }
+                            else
+                            {
+                                dict.Elements[name] = irefValue.Reference;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Case: The item is not a reference.
+                        // If item is an object recursively fix its inner items.
+                        PdfObject pdfObject = item as PdfObject;
+                        if (pdfObject != null)
+                        {
+                            // Fix up inner objects, i.e. recursively walk down the object tree.
+                            FixUpObject(pdfObject, forceDocument);
+                        }
+                    }
+                }
+            }
+            else if ((array = value as PdfArray) != null)
+            {
+                // Search for indirect references in all array elements.
+                int count = array.Elements.Count;
+                for (int idx = 0; idx < count; idx++)
+                {
+                    PdfItem item = array.Elements[idx];
+                    Debug.Assert(item != null, "An array element cannot be null.");
+
+                    // Is item an iref?
+                    PdfReference iref = item as PdfReference;
+                    if (iref != null)
+                    {
+                        if (iref.Value == null || (forceDocument && ReferenceEquals(iref.Value, _document._irefTable[iref.ObjectID].Value) == false))
+                        {
+                            PdfObject irefValue = GetObject(iref.ObjectID, forceDocument);
+                            if (irefValue.Reference == null)
+                            {
+                                iref.Value = irefValue;
+                            }
+                            else
+                            {
+                                array.Elements[idx] = irefValue.Reference;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Case: The item is not a reference.
+                        // If item is an object recursively fix its inner items.
+                        PdfObject pdfObject = item as PdfObject;
+                        if (pdfObject != null)
+                        {
+                            // Fix up inner objects, i.e. recursively walk down the object tree.
+                            FixUpObject(pdfObject, forceDocument);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Case: The item is some other indirect object.
+                // Indirect integers, booleans, etc. are allowed, but PDFsharp do not create them.
+                // If such objects occur in imported PDF files from other producers, nothing more is to do.
+                // The owner was already set, which is double checked by the assertions below.
+                if (value is PdfNameObject || value is PdfStringObject || value is PdfBooleanObject || value is PdfIntegerObject || value is PdfNumberObject)
+                {
+                    Debug.Assert(value.IsIndirect);
+                }
+                else
+                    Debug.Assert(false, "Should not come here. Object is neither a dictionary nor an array.");
+            }
+        }
+
+
+        private PdfObject GetObject(PdfObjectID objectID, bool forceDocument)
+        {
+            PdfReference objRef = null;
+
+            if (forceDocument == false)
+            {
+                objRef = this[objectID];
+
+                if (objRef != null)
+                {
+                    return objRef.Value;
+                }
+            }
+
+            objRef = _document._irefTable[objectID];
+            if (objRef != null)
+            {
+                return objRef.Value;
+            }
+
+            return null;
+        }
     }
-
-    ///// <summary>
-    ///// Represents the cross-reference table of a PDF document. 
-    ///// It contains all indirect objects of a document.
-    ///// </summary>
-    //internal sealed class PdfCrossReferenceStreamTable  // Must not be derive from PdfObject.
-    //{
-    //    public PdfCrossReferenceStreamTable(PdfDocument document)
-    //    {
-    //        _document = document;
-    //    }
-    //    readonly PdfDocument _document;
-
-    //    public class Item
-    //    {
-    //        public PdfReference Reference;
-
-    //        public readonly List<CrossReferenceStreamEntry> Entries = new List<CrossReferenceStreamEntry>();
-    //    }
-    //}
-
-    //struct CrossReferenceStreamEntry
-    //{
-    //    public int Type;
-
-    //    public int Field2;
-
-    //    public int Field3;
-    //}
 }

@@ -561,6 +561,9 @@
     <Compile Include="..\PdfSharper\Internal\TokenizerHelper.cs">
       <Link>Internal\TokenizerHelper.cs</Link>
     </Compile>
+    <Compile Include="..\PdfSharper\LinqExtensions.cs">
+      <Link>LinqExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\PdfSharper\Pdf.AcroForms\enums\PdfAcroFieldFlags.cs">
       <Link>Pdf.AcroForms\enums\PdfAcroFieldFlags.cs</Link>
     </Compile>
@@ -989,6 +992,9 @@
     </Compile>
     <Compile Include="..\PdfSharper\Pdf\PdfDictionary.cs">
       <Link>Pdf\PdfDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Pdf\PdfDirty.cs">
+      <Link>Pdf\PdfDirty.cs</Link>
     </Compile>
     <Compile Include="..\PdfSharper\Pdf\PdfDocument.cs">
       <Link>Pdf\PdfDocument.cs</Link>

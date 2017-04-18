@@ -39,6 +39,8 @@ using PdfSharper.Pdf.IO;
 using PdfSharper.Pdf.Filters;
 using PdfSharper.Pdf.Advanced;
 using PdfSharper.Pdf.Internal;
+using PdfSharper.Pdf.AcroForms;
+using System.Linq;
 
 namespace PdfSharper.Pdf
 {
@@ -71,6 +73,8 @@ namespace PdfSharper.Pdf
     [DebuggerDisplay("{DebuggerDisplay}")]
     public class PdfDictionary : PdfObject, IEnumerable<KeyValuePair<string, PdfItem>>
     {
+        public bool IsCompact { get; set; }
+
         // Reference: 3.2.6  Dictionary Objects / Page 59
 
         /// <summary>
@@ -97,6 +101,8 @@ namespace PdfSharper.Pdf
                 dict._elements.ChangeOwner(this);
             if (dict._stream != null)
                 dict._stream.ChangeOwner(this);
+
+            IsCompact = dict.IsCompact;
         }
 
         /// <summary>
@@ -124,7 +130,7 @@ namespace PdfSharper.Pdf
                 foreach (PdfName name in names)
                 {
                     PdfObject obj = dict._elements[name] as PdfObject;
-                    if (obj != null)
+                    if (obj != null && deepClone)
                     {
                         obj = obj.Clone();
                         // Recall that obj.Document is now null.
@@ -138,6 +144,24 @@ namespace PdfSharper.Pdf
                 dict._stream.ChangeOwner(dict);
             }
             return dict;
+        }
+
+        private bool deepClone = true;
+
+        public override void FlagAsDirty()
+        {
+            if (IsDirty)
+                return;
+
+            deepClone = false;
+            try
+            {
+                base.FlagAsDirty();
+            }
+            finally
+            {
+                deepClone = true;
+            }
         }
 
         /// <summary>
@@ -188,6 +212,13 @@ namespace PdfSharper.Pdf
 
         protected override void WriteObject(PdfWriter writer)
         {
+            PdfWriterLayout originalLayout = writer.Layout;
+
+            if (IsCompact)
+            {
+                writer.Layout = PdfWriterLayout.Compact;
+            }
+
             writer.WriteBeginObject(this);
             //int count = Elements.Count;
             PdfName[] keys = Elements.KeyNames;
@@ -214,6 +245,8 @@ namespace PdfSharper.Pdf
             if (Stream != null)
                 WriteDictionaryStream(writer);
             writer.WriteEndObject();
+
+            writer.Layout = originalLayout;
         }
 
         /// <summary>
@@ -236,7 +269,11 @@ namespace PdfSharper.Pdf
 #endif
             key.Write(writer);
             item.Write(writer);
-            writer.NewLine();
+
+            if (IsCompact == false)
+            {
+                writer.NewLine();
+            }
         }
 
         /// <summary>
@@ -255,7 +292,14 @@ namespace PdfSharper.Pdf
         public PdfStream Stream
         {
             get { return _stream; }
-            set { _stream = value; }
+            set
+            {
+                if (!Owner.UnderConstruction)
+                {
+                    FlagAsDirty();
+                }
+                _stream = value;
+            }
         }
         PdfStream _stream;
 
@@ -286,7 +330,7 @@ namespace PdfSharper.Pdf
         /// Represents the interface to the elements of a PDF dictionary.
         /// </summary>
         [DebuggerDisplay("{DebuggerDisplay}")]
-        public sealed class DictionaryElements : IDictionary<string, PdfItem>, ICloneable
+        public sealed class DictionaryElements : PdfDirty, IDictionary<string, PdfItem>, ICloneable
         {
             internal DictionaryElements(PdfDictionary ownerDictionary)
             {
@@ -476,11 +520,44 @@ namespace PdfSharper.Pdf
                 return GetReal(key, false);
             }
 
+
+            /// <summary>
+            /// Tries to get the string. TODO: more TryGet...
+            /// </summary>
+            public bool TryGetReal(string key, out double value)
+            {
+                value = double.MinValue;
+                object obj = this[key];
+                if (obj == null)
+                    return false;
+
+                PdfReference reference = obj as PdfReference;
+                if (reference != null)
+                    obj = reference.Value;
+
+                PdfReal real = obj as PdfReal;
+                if (real != null)
+                {
+                    value = real.Value;
+                    return true;
+                }
+
+                return false;
+            }
+
             /// <summary>
             /// Sets the entry to a direct double value.
             /// </summary>
             public void SetReal(string key, double value)
             {
+                double existingValue = double.MinValue;
+                if (TryGetReal(key, out existingValue))
+                {
+                    if (value == existingValue)
+                    {
+                        return; //prevent setting dirty flag
+                    }
+                }
                 this[key] = new PdfReal(value);
             }
 
@@ -587,6 +664,14 @@ namespace PdfSharper.Pdf
             /// </summary>
             public void SetString(string key, string value)
             {
+                string existingValue = null;
+                if (TryGetString(key, out existingValue))
+                {
+                    if (string.Compare(value, existingValue) == 0)
+                    {
+                        return; //prevent setting dirty flag
+                    }
+                }
                 this[key] = new PdfString(value);
             }
 
@@ -1313,6 +1398,9 @@ namespace PdfSharper.Pdf
                     PdfObject obj = value as PdfObject;
                     if (obj != null && obj.IsIndirect)
                         value = obj.Reference;
+
+                    FlagOwnerAsDirty(key, value);
+
                     _elements[key] = value;
                 }
             }
@@ -1341,7 +1429,54 @@ namespace PdfSharper.Pdf
                     PdfObject obj = value as PdfObject;
                     if (obj != null && obj.IsIndirect)
                         value = obj.Reference;
+
+                    FlagOwnerAsDirty(key.Value, value);
+
                     _elements[key.Value] = value;
+                }
+            }
+
+            private void FlagOwnerAsDirty(string key, PdfItem newValue)
+            {
+                //Only flag dirty if the document is not under construction
+                if (_ownerDictionary != null && _ownerDictionary.Owner != null && !_ownerDictionary.Owner.UnderConstruction)
+                {
+                    PdfObject newValueObject = newValue as PdfObject;
+                    if (_elements.ContainsKey(key))
+                    {
+                        PdfItem existingItem = _elements[key];
+
+                        if (existingItem is PdfObject)
+                        {
+                            PdfObject existingObject = existingItem as PdfObject;
+                            if (existingObject.IsIndirect && newValueObject != null && newValueObject.IsIndirect)
+                            {
+                                if (existingObject.ObjectNumber != newValueObject.ObjectNumber)
+                                {
+                                    Owner.FlagAsDirty();
+                                }
+                            }
+                            else if (existingObject.IsIndirect && newValueObject == null)//going from indirect to direct
+                            {
+                                Owner.FlagAsDirty();
+                            }
+                            else if (existingObject.IsIndirect == false && newValueObject != null && newValueObject.IsIndirect)//going from direct to indirect
+                            {
+                                Owner.FlagAsDirty();
+                            }
+                        }
+                        else
+                        {
+                            if (!ReferenceEquals(existingItem, newValue))
+                            {
+                                Owner.FlagAsDirty();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Owner.FlagAsDirty();
+                    }
                 }
             }
 
@@ -1567,6 +1702,7 @@ namespace PdfSharper.Pdf
         /// </summary>
         public sealed class PdfStream
         {
+            private string _trailer;
             internal PdfStream(PdfDictionary ownerDictionary)
             {
                 if (ownerDictionary == null)
@@ -1577,10 +1713,11 @@ namespace PdfSharper.Pdf
             /// <summary>
             /// A .NET string can contain char(0) as a valid character.
             /// </summary>
-            internal PdfStream(byte[] value, PdfDictionary owner)
+            internal PdfStream(byte[] value, PdfDictionary owner, string trailer = null)
                 : this(owner)
             {
                 _value = value;
+                _trailer = trailer;
             }
 
             /// <summary>
@@ -1681,6 +1818,8 @@ namespace PdfSharper.Pdf
                 }
             }
 
+            public string Trailer { get { return _trailer; } }
+
             /// <summary>
             /// Get or sets the bytes of the stream as they are, i.e. if one or more filters exist the bytes are
             /// not unfiltered.
@@ -1692,6 +1831,13 @@ namespace PdfSharper.Pdf
                 {
                     if (value == null)
                         throw new ArgumentNullException("value");
+                    if (_value.SequenceEqual(value))
+                        return;
+
+                    if (!_ownerDictionary.Owner.UnderConstruction)
+                    {
+                        _ownerDictionary.FlagAsDirty();
+                    }
                     _value = value;
                     _ownerDictionary.Elements.SetInteger(Keys.Length, value.Length);
                 }
@@ -1904,8 +2050,8 @@ namespace PdfSharper.Pdf
             get
             {
 #if true
-                return String.Format(CultureInfo.InvariantCulture, "dictionary({0},[{1}])={2}", 
-                    ObjectID.DebuggerDisplay, 
+                return String.Format(CultureInfo.InvariantCulture, "dictionary({0},[{1}])={2}",
+                    ObjectID.DebuggerDisplay,
                     Elements.Count,
                     _elements.DebuggerDisplay);
 #else
