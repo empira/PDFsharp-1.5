@@ -365,7 +365,7 @@ namespace PdfSharper.Drawing
         /// </summary>
         public System.Drawing.Color ToGdiColor()
         {
-            return System.Drawing.Color.FromArgb((int)(_a * 255), _r, _g, _b);
+            return System.Drawing.Color.FromArgb((int)(_a * 255), (int)(_r * 255), (int)(_g * 255), (int)(_b * 255));
         }
 #endif
 
@@ -375,7 +375,7 @@ namespace PdfSharper.Drawing
         /// </summary>
         public WpfColor ToWpfColor()
         {
-            return WpfColor.FromArgb((byte)(_a * 255), _r, _g, _b);
+            return WpfColor.FromArgb((byte)(_a * 255), (byte)(_r * 255), (byte)(_g * 255), (byte)(_b * 255));
         }
 #endif
 

@@ -7,8 +7,8 @@
     <ProjectGuid>{6F98A822-41B0-4C7A-85A6-E95C1D3E88EF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PdfSharp</RootNamespace>
-    <AssemblyName>PdfSharp.Charting</AssemblyName>
+    <RootNamespace>PdfSharper</RootNamespace>
+    <AssemblyName>PdfSharper.Charting</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -145,7 +145,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PdfSharper\PDFsharper.csproj">
       <Project>{5a6055bc-bf86-4fdd-9f62-0109db7a303b}</Project>
-      <Name>PdfSharp</Name>
+      <Name>PDFsharper</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
