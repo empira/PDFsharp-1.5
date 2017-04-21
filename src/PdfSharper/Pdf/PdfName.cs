@@ -63,14 +63,6 @@ namespace PdfSharper.Pdf
         }
 
         /// <summary>
-        /// Determines whether the specified object is equal to this name.
-        /// </summary>
-        public override bool Equals(object obj)
-        {
-            return _value.Equals(obj);
-        }
-
-        /// <summary>
         /// Returns the hash code for this instance.
         /// </summary>
         public override int GetHashCode()

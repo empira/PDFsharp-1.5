@@ -87,5 +87,10 @@ namespace PdfSharper.Pdf
         {
             writer.WriteDocString(ToString());
         }
+
+        public override int GetHashCode()
+        {
+            return _value.GetHashCode();
+        }
     }
 }

@@ -326,6 +326,17 @@ namespace PdfSharper.Pdf
             get { return null; }
         }
 
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            foreach (var e in Elements)
+            {
+                hash = hash * 23 + e.Key.GetHashCode();
+                hash = hash * 23 + e.Value.GetHashCode();
+            }
+            return hash;
+        }
+
         /// <summary>
         /// Represents the interface to the elements of a PDF dictionary.
         /// </summary>
@@ -1449,14 +1460,14 @@ namespace PdfSharper.Pdf
                         if (existingItem is PdfObject)
                         {
                             PdfObject existingObject = existingItem as PdfObject;
-                            if (existingObject.IsIndirect && newValueObject != null && newValueObject.IsIndirect)
+                            if (existingObject.IsIndirect && newValueObject != null && newValueObject.IsIndirect) //indirect to indirect
                             {
                                 if (existingObject.ObjectNumber != newValueObject.ObjectNumber)
                                 {
                                     Owner.FlagAsDirty();
                                 }
                             }
-                            else if (existingObject.IsIndirect && newValueObject == null)//going from indirect to direct
+                            else if (existingObject.IsIndirect && newValueObject.IsIndirect == false)//going from indirect to direct
                             {
                                 Owner.FlagAsDirty();
                             }
@@ -1464,10 +1475,29 @@ namespace PdfSharper.Pdf
                             {
                                 Owner.FlagAsDirty();
                             }
+                            else
+                            {
+                                if (existingObject is PdfArray && newValue is PdfRectangle)
+                                {
+                                    PdfRectangle pdfRect = newValue as PdfRectangle;
+                                    PdfArray existingArray = existingObject as PdfArray;
+                                    if (CompareArrayValueToRectangleValue(existingArray.Elements[0], pdfRect.X1) == false ||
+                                        CompareArrayValueToRectangleValue(existingArray.Elements[1], pdfRect.Y1) == false ||
+                                        CompareArrayValueToRectangleValue(existingArray.Elements[2], pdfRect.X2) == false ||
+                                        CompareArrayValueToRectangleValue(existingArray.Elements[3], pdfRect.Y2) == false)
+                                    {
+                                        Owner.FlagAsDirty();
+                                    }
+                                }
+                                else if (!existingObject.Equals(newValueObject)) //direct to direct perform a compare
+                                {
+                                    Owner.FlagAsDirty();
+                                }
+                            }
                         }
                         else
                         {
-                            if (!ReferenceEquals(existingItem, newValue))
+                            if (!ReferenceEquals(existingItem, newValue) && !existingItem.Equals(newValue))
                             {
                                 Owner.FlagAsDirty();
                             }
@@ -1478,6 +1508,21 @@ namespace PdfSharper.Pdf
                         Owner.FlagAsDirty();
                     }
                 }
+            }
+
+            private bool CompareArrayValueToRectangleValue(PdfItem arrayValue, double rectangleValue)
+            {
+                if (arrayValue is PdfReal)
+                {
+                    return arrayValue.GetHashCode() == rectangleValue.GetHashCode();
+                }
+
+                if (arrayValue is PdfInteger)
+                {
+                    return arrayValue.GetHashCode() == ((int)rectangleValue).GetHashCode();
+                }
+
+                return false;
             }
 
             /// <summary>

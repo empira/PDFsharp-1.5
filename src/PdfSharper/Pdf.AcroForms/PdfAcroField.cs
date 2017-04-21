@@ -54,6 +54,23 @@ namespace PdfSharper.Pdf.AcroForms
             : base(document)
         {
             _needsAppearances = needsAppearance;
+            SetDefaultFont();
+        }
+
+        private void SetDefaultFont()
+        {
+            var defaultFormResources = Owner.AcroForm.Elements.GetDictionary(PdfAcroForm.Keys.DR);
+            if (defaultFormResources != null && defaultFormResources.Elements.ContainsKey(PdfResources.Keys.Font))
+            {
+                var fontResourceItem = XForm.GetFontResourceItem("Arial", defaultFormResources);
+                if (string.IsNullOrEmpty(fontResourceItem.Key))
+                {
+                    fontResourceItem = XForm.GetFontResourceItem("Helvetica", defaultFormResources);
+                }
+
+                Debug.Assert(!string.IsNullOrEmpty(fontResourceItem.Key), "Unable to find a default font");
+                font = new XFont(fontResourceItem.Key.TrimStart('/'), 10);
+            }
         }
 
         /// <summary>
@@ -62,7 +79,12 @@ namespace PdfSharper.Pdf.AcroForms
         protected PdfAcroField(PdfDictionary dict)
             : base(dict)
         {
+
             DetermineAppearance();
+            if (font == null)
+            {
+                SetDefaultFont();
+            }
         }
 
         /// <summary>
@@ -145,7 +167,7 @@ namespace PdfSharper.Pdf.AcroForms
             }
         }
 
-        XFont font = new XFont("Arial", 10);
+        XFont font;
 
         /// <summary>
         /// Gets the font name that was obtained by analyzing the Fields' content-stream.
@@ -626,7 +648,7 @@ namespace PdfSharper.Pdf.AcroForms
                         else if (bc.Elements.Count == 1)
                             borderColor = XColor.FromGrayScale(bc.Elements.GetReal(0));
                         else if (bc.Elements.Count == 3)
-                            borderColor = XColor.FromArgb((int)(bc.Elements.GetReal(0) * 255.0), (int)(bc.Elements.GetReal(1) * 255.0), (int)(bc.Elements.GetReal(2) * 255.0));
+                            borderColor = XColor.FromArgb((float)bc.Elements.GetReal(0), (float)bc.Elements.GetReal(1), (float)bc.Elements.GetReal(2));
                         else if (bc.Elements.Count == 4)
                             borderColor = XColor.FromCmyk(bc.Elements.GetReal(0), bc.Elements.GetReal(1), bc.Elements.GetReal(2), bc.Elements.GetReal(3));
 
@@ -636,7 +658,7 @@ namespace PdfSharper.Pdf.AcroForms
                         else if (bg.Elements.Count == 1)
                             backColor = XColor.FromGrayScale(bg.Elements.GetReal(0));
                         else if (bg.Elements.Count == 3)
-                            backColor = XColor.FromArgb((int)(bg.Elements.GetReal(0) * 255.0), (int)(bg.Elements.GetReal(1) * 255.0), (int)(bg.Elements.GetReal(2) * 255.0));
+                            backColor = XColor.FromArgb((float)bg.Elements.GetReal(0), (float)bg.Elements.GetReal(1), (float)bg.Elements.GetReal(2));
                         else if (bg.Elements.Count == 4)
                             backColor = XColor.FromCmyk(bg.Elements.GetReal(0), bg.Elements.GetReal(1), bg.Elements.GetReal(2), bg.Elements.GetReal(3));
                     }

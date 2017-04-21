@@ -364,7 +364,7 @@ namespace PdfSharper.Pdf.IO
                 return Convert.ToInt32(value);
 
             PdfReference reference = value as PdfReference;
-            if (reference != null)
+            if (reference != null && reference.Value == null)
             {
                 ParserState state = SaveState();
                 object length = ReadObject(null, reference.ObjectID, false, false);
@@ -372,6 +372,13 @@ namespace PdfSharper.Pdf.IO
                 int len = ((PdfIntegerObject)length).Value;
                 dict.Elements["/Length"] = new PdfInteger(len);
                 return len;
+            }
+            else if (reference != null && reference.Value != null)
+            {
+                if (reference.Value is PdfIntegerObject)
+                {
+                    return ((PdfIntegerObject)reference.Value).Value;
+                }
             }
             throw new InvalidOperationException("Cannot retrieve stream length.");
         }
@@ -1182,7 +1189,7 @@ namespace PdfSharper.Pdf.IO
                                 objReference.Document = _document;
 
                             }
-                            else
+                            else// if (!trailerTable.Contains(objectID))
                             {
                                 PdfReference objReference = new PdfReference(objectID, position);
                                 trailerTable.Add(objReference);

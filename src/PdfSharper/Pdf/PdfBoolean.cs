@@ -27,6 +27,7 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System;
 using System.Diagnostics;
 using PdfSharper.Pdf.IO;
 
@@ -86,6 +87,11 @@ namespace PdfSharper.Pdf
         protected override void WriteObject(PdfWriter writer)
         {
             writer.Write(this);
+        }
+
+        public override int GetHashCode()
+        {
+            return _value.GetHashCode();
         }
     }
 }

@@ -62,5 +62,10 @@ namespace PdfSharper.Pdf
         /// The only instance of this class.
         /// </summary>
         public static readonly PdfNull Value = new PdfNull();
+
+        public override int GetHashCode()
+        {
+            return -1;
+        }
     }
 }

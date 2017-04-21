@@ -183,6 +183,16 @@ namespace PdfSharper.Pdf
             }
         }
 
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            foreach (var e in Elements)
+            {
+                hash = hash * 23 + e.GetHashCode();
+            }
+            return hash;
+        }
+
         /// <summary>
         /// Represents the elements of an PdfArray.
         /// </summary>

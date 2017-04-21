@@ -145,5 +145,10 @@ namespace PdfSharper.Pdf
             writer.Write(new PdfString(_value, _flags));
             writer.WriteEndObject();
         }
+
+        public override int GetHashCode()
+        {
+            return _value.GetHashCode();
+        }
     }
 }

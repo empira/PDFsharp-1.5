@@ -334,5 +334,11 @@ namespace PdfSharper.Pdf
         readonly PdfOutline _parent;
 
         readonly List<PdfOutline> _outlines = new List<PdfOutline>();
+
+        public override int GetHashCode()
+        {
+            //TODO: implement me if needed
+            return 0;
+        }
     }
 }

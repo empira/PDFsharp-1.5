@@ -208,6 +208,10 @@ namespace PdfSharper.Pdf.Advanced
         {
             return _objectID + " R";
         }
+        public override int GetHashCode()
+        {
+            return _objectID.GetHashCode();
+        }
 
         internal static PdfReferenceComparer Comparer
         {

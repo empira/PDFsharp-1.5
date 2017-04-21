@@ -70,5 +70,10 @@ namespace PdfSharper.Pdf
             writer.WriteRaw(" null ");
             writer.WriteEndObject();
         }
+
+        public override int GetHashCode()
+        {
+            return -1;
+        }
     }
 }

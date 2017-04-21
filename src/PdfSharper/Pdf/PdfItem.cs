@@ -83,5 +83,16 @@ namespace PdfSharper.Pdf
             this.AfterWrite?.Invoke(this, new PdfItemEventArgs() { Position = writer.Position });
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            if (GetType() != obj.GetType())
+                return false;
+
+            return this.GetHashCode() == obj.GetHashCode();
+        }
+
+        public abstract override int GetHashCode();
     }
 }

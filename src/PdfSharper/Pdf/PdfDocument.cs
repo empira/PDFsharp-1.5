@@ -416,7 +416,10 @@ namespace PdfSharper.Pdf
                         PdfReference[] allIds = _irefTable.AllReferences;
                         for (int i = maxObjectNumber; i < _irefTable._maxObjectNumber; i++)
                         {
-                            writeableTrailer.XRefTable.Add(allIds[i]);
+                            if (!writeableTrailer.XRefTable.Contains(allIds[i].ObjectID))
+                            {
+                                writeableTrailer.XRefTable.Add(allIds[i]);
+                            }
                         }
                     }
                 }
@@ -552,7 +555,7 @@ namespace PdfSharper.Pdf
             Catalog.PrepareForSave();
 
 #if true     
-            if (_openMode == PdfDocumentOpenMode.Modify || _trailers.Count == 1)
+            if ((_openMode == PdfDocumentOpenMode.Modify || _trailers.Count == 1) && !_trailers.Any(t => t.IsReadOnly))
             {
                 // Remove all unreachable objects (e.g. from deleted pages)
                 int removed = _irefTable.Compact();
@@ -1052,6 +1055,12 @@ namespace PdfSharper.Pdf
             {
                 return !(left == right);
             }
+        }
+
+
+        public override int GetHashCode()
+        {
+            return Guid.GetHashCode();
         }
     }
 }

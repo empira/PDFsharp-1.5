@@ -69,7 +69,7 @@ namespace PdfSharper.Drawing
             //_cs.GetType(); // Suppress warning
         }
 
-        XColor(byte alpha, byte red, byte green, byte blue)
+        XColor(byte alpha, float red, float green, float blue)
         {
             _cs = XColorSpace.Rgb;
             _a = alpha / 255f;
@@ -180,24 +180,17 @@ namespace PdfSharper.Drawing
         /// Creates an XColor structure from the specified 8-bit color values (red, green, and blue).
         /// The alpha value is implicitly 255 (fully opaque).
         /// </summary>
-        public static XColor FromArgb(int red, int green, int blue)
+        public static XColor FromArgb(float red, float green, float blue)
         {
-            CheckByte(red, "red");
-            CheckByte(green, "green");
-            CheckByte(blue, "blue");
-            return new XColor(255, (byte)red, (byte)green, (byte)blue);
+            return new XColor(255, red, green, blue);
         }
 
         /// <summary>
         /// Creates an XColor structure from the four ARGB component (alpha, red, green, and blue) values.
         /// </summary>
-        public static XColor FromArgb(int alpha, int red, int green, int blue)
+        public static XColor FromArgb(float alpha, float red, float green, float blue)
         {
-            CheckByte(alpha, "alpha");
-            CheckByte(red, "red");
-            CheckByte(green, "green");
-            CheckByte(blue, "blue");
-            return new XColor((byte)alpha, (byte)red, (byte)green, (byte)blue);
+            return new XColor(alpha, red, green, blue);
         }
 
 #if GDI
@@ -422,9 +415,12 @@ namespace PdfSharper.Drawing
         /// </summary>
         public override int GetHashCode()
         {
-            // ReSharper disable NonReadonlyFieldInGetHashCode
-            return ((byte)(_a * 255)) ^ _r ^ _g ^ _b;
-            // ReSharper restore NonReadonlyFieldInGetHashCode
+            int hash = 17;
+            // Suitable nullity checks etc, of course :)
+            hash = hash * 23 + _r.GetHashCode();
+            hash = hash * 23 + _g.GetHashCode();
+            hash = hash * 23 + _b.GetHashCode();
+            return hash;
         }
 
         /// <summary>
@@ -570,9 +566,9 @@ namespace PdfSharper.Drawing
         {
             // ReSharper disable LocalVariableHidesMember
             _cs = XColorSpace.Rgb;
-            int c = 255 - _r;
-            int m = 255 - _g;
-            int y = 255 - _b;
+            int c = 255 - (byte)(_r * 255);
+            int m = 255 - (byte)(_g * 255);
+            int y = 255 - (byte)(_b * 255);
             int k = Math.Min(c, Math.Min(m, y));
             if (k == 255)
                 _c = _m = _y = 0;
@@ -639,7 +635,7 @@ namespace PdfSharper.Drawing
         /// <summary>
         /// Gets or sets the red value.
         /// </summary>
-        public byte R
+        public float R
         {
             get { return _r; }
             set { _r = value; RgbChanged(); }
@@ -648,7 +644,7 @@ namespace PdfSharper.Drawing
         /// <summary>
         /// Gets or sets the green value.
         /// </summary>
-        public byte G
+        public float G
         {
             get { return _g; }
             set { _g = value; RgbChanged(); }
@@ -657,7 +653,7 @@ namespace PdfSharper.Drawing
         /// <summary>
         /// Gets or sets the blue value.
         /// </summary>
-        public byte B
+        public float B
         {
             get { return _b; }
             set { _b = value; RgbChanged(); }
@@ -668,7 +664,14 @@ namespace PdfSharper.Drawing
         /// </summary>
         internal uint Rgb
         {
-            get { return ((uint)_r << 16) | ((uint)_g << 8) | _b; }
+            get
+            {
+                byte r = (byte)(_r * 255);
+                byte g = (byte)(_g * 255);
+                byte b = (byte)(_b * 255);
+
+                return ((uint)r << 16) | ((uint)g << 8) | b;
+            }
         }
 
         /// <summary>
@@ -676,7 +679,16 @@ namespace PdfSharper.Drawing
         /// </summary>
         internal uint Argb
         {
-            get { return ((uint)(_a * 255) << 24) | ((uint)_r << 16) | ((uint)_g << 8) | _b; }
+
+            get
+            {
+                byte a = (byte)(_a * 255);
+                byte r = (byte)(_r * 255);
+                byte g = (byte)(_g * 255);
+                byte b = (byte)(_b * 255);
+
+                return ((uint)a << 24) | ((uint)r << 16) | ((uint)g << 8) | b;
+            }
         }
 
         /// <summary>
@@ -778,9 +790,9 @@ namespace PdfSharper.Drawing
             switch (ColorSpace)
             {
                 case XColorSpace.Rgb:
-                    array.Elements.Add(new PdfReal(R / 255d));
-                    array.Elements.Add(new PdfReal(G / 255d));
-                    array.Elements.Add(new PdfReal(B / 255d));
+                    array.Elements.Add(new PdfReal(R));
+                    array.Elements.Add(new PdfReal(G));
+                    array.Elements.Add(new PdfReal(B));
                     break;
                 case XColorSpace.Cmyk:
                     array.Elements.Add(new PdfReal(C));
@@ -836,9 +848,9 @@ namespace PdfSharper.Drawing
 
         float _a;  // alpha
 
-        byte _r;   // \
-        byte _g;   // |--- RGB
-        byte _b;   // /
+        float _r;   // \
+        float _g;   // |--- RGB
+        float _b;   // /
 
         float _c;  // \
         float _m;  // |--- CMYK

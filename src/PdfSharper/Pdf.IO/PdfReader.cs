@@ -423,7 +423,7 @@ namespace PdfSharper.Pdf.IO
                 document.xrefTable.CheckConsistence();
 #endif
 
-                if (openmode == PdfDocumentOpenMode.Modify)
+                if ((document._openMode == PdfDocumentOpenMode.Modify || document._trailers.Count == 1) && !document._trailers.Any(t => t.IsReadOnly))
                 {
                     // Create new or change existing document IDs.
                     if (document.Internals.SecondDocumentID == "")

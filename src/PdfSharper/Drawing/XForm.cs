@@ -496,11 +496,13 @@ namespace PdfSharper.Drawing
 
         internal static KeyValuePair<string, PdfItem> GetFontResourceItem(string familyName, PdfDictionary defaultFormResources)
         {
+            familyName = familyName.TrimStart('/');
             var fontList = defaultFormResources.Elements.GetDictionary(PdfResources.Keys.Font);
 
-            var font = fontList.Elements.FirstOrDefault(e => e.Key == familyName ||
+            var font = fontList.Elements.FirstOrDefault(e => e.Key.TrimStart('/') == familyName ||
                                                         fontList.Elements.GetDictionary(e.Key).Elements.GetName(PdfFont.Keys.BaseFont).TrimStart('/') ==
                                                         familyName);
+
             return font;
         }
 
