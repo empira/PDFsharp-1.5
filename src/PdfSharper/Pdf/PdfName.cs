@@ -71,6 +71,16 @@ namespace PdfSharper.Pdf
         }
 
         /// <summary>
+        /// Returns whether this object is equal to the passed in value.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>True if it matches by reference or value.</returns>
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        /// <summary>
         /// Gets the name as a string.
         /// </summary>
         public string Value
