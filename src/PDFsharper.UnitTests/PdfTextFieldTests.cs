@@ -5,6 +5,8 @@ using PdfSharper.Pdf;
 using System.IO;
 using PdfSharper.Pdf.Annotations;
 using PdfSharper.Drawing;
+using PdfSharper.Pdf.IO;
+using PdfSharper.Pdf.Advanced;
 
 namespace PDFsharper.UnitTests
 {
@@ -15,6 +17,7 @@ namespace PDFsharper.UnitTests
         public void RenderAppearance()
         {
             PdfDocument testDoc = new PdfDocument();
+            SetupAcroFormForDocument(testDoc);
 
             PdfTextField tf = new PdfTextField(testDoc);
             tf.Rectangle = new PdfRectangle(new XRect(0, 0, 200, 20));
@@ -30,11 +33,11 @@ namespace PDFsharper.UnitTests
             Assert.IsTrue(tf.Elements.ContainsKey(PdfAnnotation.Keys.AP), "Text Field should have rendered an appearance stream.");
         }
 
-
         [TestMethod]
         public void RenderAppearance_Empty()
         {
             PdfDocument testDoc = new PdfDocument();
+            SetupAcroFormForDocument(testDoc);
 
             PdfTextField tf = new PdfTextField(testDoc);
             tf.Rectangle = new PdfRectangle(new XRect(0, 0, 200, 20));
@@ -54,6 +57,27 @@ namespace PDFsharper.UnitTests
             tf.PrepareForSave();
 
             Assert.IsTrue(tf.Elements.ContainsKey(PdfAnnotation.Keys.AP), "Empty Text Field should have an appearance stream, used for background colors.");
+        }
+        private static void SetupAcroFormForDocument(PdfDocument testDoc)
+        {
+            testDoc.Catalog.AcroForm = new PdfAcroForm(testDoc);
+
+
+
+            PdfDictionary helvFont = new PdfDictionary(testDoc);
+            helvFont.Elements.SetName("/BaseFont", "Helvetica");
+            helvFont.Elements.SetName("/Name", "/Helv");
+            helvFont.Elements.SetName("/Subtype", "/Type1");
+            helvFont.Elements.SetName("/Type", "/Font");
+
+            testDoc.Internals.AddObject(helvFont);
+
+            PdfDictionary fontDictionary = new PdfDictionary(testDoc);
+            fontDictionary.Elements.SetReference("/Helv", helvFont);
+
+            PdfDictionary resourceDict = new PdfDictionary(testDoc);
+            resourceDict.Elements.SetObject("/Font", fontDictionary);
+            testDoc.AcroForm.Elements.SetObject("/DR", resourceDict);
         }
     }
 }
