@@ -135,6 +135,12 @@ namespace PdfSharper.Pdf.AcroForms
                 }
                 return _parent;
             }
+
+            internal set
+            {
+                _parent = value;
+                Elements.SetReference(Keys.Parent, value);
+            }
         }
         private PdfAcroField _parent;
 
@@ -309,9 +315,9 @@ namespace PdfSharper.Pdf.AcroForms
                 throw new ArgumentException("Field already belongs to another parent.");
 
             Fields.Add(kid, this.Page);
-
-            kid.Elements.SetReference(Keys.Parent, this.Reference);
+            kid.Parent = this;
         }
+
 
         /// <summary>
         /// Gets the names of all descendants of this field.
@@ -990,7 +996,10 @@ namespace PdfSharper.Pdf.AcroForms
                 _document._irefTable.Add(field);
                 page.Annotations.Elements.Add(field); //directly adding to elements prevents cast
                 Elements.Add(field);
+
+                field._parent = null;
             }
+
 
             /// <summary>
             /// Create a derived type like PdfTextField or PdfCheckBox if possible.
