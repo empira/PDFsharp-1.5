@@ -257,6 +257,7 @@ namespace PdfSharper.Pdf
                 cloneReference.Document = _document;
                 Reference = null;
                 PdfObject previousRevisionObject = Clone();
+                previousRevisionObject.Document = _document;
                 cloneReference.Value = previousRevisionObject;
 
                 foreach (PdfTrailer trailer in _document._trailers)
