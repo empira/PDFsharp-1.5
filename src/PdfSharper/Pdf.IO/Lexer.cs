@@ -77,6 +77,7 @@ namespace PdfSharper.Pdf.IO
         }
 
         internal bool HasReadNewLineOrCarriageReturn = false;
+        internal bool HasReadSpace = false;
 
         /// <summary>
         /// Reads the next token and returns its type. If the token starts with a digit, the parameter
@@ -462,7 +463,6 @@ namespace PdfSharper.Pdf.IO
                                 case Chars.LF:
                                     ch = ScanNextChar(false);
                                     continue;
-
                                 default:
                                     if (char.IsDigit(ch))  // First octal character.
                                     {
@@ -710,6 +710,11 @@ namespace PdfSharper.Pdf.IO
                 if (_currChar == Chars.LF || _currChar == Chars.CR)
                 {
                     HasReadNewLineOrCarriageReturn = true;
+                }
+
+                if (_currChar == Chars.SP)
+                {
+                    HasReadSpace = true;
                 }
 
                 switch (_currChar)

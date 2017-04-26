@@ -130,7 +130,7 @@ namespace PdfSharper.Pdf
                 foreach (PdfName name in names)
                 {
                     PdfObject obj = dict._elements[name] as PdfObject;
-                    if (obj != null && deepClone)
+                    if (obj != null && (deepClone || !obj.IsIndirect))
                     {
                         obj = obj.Clone();
                         // Recall that obj.Document is now null.
@@ -775,7 +775,7 @@ namespace PdfSharper.Pdf
             /// </summary>
             public void SetRectangle(string key, PdfRectangle rect)
             {
-                _elements[key] = rect;
+                this[key] = rect;
             }
 
             /// Converts the specified value to XMatrix.
@@ -823,7 +823,7 @@ namespace PdfSharper.Pdf
             /// </summary>
             public void SetMatrix(string key, XMatrix matrix)
             {
-                _elements[key] = PdfLiteral.FromMatrix(matrix);
+                this[key] = PdfLiteral.FromMatrix(matrix);
             }
 
             /// <summary>
@@ -878,7 +878,7 @@ namespace PdfSharper.Pdf
             /// </summary>
             public void SetDateTime(string key, DateTime value)
             {
-                _elements[key] = new PdfDate(value);
+                this[key] = new PdfDate(value);
             }
 
             internal int GetEnumFromName(string key, object defaultValue, bool create)
@@ -908,7 +908,7 @@ namespace PdfSharper.Pdf
             {
                 if (!(value is Enum))
                     throw new ArgumentException("value");
-                _elements[key] = new PdfName("/" + value);
+                this[key] = new PdfName("/" + value);
             }
 
             /// <summary>
@@ -1262,7 +1262,7 @@ namespace PdfSharper.Pdf
                     "You try to set an indirect object directly into a dictionary.");
 
                 // HACK?
-                _elements[key] = value;
+                this[key] = value;
             }
 
             ///// <summary>

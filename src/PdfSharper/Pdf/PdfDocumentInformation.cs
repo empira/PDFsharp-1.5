@@ -120,6 +120,11 @@ namespace PdfSharper.Pdf
             set { Elements.SetDateTime(Keys.ModDate, value); }
         }
 
+        public override void FlagAsDirty()
+        {
+            //we have already cloned this, no need to flag as dirty
+        }
+
         // TODO CustomProperties and meta data
 
         /// <summary>

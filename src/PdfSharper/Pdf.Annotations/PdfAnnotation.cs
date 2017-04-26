@@ -77,7 +77,6 @@ namespace PdfSharper.Pdf.Annotations
             set
             {
                 Elements.SetInteger(Keys.F, (int)value);
-                Elements.SetDateTime(Keys.M, DateTime.Now);
             }
         }
 
@@ -91,7 +90,6 @@ namespace PdfSharper.Pdf.Annotations
             set
             {
                 Elements.SetRectangle(Keys.Rect, value);
-                Elements.SetDateTime(Keys.M, DateTime.Now);
             }
         }
 
@@ -106,7 +104,6 @@ namespace PdfSharper.Pdf.Annotations
             set
             {
                 Elements.SetString(Keys.T, value);
-                Elements.SetDateTime(Keys.M, DateTime.Now);
             }
         }
 
@@ -120,7 +117,6 @@ namespace PdfSharper.Pdf.Annotations
             set
             {
                 Elements.SetString(Keys.Subj, value);
-                Elements.SetDateTime(Keys.M, DateTime.Now);
             }
         }
 
@@ -135,7 +131,6 @@ namespace PdfSharper.Pdf.Annotations
             set
             {
                 Elements.SetString(Keys.Contents, value);
-                Elements.SetDateTime(Keys.M, DateTime.Now);
             }
         }
 
@@ -168,7 +163,6 @@ namespace PdfSharper.Pdf.Annotations
                 // TODO: an array.SetColor(clr) function may be useful here
                 PdfArray array = new PdfArray(Owner, new PdfReal[] { new PdfReal(value.R / 255.0), new PdfReal(value.G / 255.0), new PdfReal(value.B / 255.0) });
                 Elements[Keys.C] = array;
-                Elements.SetDateTime(Keys.M, DateTime.Now);
             }
         }
 
@@ -191,6 +185,20 @@ namespace PdfSharper.Pdf.Annotations
                 if (value < 0 || value > 1)
                     throw new ArgumentOutOfRangeException("value", value, "Opacity must be a value in the range from 0 to 1.");
                 Elements.SetReal(Keys.CA, value);
+            }
+        }
+
+        public override void FlagAsDirty()
+        {
+            if (IsDirty || _document._trailers.Count == 1)
+            {
+                return;
+            }
+
+            base.FlagAsDirty();
+
+            if (!(this is PdfWidgetAnnotation))
+            {
                 Elements.SetDateTime(Keys.M, DateTime.Now);
             }
         }

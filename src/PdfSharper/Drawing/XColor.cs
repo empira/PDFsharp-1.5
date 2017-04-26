@@ -767,7 +767,7 @@ namespace PdfSharper.Drawing
         /// Gets or sets the gray scale value.
         /// </summary>
         // ReSharper disable InconsistentNaming
-        public double GS
+        public float GS
         // ReSharper restore InconsistentNaming
         {
             get { return _gs; }
@@ -801,11 +801,26 @@ namespace PdfSharper.Drawing
                     array.Elements.Add(new PdfReal(K));
                     break;
                 case XColorSpace.GrayScale:
-                    array.Elements.Add(new PdfReal(GS));
+                    int roundFactor = NumberOfDecimals(GS);
+                    array.Elements.Add(new PdfReal(Math.Round((double)GS, roundFactor)));
                     break;
             }
 
             return array;
+        }
+
+        private static int NumberOfDecimals(float value)
+        {
+            int places = -1;
+            float testValue;
+
+            do
+            {
+                places++;
+                testValue = (float)Math.Round((decimal)value, places);
+            } while (testValue != value);
+
+            return places;
         }
 
         /// <summary>

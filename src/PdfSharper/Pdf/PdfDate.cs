@@ -76,8 +76,8 @@ namespace PdfSharper.Pdf
         /// </summary>
         public override string ToString()
         {
-            string delta = _value.ToString("zzz").Replace(':', '\'');
-            return String.Format("D:{0:yyyyMMddHHmmss}{1}'", _value, delta);
+            string delta = _value.ToLocalTime().ToString("zzz").Replace(':', '\'');
+            return String.Format("D:{0:yyyyMMddHHmmss}{1}'", _value.ToLocalTime(), delta);
         }
 
         /// <summary>

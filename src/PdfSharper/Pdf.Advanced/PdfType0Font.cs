@@ -139,7 +139,6 @@ namespace PdfSharper.Pdf.Advanced
 
             // Use GetGlyphIndices to create the widths array.
             OpenTypeDescriptor descriptor = (OpenTypeDescriptor)FontDescriptor._descriptor;
-            StringBuilder w = new StringBuilder("[");
             if (_cmapInfo != null)
             {
                 int[] glyphIndices = _cmapInfo.GetGlyphIndices();
@@ -151,10 +150,22 @@ namespace PdfSharper.Pdf.Advanced
 
                 //TODO: optimize order of indices
 
+                PdfArray widthsArray = new PdfArray(_document);
+                widthsArray.IsCompact = true;
+
                 for (int idx = 0; idx < count; idx++)
-                    w.AppendFormat("{0}[{1}]", glyphIndices[idx], glyphWidths[idx]);
-                w.Append("]");
-                _descendantFont.Elements.SetValue(PdfCIDFont.Keys.W, new PdfLiteral(w.ToString()));
+                {
+                    widthsArray.Elements.Add(new PdfInteger(glyphIndices[idx]));
+
+                    PdfArray glyphWidth = new PdfArray(_document);
+                    glyphWidth.Elements.Add(new PdfInteger(glyphWidths[idx]));
+                    widthsArray.Elements.Add(glyphWidth);
+                }
+
+
+
+
+                _descendantFont.Elements.SetValue(PdfCIDFont.Keys.W, widthsArray);
 
             }
             _descendantFont.PrepareForSave();

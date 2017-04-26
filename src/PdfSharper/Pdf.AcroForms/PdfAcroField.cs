@@ -131,7 +131,16 @@ namespace PdfSharper.Pdf.AcroForms
                 {
                     var parentRef = Elements.GetReference(Keys.Parent);
                     if (parentRef != null)
-                        _parent = PdfAcroFieldCollection.CreateAcroField(parentRef.Value as PdfDictionary);
+                    {
+                        if (parentRef.Value is PdfAcroField)
+                        {
+                            _parent = parentRef.Value as PdfAcroField;
+                        }
+                        else
+                        {
+                            _parent = PdfAcroFieldCollection.CreateAcroField(parentRef.Value as PdfDictionary);
+                        }
+                    }
                 }
                 return _parent;
             }
@@ -314,6 +323,7 @@ namespace PdfSharper.Pdf.AcroForms
             if (kid.Elements.ContainsKey(Keys.Parent))
                 throw new ArgumentException("Field already belongs to another parent.");
 
+            FlagAsDirty();
             Fields.Add(kid, this.Page);
             kid.Parent = this;
         }
@@ -571,7 +581,7 @@ namespace PdfSharper.Pdf.AcroForms
         protected virtual void PrepareForSaveLocal()
         {
             //set or update the default appearance stream
-            string textAppearanceStream = string.Format("/{0} {1:0.##} Tf", Font.FamilyName, Font.Size);
+            string textAppearanceStream = string.Format("/{0} {1:0.##} Tf", ContentFontName, Font.Size);
 
             string colorStream = string.Empty;
 
@@ -952,6 +962,21 @@ namespace PdfSharper.Pdf.AcroForms
                     {
                         // Do type transformation
                         field = CreateAcroField(dict);
+                        if (field.Reference != null)
+                        {                            
+                            _document._irefTable.Remove(field.Reference);
+                            _document._irefTable.Add(field);
+
+                            foreach (var t in _document.GetSortedTrailers(false))
+                            {
+                                if (t.XRefTable.Contains(field.ObjectID))
+                                {
+                                    t.XRefTable.Remove(field.Reference);
+                                    t.XRefTable.Add(field);
+                                    break;
+                                }
+                            }
+                        }
                         Elements[index] = field.Reference;
                     }
                     return field;
@@ -994,6 +1019,7 @@ namespace PdfSharper.Pdf.AcroForms
             {
                 field.Elements.SetReference(Keys.Page, page.Reference);
                 _document._irefTable.Add(field);
+                page.Annotations.FlagAsDirty();
                 page.Annotations.Elements.Add(field); //directly adding to elements prevents cast
                 Elements.Add(field);
 

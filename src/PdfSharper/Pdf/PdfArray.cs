@@ -44,6 +44,8 @@ namespace PdfSharper.Pdf
     [DebuggerDisplay("{DebuggerDisplay}")]
     public class PdfArray : PdfObject, IEnumerable<PdfItem>
     {
+        public bool IsCompact { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PdfArray"/> class.
         /// </summary>
@@ -164,22 +166,36 @@ namespace PdfSharper.Pdf
 
         protected override void WriteObject(PdfWriter writer)
         {
-            writer.WriteBeginObject(this);
-            if (PaddingLeft > 0)
+            PdfWriterLayout originalLayout = writer.Layout;
+
+            if (IsCompact)
             {
-                writer.WriteRaw(new string(' ', PaddingLeft));
+                writer.Layout = PdfWriterLayout.Compact;
             }
 
-            int count = Elements.Count;
-            for (int idx = 0; idx < count; idx++)
+            try
             {
-                PdfItem value = Elements[idx];
-                value.Write(writer);
+                writer.WriteBeginObject(this);
+                if (PaddingLeft > 0)
+                {
+                    writer.WriteRaw(new string(' ', PaddingLeft));
+                }
+
+                int count = Elements.Count;
+                for (int idx = 0; idx < count; idx++)
+                {
+                    PdfItem value = Elements[idx];
+                    value.Write(writer);
+                }
+                writer.WriteEndObject();
+                if (PaddingRight > 0)
+                {
+                    writer.WriteRaw(new string(' ', PaddingRight));
+                }
             }
-            writer.WriteEndObject();
-            if (PaddingRight > 0)
+            finally
             {
-                writer.WriteRaw(new string(' ', PaddingRight));
+                writer.Layout = originalLayout;
             }
         }
 

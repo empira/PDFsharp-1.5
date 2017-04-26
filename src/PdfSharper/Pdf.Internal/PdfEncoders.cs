@@ -328,6 +328,7 @@ namespace PdfSharper.Pdf.Internal
             }
 
             int count = bytes.Length;
+            int escapedNewLinesAdded = 0;
             StringBuilder pdf = new StringBuilder();
             if (!unicode)
             {
@@ -336,6 +337,12 @@ namespace PdfSharper.Pdf.Internal
                     pdf.Append("(");
                     for (int idx = 0; idx < count; idx++)
                     {
+                        if ((pdf.Length - escapedNewLinesAdded) % 256 == 0)
+                        {
+                            pdf.Append("\\\r");
+                            escapedNewLinesAdded++;
+                        }
+
                         char ch = (char)bytes[idx];
                         if (ch < 32)
                         {

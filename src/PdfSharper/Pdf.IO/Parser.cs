@@ -385,6 +385,7 @@ namespace PdfSharper.Pdf.IO
 
         public PdfArray ReadArray(PdfArray array, bool includeReferences, PdfCrossReferenceTable xRefTable)
         {
+            _lexer.HasReadSpace = false;
             Debug.Assert(Symbol == Symbol.BeginArray);
             int arrayStart = _lexer.Position;
             _lexer.MoveToNonSpace();
@@ -413,6 +414,7 @@ namespace PdfSharper.Pdf.IO
                 array.Elements.Add(val);
             }
 
+            array.IsCompact = !_lexer.HasReadSpace;
             return array;
         }
 
@@ -510,7 +512,14 @@ namespace PdfSharper.Pdf.IO
 
                     case Symbol.String:
                         //stack.Shift(new PdfString(lexer.Token, PdfStringFlags.PDFDocEncoding));
-                        _stack.Shift(new PdfString(_lexer.Token, PdfStringFlags.RawEncoding));
+                        if (_lexer.Token.StartsWith("D:"))
+                        {
+                            _stack.Shift(new PdfDate(_lexer.Token));
+                        }
+                        else
+                        {
+                            _stack.Shift(new PdfString(_lexer.Token, PdfStringFlags.RawEncoding));
+                        }
                         break;
 
                     case Symbol.UnicodeString:

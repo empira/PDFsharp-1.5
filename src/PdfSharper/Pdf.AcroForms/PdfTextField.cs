@@ -72,8 +72,12 @@ namespace PdfSharper.Pdf.AcroForms
             get { return Elements.GetString(Keys.V); }
             set
             {
+                bool wasDirty = IsDirty;
                 Elements.SetString(Keys.V, value);
-                _needsAppearances = true;
+                if (wasDirty != IsDirty || _document._trailers.Count == 1)
+                {
+                    _needsAppearances = true;
+                }
             }
         }
 
@@ -393,11 +397,10 @@ namespace PdfSharper.Pdf.AcroForms
             }
 
             PdfReference normalStateAppearanceReference = ap.Elements.GetReference("/N");
-            if (normalStateAppearanceReference == null || normalStateAppearanceReference.ObjectNumber == form.PdfForm.ObjectNumber)
+            if (normalStateAppearanceReference == null || _document._trailers.Count > 1) //incremental update mode, must create a new stream
             {
-                //TODO: is this copying too much?
                 // Set XRef to normal state
-                ap.Elements["/N"] = PdfObject.DeepCopyClosure(Owner, form.PdfForm);
+                ap.Elements["/N"] = form.PdfForm;
 
 
                 var normalStateDict = ap.Elements.GetDictionary("/N");

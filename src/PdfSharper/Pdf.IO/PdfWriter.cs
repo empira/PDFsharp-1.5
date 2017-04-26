@@ -343,7 +343,10 @@ namespace PdfSharper.Pdf.IO
             {
                 if (obj is PdfArray)
                 {
-                    WriteSeparator(CharCat.Delimiter);
+                    if (_layout != PdfWriterLayout.Compact)
+                    {
+                        WriteSeparator(CharCat.Delimiter);
+                    }
                     WriteRaw('[');
                 }
                 else if (obj is PdfDictionary)
