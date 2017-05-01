@@ -316,14 +316,15 @@ namespace PdfSharper.Drawing.Pdf
 
             if (_renderer.Owner.Version >= 14 && color.ColorSpace != XColorSpace.GrayScale && (_realizedFillColor.A != color.A || _realizedNonStrokeOverPrint != overPrint))
             {
-
-                PdfExtGState extGState = _renderer.Owner.ExtGStateTable.GetExtGStateNonStroke(color.A, overPrint);
-                string gs = _renderer.Resources.AddExtGState(extGState);
-                _renderer.AppendFormatString("{0} gs\n", gs);
-
                 // Must create transparency group.
                 if (_renderer._page != null && color.A < 1)
+                {
+                    PdfExtGState extGState = _renderer.Owner.ExtGStateTable.GetExtGStateNonStroke(color.A, overPrint);
+                    string gs = _renderer.Resources.AddExtGState(extGState);
+                    _renderer.AppendFormatString("{0} gs\n", gs);
+
                     _renderer._page.TransparencyUsed = true;
+                }
             }
             _realizedFillColor = color;
             _realizedNonStrokeOverPrint = overPrint;

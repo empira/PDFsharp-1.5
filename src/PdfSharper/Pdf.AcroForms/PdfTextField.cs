@@ -444,10 +444,14 @@ namespace PdfSharper.Pdf.AcroForms
                 xobj.CreateStream(new byte[] { });
 
             string s = xobj.Stream.ToString();
-            // Thank you Adobe: Without putting the content in 'EMC brackets'
-            // the text is not rendered by PDF Reader 9 or higher.
-            s = "/Tx BMC\n" + s + "\nEMC";
-            ap.Elements.GetDictionary("/N").Stream.Value = new RawEncoding().GetBytes(s);
+            if (!string.IsNullOrEmpty(s))
+            {
+                ap.Elements.GetDictionary("/N").Stream.Value = new RawEncoding().GetBytes(s);
+            }
+            else
+            {
+                Elements.Remove(PdfAnnotation.Keys.AP);
+            }
 #endif
         }
 

@@ -1771,6 +1771,7 @@ namespace PdfSharper.Drawing.Pdf
             if (_streamMode == StreamMode.Text)
             {
                 _content.Append("ET\n");
+                _content.Append("EMC\n");
                 _streamMode = StreamMode.Graphic;
             }
 
@@ -1786,7 +1787,10 @@ namespace PdfSharper.Drawing.Pdf
             if (_streamMode != StreamMode.Graphic)
             {
                 if (_streamMode == StreamMode.Text)
+                {
                     _content.Append("ET\n");
+                    _content.Append("EMC\n");
+                }
 
                 _streamMode = StreamMode.Graphic;
             }
@@ -1800,6 +1804,7 @@ namespace PdfSharper.Drawing.Pdf
             if (_streamMode != StreamMode.Text)
             {
                 _streamMode = StreamMode.Text;
+                _content.Append("/Tx BMC\n");
                 _content.Append("BT\n");
                 // Text matrix is empty after BT
                 _gfxState.RealizedTextPosition = new XPoint();
@@ -2082,12 +2087,15 @@ namespace PdfSharper.Drawing.Pdf
         /// </summary>
         void SaveState()
         {
-            Debug.Assert(_streamMode == StreamMode.Graphic, "Cannot save state in text mode.");
+            if (_content.Length > 0)
+            {
+                Debug.Assert(_streamMode == StreamMode.Graphic, "Cannot save state in text mode.");
 
-            _gfxStateStack.Push(_gfxState);
-            _gfxState = _gfxState.Clone();
-            _gfxState.Level = _gfxStateStack.Count;
-            Append("q\n");
+                _gfxStateStack.Push(_gfxState);
+                _gfxState = _gfxState.Clone();
+                _gfxState.Level = _gfxStateStack.Count;
+                Append("q\n");
+            }
         }
 
         /// <summary>

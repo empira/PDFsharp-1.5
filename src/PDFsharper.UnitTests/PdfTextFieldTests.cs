@@ -56,8 +56,9 @@ namespace PDFsharper.UnitTests
 
             tf.PrepareForSave();
 
-            Assert.IsTrue(tf.Elements.ContainsKey(PdfAnnotation.Keys.AP), "Empty Text Field should have an appearance stream, used for background colors.");
+            Assert.IsFalse(tf.Elements.ContainsKey(PdfAnnotation.Keys.AP), "Empty Text Field should not have an appearance stream");
         }
+
         private static void SetupAcroFormForDocument(PdfDocument testDoc)
         {
             testDoc.Catalog.AcroForm = new PdfAcroForm(testDoc);
