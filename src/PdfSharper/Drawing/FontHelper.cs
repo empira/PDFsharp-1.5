@@ -56,6 +56,7 @@ using Windows.UI.Xaml.Media;
 #endif
 using PdfSharper.Fonts;
 using PdfSharper.Fonts.OpenType;
+using PdfSharper.Fonts.AFM;
 
 namespace PdfSharper.Drawing
 {
@@ -67,49 +68,121 @@ namespace PdfSharper.Drawing
         /// <summary>
         /// Measure string directly from font data.
         /// </summary>
-        public static XSize MeasureString(string text, XFont font, XStringFormat stringFormat)
+        public static XSize MeasureString(string text, XFont font)
+        {
+            if (text == null)
+                throw new ArgumentNullException("text");
+            if (font == null)
+                throw new ArgumentNullException("font");
+            
+            XSize size = new XSize();
+            if (!string.IsNullOrEmpty(text))
+            {
+                AFMDetails afmDetails = AFMCache.Instance.GetFontMetricsByNameAndAttributes(font.FamilyName, font.Bold, font.Italic);
+                if (afmDetails != null)
+                {
+                    size = GetSizeByAFM(text, font, afmDetails);
+                }
+                else
+                {
+                    OpenTypeDescriptor descriptor = FontDescriptorCache.GetOrCreateDescriptorFor(font) as OpenTypeDescriptor;
+                    if(descriptor != null)
+                    {
+                        size = GetSizeByOpenTypeDescriptor(text, font, descriptor);
+                    }
+                }
+            }
+            
+            return size;
+        }
+
+        private static XSize GetSizeByOpenTypeDescriptor(string text, XFont font, OpenTypeDescriptor descriptor)
+        {
+            XSize size = new XSize();
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                if (descriptor != null)
+                {
+                    // Height is the sum of ascender and descender.
+                    // 11.49 = x * (10/1000)
+                    // 1149 = (Asc - Desc)T
+                    size.Height = (descriptor.Ascender - descriptor.Descender) * (font.Size / font.UnitsPerEm);
+                    Debug.Assert(descriptor.Ascender > 0);
+
+                    bool symbol = descriptor.FontFace.cmap.symbol;
+                    int length = text.Length;
+                    int width = 0;
+                    for (int idx = 0; idx < length; idx++)
+                    {
+                        char ch = text[idx];
+                        // HACK: Unclear what to do here.
+                        if (ch < 32)
+                            continue;
+
+                        if (symbol)
+                        {
+                            // Remap ch for symbol fonts.
+                            ch = (char)(ch | (descriptor.FontFace.os2.usFirstCharIndex & 0xFF00));  // @@@ refactor
+                                                                                                    // Used | instead of + because of: http://PdfSharper.codeplex.com/workitem/15954
+                        }
+                        int glyphIndex = descriptor.CharCodeToGlyphIndex(ch);
+                        width += descriptor.GlyphIndexToWidth(glyphIndex);
+                    }
+                    // What? size.Width = width * font.Size * (font.Italic ? 1 : 1) / descriptor.UnitsPerEm;
+                    size.Width = width * font.Size / descriptor.UnitsPerEm;
+
+                    // Adjust bold simulation.
+                    if ((font.GlyphTypeface.StyleSimulations & XStyleSimulations.BoldSimulation) == XStyleSimulations.BoldSimulation ||
+                        DoApplyBoldHack(font.FamilyName)) //BOLD hacks for helvetica
+                    {
+                        // Add 2% of the em-size for each character.
+                        // Unsure how to deal with white space. Currently count as regular character.
+                        size.Width += length * font.Size * Const.BoldEmphasis;
+                    }
+                }
+
+                Debug.Assert(descriptor != null, "No OpenTypeDescriptor.");
+            }
+
+            return new XSize();
+        }
+
+        private static XSize GetSizeByAFM(string text, XFont font, AFMDetails afmDetails)
         {
             XSize size = new XSize();
 
-            OpenTypeDescriptor descriptor = FontDescriptorCache.GetOrCreateDescriptorFor(font) as OpenTypeDescriptor;
-            if (descriptor != null)
+            if (!string.IsNullOrEmpty(text) && afmDetails != null)
             {
                 // Height is the sum of ascender and descender.
-                size.Height = (descriptor.Ascender + descriptor.Descender) * font.Size / font.UnitsPerEm;
-                Debug.Assert(descriptor.Ascender > 0);
-
-                bool symbol = descriptor.FontFace.cmap.symbol;
-                int length = text.Length;
                 int width = 0;
-                for (int idx = 0; idx < length; idx++)
+                int height = afmDetails.Ascender + afmDetails.Descender;
+                
+                for (int idx = 0; idx < text.Length; idx++)
                 {
-                    char ch = text[idx];
-                    // HACK: Unclear what to do here.
-                    if (ch < 32)
-                        continue;
-
-                    if (symbol)
-                    {
-                        // Remap ch for symbol fonts.
-                        ch = (char)(ch | (descriptor.FontFace.os2.usFirstCharIndex & 0xFF00));  // @@@ refactor
-                        // Used | instead of + because of: http://PdfSharper.codeplex.com/workitem/15954
-                    }
-                    int glyphIndex = descriptor.CharCodeToGlyphIndex(ch);
-                    width += descriptor.GlyphIndexToWidth(glyphIndex);
+                    int characterWidth = 0;
+                    afmDetails.CharacterWidths.TryGetValue(text[idx], out characterWidth);
+                    width += characterWidth;
                 }
-                // What? size.Width = width * font.Size * (font.Italic ? 1 : 1) / descriptor.UnitsPerEm;
-                size.Width = width * font.Size / descriptor.UnitsPerEm;
-
-                // Adjust bold simulation.
-                if ((font.GlyphTypeface.StyleSimulations & XStyleSimulations.BoldSimulation) == XStyleSimulations.BoldSimulation ||
-                    DoApplyBoldHack(font.FamilyName)) //BOLD hacks for helvetica
+                
+                if (width > 0)
                 {
-                    // Add 2% of the em-size for each character.
-                    // Unsure how to deal with white space. Currently count as regular character.
-                    size.Width += length * font.Size * Const.BoldEmphasis;
+                    size.Width = width * font.Size * .001F;
+                }
+                else
+                {
+                    size.Width = 250 * font.Size * .001F;
+                }
+
+                if(height > 0)
+                {
+                    size.Height = (afmDetails.BBoxURY - afmDetails.BBoxLLY) * font.Size * .001f;
+                }
+                else
+                {
+                    size.Height = 1200 * font.Size * .001f; ;
                 }
             }
-            Debug.Assert(descriptor != null, "No OpenTypeDescriptor.");
+
             return size;
         }
 

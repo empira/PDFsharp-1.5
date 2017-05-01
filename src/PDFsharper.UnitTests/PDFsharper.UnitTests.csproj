@@ -53,9 +53,12 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentReaderTests.cs" />
+    <Compile Include="Drawing.Layout\XTextFormatterTests.cs" />
+    <Compile Include="Drawing\FontHelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PdfTextFieldTests.cs" />
   </ItemGroup>

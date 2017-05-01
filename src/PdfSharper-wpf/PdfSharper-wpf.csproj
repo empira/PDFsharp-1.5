@@ -454,6 +454,15 @@
     <Compile Include="..\PdfSharper\Fonts\AdobeGlyphListForNewFonts.cs">
       <Link>Fonts\AdobeGlyphListForNewFonts.cs</Link>
     </Compile>
+    <Compile Include="..\PdfSharper\Fonts\AFM\AFMCache.cs">
+      <Link>Fonts\AFM\AFMCache.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts\AFM\AFMDetails.cs">
+      <Link>Fonts\AFM\AFMDetails.cs</Link>
+    </Compile>
+    <Compile Include="..\PdfSharper\Fonts\AFM\AFMSource.cs">
+      <Link>Fonts\AFM\AFMSource.cs</Link>
+    </Compile>
     <Compile Include="..\PdfSharper\Fonts\CMapInfo.cs">
       <Link>Fonts\CMapInfo.cs</Link>
     </Compile>
@@ -1154,6 +1163,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\mustRead.html">
+      <Link>Fonts\AFM\Files\mustRead.html</Link>
+    </EmbeddedResource>
     <Content Include="..\PdfSharper\SharpZipLib\ReadMe.txt">
       <Link>SharpZipLib\ReadMe.txt</Link>
     </Content>
@@ -1164,7 +1176,53 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\Courier-Bold.afm">
+      <Link>Fonts\AFM\Files\Courier-Bold.afm</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\Courier-Oblique.afm">
+      <Link>Fonts\AFM\Files\Courier-Oblique.afm</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\Courier.afm">
+      <Link>Fonts\AFM\Files\Courier.afm</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\Courier_BoldOblique.afm">
+      <Link>Fonts\AFM\Files\Courier_BoldOblique.afm</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\Helvetica-Bold.afm">
+      <Link>Fonts\AFM\Files\Helvetica-Bold.afm</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\Helvetica-BoldOblique.afm">
+      <Link>Fonts\AFM\Files\Helvetica-BoldOblique.afm</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\Helvetica-Oblique.afm">
+      <Link>Fonts\AFM\Files\Helvetica-Oblique.afm</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\Helvetica.afm">
+      <Link>Fonts\AFM\Files\Helvetica.afm</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\Symbol.afm">
+      <Link>Fonts\AFM\Files\Symbol.afm</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\Times-Bold.afm">
+      <Link>Fonts\AFM\Files\Times-Bold.afm</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\Times-BoldItalic.afm">
+      <Link>Fonts\AFM\Files\Times-BoldItalic.afm</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\Times-Italic.afm">
+      <Link>Fonts\AFM\Files\Times-Italic.afm</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\Times-New-Roman.afm">
+      <Link>Fonts\AFM\Files\Times-New-Roman.afm</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\Times-Roman.afm">
+      <Link>Fonts\AFM\Files\Times-Roman.afm</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharper\Fonts\AFM\Files\ZapfDingbats.afm">
+      <Link>Fonts\AFM\Files\ZapfDingbats.afm</Link>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -3647,19 +3647,19 @@ namespace PdfSharper.Drawing  // #??? aufr�umen
                 Debug.Assert(dy < .05 * gdiSize.Height, "MeasureString: height differs.");
             }
 #endif
-            return FontHelper.MeasureString(text, font, XStringFormats.Default);
+            return FontHelper.MeasureString(text, font);
 #endif
 #if WPF && !GDI
 #if !SILVERLIGHT
 #if DEBUG
             FormattedText formattedText = FontHelper.CreateFormattedText(text, font.WpfTypeface, font.Size, WpfBrushes.Black);
-            XSize size1 = FontHelper.MeasureString(text, font, null);
+            XSize size1 = FontHelper.MeasureString(text, font);
             XSize size2 = new XSize(formattedText.WidthIncludingTrailingWhitespace, formattedText.Height);
             //Debug.Assert(Math.Abs((size1.Height - size2.Height) * 10) < 1.0);
             return size1;
 #else
             // Same as above, but without code needed for Debug.Assert.
-            XSize size1 = FontHelper.MeasureString(text, font, null);
+            XSize size1 = FontHelper.MeasureString(text, font);
             return size1;
 #endif
 #else
@@ -3742,7 +3742,7 @@ namespace PdfSharper.Drawing  // #??? aufr�umen
 #endif
 #endif
 #if CORE || NETFX_CORE || UWP
-            XSize size = FontHelper.MeasureString(text, font, XStringFormats.Default);
+            XSize size = FontHelper.MeasureString(text, font);
             return size;
 #endif
         }

@@ -174,6 +174,9 @@
     <Compile Include="Fonts.OpenType\TableDirectoryEntry.cs" />
     <Compile Include="Fonts\AdobeGlyphList20.cs" />
     <Compile Include="Fonts\AdobeGlyphListForNewFonts.cs" />
+    <Compile Include="Fonts\AFM\AFMCache.cs" />
+    <Compile Include="Fonts\AFM\AFMDetails.cs" />
+    <Compile Include="Fonts\AFM\AFMSource.cs" />
     <Compile Include="Fonts\CMapInfo.cs" />
     <Compile Include="Fonts\FontResolvingOptions.cs" />
     <Compile Include="Fonts\PlatformFontResolverInfo.cs" />
@@ -403,12 +406,30 @@
     <EmbeddedResource Include="Resources\Messages.restext" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Fonts\AFM\Files\Courier-Bold.afm" />
+    <EmbeddedResource Include="Fonts\AFM\Files\Courier-Oblique.afm" />
+    <EmbeddedResource Include="Fonts\AFM\Files\Courier.afm" />
+    <EmbeddedResource Include="Fonts\AFM\Files\Courier_BoldOblique.afm" />
+    <EmbeddedResource Include="Fonts\AFM\Files\Helvetica-Bold.afm" />
+    <EmbeddedResource Include="Fonts\AFM\Files\Helvetica-BoldOblique.afm" />
+    <EmbeddedResource Include="Fonts\AFM\Files\Helvetica-Oblique.afm" />
+    <EmbeddedResource Include="Fonts\AFM\Files\Helvetica.afm" />
+    <EmbeddedResource Include="Fonts\AFM\Files\Symbol.afm" />
+    <EmbeddedResource Include="Fonts\AFM\Files\Times-Bold.afm" />
+    <EmbeddedResource Include="Fonts\AFM\Files\Times-BoldItalic.afm" />
+    <EmbeddedResource Include="Fonts\AFM\Files\Times-Italic.afm" />
+    <EmbeddedResource Include="Fonts\AFM\Files\Times-New-Roman.afm" />
+    <EmbeddedResource Include="Fonts\AFM\Files\Times-Roman.afm" />
+    <EmbeddedResource Include="Fonts\AFM\Files\ZapfDingbats.afm" />
     <None Include="SharpZipLib\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Drawing\internal\" />
     <Folder Include="Resources\images\" />
     <Folder Include="SharpZipLib\SharpZip\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Fonts\AFM\Files\mustRead.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
