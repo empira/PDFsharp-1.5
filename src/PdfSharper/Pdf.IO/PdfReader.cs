@@ -35,6 +35,7 @@ using PdfSharper.Pdf.Advanced;
 using PdfSharper.Pdf.Security;
 using PdfSharper.Pdf.Internal;
 using System.Linq;
+using PdfSharper.Pdf.AcroForms;
 
 namespace PdfSharper.Pdf.IO
 {
@@ -278,6 +279,9 @@ namespace PdfSharper.Pdf.IO
         /// </summary>
         public static PdfDocument Open(Stream stream, string password, PdfDocumentOpenMode openmode, PdfPasswordProvider passwordProvider)
         {
+            if (!stream.CanRead || !stream.CanSeek)
+                throw new ArgumentException("Cannot read document from an undreadable or unseekable stream.");
+
             PdfDocument document;
             try
             {
@@ -382,6 +386,9 @@ namespace PdfSharper.Pdf.IO
                 //point to the latest version for everything
                 document._irefTable.FixXRefs(true);
 
+                bool signaturePresent = document.Internals.GetAllObjects().OfType<PdfDictionary>().Any(pd => pd.Elements.GetString(PdfSignatureField.Keys.Type) == "/Sig");
+
+
                 if (foundNonCrossRef)
                 {
                     foreach (var trailer in document._trailers)
@@ -389,7 +396,7 @@ namespace PdfSharper.Pdf.IO
                         trailer.IsReadOnly = true;
                     }
                 }
-                else if (document._trailers.All(t => t is PdfCrossReferenceStream)) //we don't support writing CrossRef streams, flatten them
+                else if (document._trailers.All(t => t is PdfCrossReferenceStream) && !signaturePresent) //we don't support writing CrossRef streams, flatten them
                 {
                     document._trailers.Clear();
                     document._irefTable.Compact();
@@ -405,6 +412,10 @@ namespace PdfSharper.Pdf.IO
                     document._irefTable.CheckConsistence();
 
                     document._trailers.Add(document._trailer);
+                }
+                else if (document._trailers.All(t => t is PdfCrossReferenceStream) && signaturePresent) //cannot flatten, leave it
+                {
+                    document._trailers.ForEach(t => t.IsReadOnly = true);
                 }
 
                 // Encrypt all objects.
@@ -452,6 +463,16 @@ namespace PdfSharper.Pdf.IO
                     document._irefTable.CheckConsistence();
                     document._irefTable.Renumber();
                     document._irefTable.CheckConsistence();
+                }
+
+                if (signaturePresent) //original stream must be preserved for the signature
+                {
+                    using (MemoryStream msCopy = new MemoryStream((int)stream.Length))
+                    {
+                        stream.Seek(0, SeekOrigin.Begin);
+                        stream.CopyTo(msCopy);
+                        document.fileContents = msCopy.ToArray();
+                    }
                 }
 
                 document.UnderConstruction = false;
