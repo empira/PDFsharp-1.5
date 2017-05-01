@@ -963,7 +963,7 @@ namespace PdfSharper.Pdf.AcroForms
                         // Do type transformation
                         field = CreateAcroField(dict);
                         if (field.Reference != null)
-                        {                            
+                        {
                             _document._irefTable.Remove(field.Reference);
                             _document._irefTable.Add(field);
 
@@ -1019,8 +1019,11 @@ namespace PdfSharper.Pdf.AcroForms
             {
                 field.Elements.SetReference(Keys.Page, page.Reference);
                 _document._irefTable.Add(field);
-                page.Annotations.FlagAsDirty();
-                page.Annotations.Elements.Add(field); //directly adding to elements prevents cast
+                if (field.GetType() != typeof(PdfGenericField))
+                {
+                    page.Annotations.FlagAsDirty();
+                    page.Annotations.Elements.Add(field); //directly adding to elements prevents cast
+                }
                 Elements.Add(field);
 
                 field._parent = null;
