@@ -188,32 +188,32 @@ namespace PdfSharp.Pdf
         PdfPage _destinationPage;
 
         /// <summary>
-        /// Gets or sets the left postion of the page positioned at the left side of the window.
+        /// Gets or sets the left position of the page positioned at the left side of the window.
         /// Applies only if PageDestinationType is Xyz, FitV, FitR, or FitBV.
         /// </summary>
-        public double Left
+        public double? Left
         {
             get { return _left; }
             set { _left = value; }
         }
-        double _left = double.NaN;
+        double? _left = null;
 
         /// <summary>
-        /// Gets or sets the top postion of the page positioned at the top side of the window.
+        /// Gets or sets the top position of the page positioned at the top side of the window.
         /// Applies only if PageDestinationType is Xyz, FitH, FitR, ob FitBH.
         /// </summary>
-        public double Top
+        public double? Top
         {
             get { return _top; }
             set { _top = value; }
         }
-        double _top = double.NaN;
+        double? _top = null;
 
         /// <summary>
-        /// Gets or sets the right postion of the page positioned at the right side of the window.
+        /// Gets or sets the right position of the page positioned at the right side of the window.
         /// Applies only if PageDestinationType is FitR.
         /// </summary>
-        public double Right
+        public double Right  // Cannot be null in a valid PDF.
         {
             get { return _right; }
             set { _right = value; }
@@ -221,10 +221,10 @@ namespace PdfSharp.Pdf
         double _right = double.NaN;
 
         /// <summary>
-        /// Gets or sets the bottom postion of the page positioned at the bottom side of the window.
+        /// Gets or sets the bottom position of the page positioned at the bottom side of the window.
         /// Applies only if PageDestinationType is FitR.
         /// </summary>
-        public double Bottom
+        public double Bottom  // Cannot be null in a valid PDF.
         {
             get { return _bottom; }
             set { _bottom = value; }
@@ -235,12 +235,18 @@ namespace PdfSharp.Pdf
         /// Gets or sets the zoom faction of the page.
         /// Applies only if PageDestinationType is Xyz.
         /// </summary>
-        public double Zoom
+        public double? Zoom
         {
             get { return _zoom; }
-            set { _zoom = value; }
+            set
+            {
+                if (value.HasValue && value.Value == 0)
+                    _zoom = null;
+                else
+                    _zoom = value;
+            }
         }
-        double _zoom; // PDF teats 0 and null equally.
+        double? _zoom; // PDF treats 0 and null equally.
 
         /// <summary>
         /// Gets or sets whether the outline item is opened (or expanded).
@@ -405,8 +411,8 @@ namespace PdfSharp.Pdf
             // ReSharper disable HeuristicUnreachableCode
 #pragma warning disable 162
 
-            // The destination page may not yet transformed to PdfPage.
-            PdfDictionary destPage = (PdfDictionary)((PdfReference)(destination.Elements[0])).Value;
+            // The destination page may not yet have been transformed to PdfPage.
+            PdfDictionary destPage = (PdfDictionary)((PdfReference)destination.Elements[0]).Value;
             PdfPage page = destPage as PdfPage;
             if (page == null)
                 page = new PdfPage(destPage);
@@ -418,11 +424,11 @@ namespace PdfSharp.Pdf
                 PageDestinationType = (PdfPageDestinationType)Enum.Parse(typeof(PdfPageDestinationType), type.Value.Substring(1), true);
                 switch (PageDestinationType)
                 {
-                    // [page /XYZ left top zoom]
+                    // [page /XYZ left top zoom] -- left, top, and zoom can be null.
                     case PdfPageDestinationType.Xyz:
-                        Left = destination.Elements.GetReal(2);
-                        Top = destination.Elements.GetReal(3);
-                        Zoom = destination.Elements.GetReal(4);
+                        Left = destination.Elements.GetNullableReal(2);
+                        Top = destination.Elements.GetNullableReal(3);
+                        Zoom = destination.Elements.GetNullableReal(4); // For this parameter, null and 0 have the same meaning.
                         break;
 
                     // [page /Fit]
@@ -430,17 +436,18 @@ namespace PdfSharp.Pdf
                         // /Fit has no parameters.
                         break;
 
-                    // [page /FitH top]
+                    // [page /FitH top] -- top can be null.
                     case PdfPageDestinationType.FitH:
-                        Top = destination.Elements.GetReal(2);
+                        Top = destination.Elements.GetNullableReal(2);
                         break;
 
-                    // [page /FitV left]
+                    // [page /FitV left] -- left can be null.
                     case PdfPageDestinationType.FitV:
-                        Left = destination.Elements.GetReal(2);
+                        Left = destination.Elements.GetNullableReal(2);
                         break;
 
-                    // [page /FitR left bottom right top]
+                    // [page /FitR left bottom right top] -- left, bottom, right, and top must not be null.
+                    // TODO An exception in GetReal leads to an inconsistent document. Deal with that - e.g. by registering the corruption and preventing the user from saving the corrupted document.
                     case PdfPageDestinationType.FitR:
                         Left = destination.Elements.GetReal(2);
                         Bottom = destination.Elements.GetReal(3);
@@ -453,12 +460,12 @@ namespace PdfSharp.Pdf
                         // /Fit has no parameters.
                         break;
 
-                    // [page /FitBH top]
+                    // [page /FitBH top] -- top can be null.
                     case PdfPageDestinationType.FitBH:
                         Top = destination.Elements.GetReal(2);
                         break;
 
-                    // [page /FitBV left]
+                    // [page /FitBV left] -- left can be null.
                     case PdfPageDestinationType.FitBV:
                         Left = destination.Elements.GetReal(2);
                         break;
@@ -515,7 +522,7 @@ namespace PdfSharp.Pdf
                     Elements[Keys.Last] = _outlines[_outlines.Count - 1].Reference;
 
                     // TODO: /Count - the meaning is not completely clear to me.
-                    // Get PDFs created with Acrobat and analyse what to implement.
+                    // Get PDFs created with Acrobat and analyze what to implement.
                     if (OpenCount > 0)
                         Elements[Keys.Count] = new PdfInteger(OpenCount);
                 }
@@ -531,7 +538,6 @@ namespace PdfSharp.Pdf
 
                     // Has destination?
                     if (DestinationPage != null)
-                        //Elements[Keys.Dest] = new PdfArray(Owner, DestinationPage.Reference, new PdfLiteral("/XYZ null null 0"));
                         Elements[Keys.Dest] = CreateDestArray();
 
                     // Not the first element?
@@ -632,7 +638,19 @@ namespace PdfSharp.Pdf
         /// </summary>
         string Fd(double value)
         {
-            return Double.IsNaN(value) ? "null" : value.ToString("#.##", CultureInfo.InvariantCulture);
+            if (Double.IsNaN(value))
+                throw new InvalidOperationException("Value is not a valid Double.");
+            return value.ToString("#.##", CultureInfo.InvariantCulture);
+
+            //return Double.IsNaN(value) ? "null" : value.ToString("#.##", CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Format nullable double.
+        /// </summary>
+        string Fd(double? value)
+        {
+            return value.HasValue ? value.Value.ToString("#.##", CultureInfo.InvariantCulture) : "null";
         }
 
         internal override void WriteObject(PdfWriter writer)
@@ -662,7 +680,7 @@ namespace PdfSharp.Pdf
         {
             StringBuilder result = new StringBuilder();
             foreach (char ch in text)
-                result.Append((uint)ch < 256 ? ch : '?');
+                result.Append((uint)ch < 256 ? (ch != '\r' && ch != '\n' ? ch : ' ') : '?');
             return result.ToString();
         }
 #endif

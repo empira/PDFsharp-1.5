@@ -123,9 +123,15 @@ namespace PdfSharp.Pdf
         /// <param name="value">The value.</param>
         public PdfString(string value)
         {
+#if true
+            if (!IsRawEncoding(value))
+                _flags = PdfStringFlags.Unicode;
+            _value = value;
+#else
             CheckRawEncoding(value);
             _value = value;
             //_flags = PdfStringFlags.RawEncoding;
+#endif
         }
 
         /// <summary>
@@ -294,6 +300,20 @@ namespace PdfSharp.Pdf
             {
                 Debug.Assert(s[idx] < 256, "RawString contains invalid character.");
             }
+        }
+
+        static bool IsRawEncoding(string s)
+        {
+            if (String.IsNullOrEmpty(s))
+                return true;
+
+            int length = s.Length;
+            for (int idx = 0; idx < length; idx++)
+            {
+                if (!(s[idx] < 256))
+                    return false;
+            }
+            return true;
         }
 
         /// <summary>

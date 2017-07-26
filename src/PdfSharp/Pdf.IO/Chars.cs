@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+ï»¿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -178,11 +178,11 @@ namespace PdfSharp.Pdf.IO
         /// <summary>
         /// The soft hyphen.
         /// </summary>
-        public const char SoftHyphen = '­';  // char(173)
+        public const char SoftHyphen = 'Â­';  // char(173)
         /// <summary>
         /// The currency sign.
         /// </summary>
-        public const char Currency = '¤';
+        public const char Currency = 'Â¤';
 
         // ReSharper restore InconsistentNaming
     }

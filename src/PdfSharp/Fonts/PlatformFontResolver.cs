@@ -211,9 +211,9 @@ namespace PdfSharp.Fonts
                     ReferenceEquals(fontSource, existingFontSource));
 #endif
 #else
-    // Win32 API cannot get font data from fonts created by private font collection,
-    // because this is handled internally in GDI+.
-    // Therefore the font source was created when the private font is added to the private font collection.
+                // Win32 API cannot get font data from fonts created by private font collection,
+                // because this is handled internally in GDI+.
+                // Therefore the font source was created when the private font is added to the private font collection.
                 if (!FontFactory.TryGetFontSourceByTypefaceKey(typefaceKey, out fontSource))
                 {
                     // Simplify styles.

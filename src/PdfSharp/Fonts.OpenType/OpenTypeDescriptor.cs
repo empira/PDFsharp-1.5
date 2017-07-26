@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+﻿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -125,7 +125,7 @@ namespace PdfSharp.Fonts.OpenType
             StrikeoutPosition = FontFace.os2.yStrikeoutPosition;
             StrikeoutSize = FontFace.os2.yStrikeoutSize;
 
-            // No documetation found how to get the set vertical stems width from the
+            // No documentation found how to get the set vertical stems width from the
             // TrueType tables.
             // The following formula comes from PDFlib Lite source code. Acrobat 5.0 sets
             // /StemV to 0 always. I think the value doesn't matter.

@@ -84,7 +84,7 @@ namespace PdfSharp.Fonts
                 if (FontResolverInfosByName.TryGetValue(typefaceKey, out fontResolverInfo))
                     return fontResolverInfo;
 
-                // Case: This typeface was not resolved before.
+                // Case: This typeface was not yet resolved before.
 
                 // Is there a custom font resolver available?
                 IFontResolver customFontResolver = GlobalFontSettings.FontResolver;
@@ -96,6 +96,13 @@ namespace PdfSharp.Fonts
                     // If resolved by custom font resolver register info and font source.
                     if (fontResolverInfo != null && !(fontResolverInfo is PlatformFontResolverInfo))
                     {
+                        // OverrideStyleSimulations is true only for internal quality tests.
+                        if (fontResolvingOptions.OverrideStyleSimulations)
+                        {
+                            // Override style simulation returned by custom font resolver.
+                            fontResolverInfo = new FontResolverInfo(fontResolverInfo.FaceName, fontResolvingOptions.MustSimulateBold, fontResolvingOptions.MustSimulateItalic, fontResolverInfo.CollectionNumber);
+                        }
+
                         string resolverInfoKey = fontResolverInfo.Key;
                         FontResolverInfo existingFontResolverInfo;
                         if (FontResolverInfosByName.TryGetValue(resolverInfoKey, out existingFontResolverInfo))

@@ -64,9 +64,11 @@ using SysSize = Windows.Foundation.Size;
 using SysRect = Windows.Foundation.Rect;
 #endif
 #if UWP
+using System.Numerics;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas.Geometry;
 using SysPoint = Windows.Foundation.Point;
 using SysSize = Windows.Foundation.Size;
 using SysRect = Windows.Foundation.Rect;
@@ -81,7 +83,7 @@ using PdfSharp.Pdf.Advanced;
 // ReSharper disable RedundantNameQualifier
 // ReSharper disable UseNameofExpression
 
-namespace PdfSharp.Drawing  // #??? aufräumen
+namespace PdfSharp.Drawing  // #??? Clean up
 {
     /// <summary>
     /// Holds information about the current state of the XGraphics object.
@@ -235,7 +237,7 @@ namespace PdfSharp.Drawing  // #??? aufräumen
             // Create a host that shows the visual.
             VisualPresenter vp = new VisualPresenter();
             vp.Children.Add(_dv);
-            // The canvan only contains the host of the DrawingVisual.
+            // The canvas only contains the host of the DrawingVisual.
             canvas.Children.Add(vp);
             _dc = _dv.RenderOpen();
             TargetContext = XGraphicTargetContext.WPF;
@@ -642,6 +644,16 @@ namespace PdfSharp.Drawing  // #??? aufräumen
         }
 #endif
 
+#if UWP
+        /// <summary>
+        /// Creates a new instance of the XGraphics class from a  Microsoft.Graphics.Canvas.CanvasDrawingSession object.
+        /// </summary>
+        public static XGraphics FromCanvasDrawingSession(CanvasDrawingSession drawingSession, XSize size, XGraphicsUnit unit)
+        {
+            return new XGraphics(drawingSession, size, unit, XPageDirection.Downwards);
+        }
+#endif
+
         /// <summary>
         /// Creates a new instance of the XGraphics class from a PdfSharp.Pdf.PdfPage object.
         /// </summary>
@@ -908,6 +920,9 @@ namespace PdfSharp.Drawing  // #??? aufräumen
                 {
                     _dc.Close();
 #if !SILVERLIGHT
+                    // Free resources. Only needed when running on a server, but does no harm with desktop applications.
+                    _dc.Dispatcher.InvokeShutdown();
+
                     _dv = null;
 #endif
                 }
@@ -965,7 +980,7 @@ namespace PdfSharp.Drawing  // #??? aufräumen
             get { return _pageDirection; }
             set
             {
-                // Is there really anybody who needes the concept of XPageDirection.Upwards?
+                // Is there really anybody who needs the concept of XPageDirection.Upwards?
                 if (value != XPageDirection.Downwards)
                     throw new NotImplementedException("PageDirection must be XPageDirection.Downwards in current implementation.");
             }
@@ -980,7 +995,7 @@ namespace PdfSharp.Drawing  // #??? aufräumen
             get { return _pageOrigin; }
             set
             {
-                // Is there really anybody who needes to set the page origin?
+                // Is there really anybody who needs to set the page origin?
                 if (value != new XPoint())
                     throw new NotImplementedException("PageOrigin cannot be modified in current implementation.");
             }
@@ -1069,6 +1084,9 @@ namespace PdfSharp.Drawing  // #??? aufräumen
 #if WPF
                 if (TargetContext == XGraphicTargetContext.WPF)
                     _dc.DrawLine(pen.RealizeWpfPen(), new SysPoint(x1, y1), new SysPoint(x2, y2));
+#endif
+#if UWP
+                _cds.DrawLine(new Vector2((float)x1, (float)x2), new Vector2((float)x2, (float)y2), Colors.Red, (float)pen.Width);
 #endif
             }
 
@@ -1172,6 +1190,16 @@ namespace PdfSharp.Drawing  // #??? aufräumen
                     geo.Figures.Add(figure);
                     _dc.DrawGeometry(null, pen.RealizeWpfPen(), geo);
                 }
+#endif
+#if UWP
+                var pathBuilder = new CanvasPathBuilder(_cds.Device);
+                pathBuilder.BeginFigure((float)points[0].X, (float)points[0].Y, CanvasFigureFill.DoesNotAffectFills);
+                int length = points.Length;
+                for (int idx = 1; idx < length; idx++)
+                    pathBuilder.AddLine((float)points[idx].X, (float)points[idx].Y);
+                pathBuilder.EndFigure(CanvasFigureLoop.Open);
+                var geometry = CanvasGeometry.CreatePath(pathBuilder);
+                _cds.DrawGeometry(geometry, Colors.Red);
 #endif
             }
 
@@ -1337,7 +1365,7 @@ namespace PdfSharp.Drawing  // #??? aufräumen
                 return;
 
             if ((count - 1) % 3 != 0)
-                throw new ArgumentException("Invalid number of points for bezier curves. Number must fulfil 4+3n.", "points");
+                throw new ArgumentException("Invalid number of points for bezier curves. Number must fulfill 4+3n.", "points");
 
             if (_drawGraphics)
             {
@@ -2447,6 +2475,23 @@ namespace PdfSharp.Drawing  // #??? aufräumen
                         brush != null ? brush.RealizeWpfBrush() : null,
                         pen != null ? pen.RealizeWpfPen() : null,
                         new SysPoint(x + radiusX, y + radiusY), radiusX, radiusY);
+                }
+#endif
+#if UWP
+                //var cds = new CanvasDrawingSession();
+                //cds.DrawCachedGeometry();
+
+                if (TargetContext == XGraphicTargetContext.UWP)
+                {
+                    var radiusX = (float)width / 2;
+                    var radiusY = (float)height / 2;
+
+                    //var geometry = CanvasGeometry.CreateEllipse(_cds.Device, (float)x + radiusX, (float)y + radiusY, radiusX, radiusY);
+
+                    if (brush != null)
+                        _cds.FillEllipse((float)x + radiusX, (float)y + radiusY, radiusX, radiusY, Colors.Blue);
+                    if (pen != null)
+                        _cds.DrawEllipse((float)x + radiusX, (float)y + radiusY, radiusX, radiusY, pen.Color.ToUwpColor());
                 }
 #endif
             }
@@ -3629,6 +3674,9 @@ namespace PdfSharp.Drawing  // #??? aufräumen
                 throw new ArgumentNullException("font");
             if (stringFormat == null)
                 throw new ArgumentNullException("stringFormat");
+#if true
+            return FontHelper.MeasureString(text, font, stringFormat);
+#else
 
 #if GDI && !WPF
             //XSize gdiSize;  // #MediumTrust
@@ -3663,7 +3711,9 @@ namespace PdfSharp.Drawing  // #??? aufräumen
             return size1;
 #endif
 #else
-            return _dc.MeasureString(this, text, font, stringFormat);
+            // Use the WPF code also for Silverlight.
+            XSize size1 = FontHelper.MeasureString(text, font, null);
+            return size1;
 #endif
 
 #endif
@@ -3744,6 +3794,7 @@ namespace PdfSharp.Drawing  // #??? aufräumen
 #if CORE || NETFX_CORE || UWP
             XSize size = FontHelper.MeasureString(text, font, XStringFormats.Default);
             return size;
+#endif
 #endif
         }
 
@@ -4462,7 +4513,8 @@ namespace PdfSharp.Drawing  // #??? aufräumen
                 // nothing to do
 #endif
 #if GDI
-                if (TargetContext == XGraphicTargetContext.GDI)
+                if (TargetContext == XGraphicTargetContext.GDI &&
+                    _gfx != null)
                 {
                     try
                     {
@@ -4484,7 +4536,8 @@ namespace PdfSharp.Drawing  // #??? aufräumen
                 // nothing to do
 #endif
 #if GDI
-                if (TargetContext == XGraphicTargetContext.GDI)
+                if (TargetContext == XGraphicTargetContext.GDI &&
+                    _gfx != null)
                 {
                     try
                     {
@@ -4708,7 +4761,7 @@ namespace PdfSharp.Drawing  // #??? aufräumen
 
         /// <summary>
         /// Gets the current transformation matrix.
-        /// The transformation matrix canot be set. Insted use Save/Restore or BeginContainer/EndContainer to
+        /// The transformation matrix cannot be set. Instead use Save/Restore or BeginContainer/EndContainer to
         /// save the state before Transform is called and later restore to the previous transform.
         /// </summary>
         public XMatrix Transform
@@ -5121,7 +5174,7 @@ namespace PdfSharp.Drawing  // #??? aufräumen
 #endif
 
 #if UWP
-        CanvasDrawingSession _cds;
+        readonly CanvasDrawingSession _cds;
 #endif
 
         /// <summary>
@@ -5184,7 +5237,7 @@ namespace PdfSharp.Drawing  // #??? aufräumen
         //#if CORE || GDI
         //        /// <summary>
         //        /// Critical section used to serialize access to GDI+.
-        //        /// This may be necessary to use PDFsharp savely in a Web application.
+        //        /// This may be necessary to use PDFsharp safely in a Web application.
         //        /// </summary>
         //        internal static readonly object GdiPlus = new object();
         //#endif

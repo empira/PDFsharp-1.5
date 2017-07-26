@@ -288,6 +288,48 @@ namespace PdfSharp.Pdf
             }
 
             /// <summary>
+            /// Converts the specified value to double?.
+            /// If the value does not exist, the function returns null.
+            /// If the value is not convertible, the function throws an InvalidCastException.
+            /// If the index is out of range, the function throws an ArgumentOutOfRangeException.
+            /// </summary>
+            public double? GetNullableReal(int index)
+            {
+                if (index < 0 || index >= Count)
+                    throw new ArgumentOutOfRangeException("index", index, PSSR.IndexOutOfRange);
+
+                object obj = this[index];
+                if (obj == null)
+                    return null;
+
+                PdfNull @null = obj as PdfNull;
+                if (@null != null)
+                    return null;
+
+                PdfNullObject nullObject = obj as PdfNullObject;
+                if (nullObject != null)
+                    return null;
+
+                PdfReal real = obj as PdfReal;
+                if (real != null)
+                    return real.Value;
+
+                PdfRealObject realObject = obj as PdfRealObject;
+                if (realObject != null)
+                    return realObject.Value;
+
+                PdfInteger integer = obj as PdfInteger;
+                if (integer != null)
+                    return integer.Value;
+
+                PdfIntegerObject integerObject = obj as PdfIntegerObject;
+                if (integerObject != null)
+                    return integerObject.Value;
+
+                throw new InvalidCastException("GetReal: Object is not a number.");
+            }
+
+            /// <summary>
             /// Converts the specified value to string.
             /// If the value does not exist, the function returns the empty string.
             /// If the value is not convertible, the function throws an InvalidCastException.

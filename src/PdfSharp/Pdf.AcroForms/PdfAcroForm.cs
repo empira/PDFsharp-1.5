@@ -30,7 +30,7 @@
 namespace PdfSharp.Pdf.AcroForms
 {
     /// <summary>
-    /// Represents a interactive form (or AcroForm), a collection of fields for 
+    /// Represents an interactive form (or AcroForm), a collection of fields for
     /// gathering information interactively from the user.
     /// </summary>
     public sealed class PdfAcroForm : PdfDictionary

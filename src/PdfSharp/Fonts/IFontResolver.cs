@@ -30,7 +30,7 @@
 namespace PdfSharp.Fonts
 {
     /// <summary>
-    /// Provides functionality that convertes a requested typeface into a physical font.
+    /// Provides functionality that converts a requested typeface into a physical font.
     /// </summary>
     public interface IFontResolver
     {

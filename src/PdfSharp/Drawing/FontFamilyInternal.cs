@@ -40,6 +40,9 @@ using System.Windows.Markup;
 using WpfFontFamily = System.Windows.Media.FontFamily;
 #endif
 
+// ReSharper disable ConvertToAutoProperty
+// ReSharper disable ConvertPropertyToExpressionBody
+
 namespace PdfSharp.Drawing
 {
     /// <summary>
@@ -53,7 +56,7 @@ namespace PdfSharp.Drawing
         //
         // * Each XFontFamily object is just a handle to its FontFamilyInternal singleton.
         //
-        // * A FontFamilyInternal is is uniquely identified by its name. It
+        // * A FontFamilyInternal is uniquely identified by its name. It
         //    is not possible to use two different fonts that have the same
         //    family name.
 
@@ -199,7 +202,7 @@ namespace PdfSharp.Drawing
         internal string DebuggerDisplay
         // ReShar per restore UnusedMember.Local
         {
-            get { return string.Format(CultureInfo.InvariantCulture, "FontFamiliy: '{0}'", Name); }
+            get { return string.Format(CultureInfo.InvariantCulture, "FontFamily: '{0}'", Name); }
         }
     }
 }

@@ -60,14 +60,14 @@ using PdfSharp.Fonts.OpenType;
 namespace PdfSharp.Drawing
 {
     /// <summary>
-    /// Bunch of functions that do not have a better place.
+    /// A bunch of functions that do not have a better place.
     /// </summary>
     static class FontHelper
     {
         /// <summary>
         /// Measure string directly from font data.
         /// </summary>
-        public static XSize MeasureString(string text, XFont font, XStringFormat stringFormat)
+        public static XSize MeasureString(string text, XFont font, XStringFormat stringFormat_notyetused)
         {
             XSize size = new XSize();
 
@@ -199,6 +199,7 @@ namespace PdfSharp.Drawing
 
         /// <summary>
         /// Simple hack to make it work...
+        /// Returns Normal or Italic - bold, underline and such get lost here.
         /// </summary>
         public static WpfFontStyle FontStyleFromStyle(XFontStyle style)
         {
@@ -224,7 +225,7 @@ namespace PdfSharp.Drawing
         /// </summary>
         public static FontWeight FontWeightFromStyle(XFontStyle style)
         {
-            switch (style)
+            switch (style & XFontStyle.BoldItalic)  // Mask out Underline, Strikeout, etc.
             {
                 case XFontStyle.Regular:
                     return FontWeights.Normal;

@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+﻿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -204,8 +204,6 @@ namespace PdfSharp.Fonts.OpenType
             private set { _isFixedPitch = value; }  // BUG: never set
         }
         bool _isFixedPitch;
-
-        //Rect FontBBox;
 
         /// <summary>
         /// 

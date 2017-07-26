@@ -116,8 +116,10 @@ namespace PdfSharp.Internal
         /// </summary>
         public static void Break(bool always)
         {
+#if DEBUG
             if (always || Debugger.IsAttached)
                 Debugger.Break();
+#endif
         }
     }
 

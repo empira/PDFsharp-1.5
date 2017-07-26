@@ -186,7 +186,7 @@ namespace PdfSharp.Pdf.Advanced
         }
 
         /// <summary>
-        /// Gets an array of all cross references ordered ascendingly by their object identifier.
+        /// Gets an array of all cross references in ascending order by their object identifier.
         /// </summary>
         internal PdfReference[] AllReferences
         {
@@ -267,8 +267,14 @@ namespace PdfSharp.Pdf.Advanced
             ObjectTable.Clear();
             foreach (PdfReference iref in irefs)
             {
-                ObjectTable.Add(iref.ObjectID, iref);
-                _maxObjectNumber = Math.Max(_maxObjectNumber, iref.ObjectNumber);
+                // This if is needed for corrupt PDF files from the wild.
+                // Without the if, an exception will be thrown if the file contains duplicate IDs ("An item with the same key has already been added to the dictionary.").
+                // With the if, the first object with the ID will be used and later objects with the same ID will be ignored.
+                if (!ObjectTable.ContainsKey(iref.ObjectID))
+                {
+                    ObjectTable.Add(iref.ObjectID, iref);
+                    _maxObjectNumber = Math.Max(_maxObjectNumber, iref.ObjectNumber);
+                }
             }
             //CheckConsistence();
             removed -= ObjectTable.Count;
@@ -495,7 +501,7 @@ namespace PdfSharp.Pdf.Advanced
                             {
                                 PdfObject value = iref.Value;
 
-                                // Ignore unreachable objets.
+                                // Ignore unreachable objects.
                                 if (iref.Document != null)
                                 {
                                     // ... from trailer hack

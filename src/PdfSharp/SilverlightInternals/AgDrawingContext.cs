@@ -252,6 +252,7 @@ namespace System.Windows.Media
         /// <summary>
         /// Resembles the DrawString function of GDI+.
         /// </summary>
+        [Obsolete("Text may be drawn at the wrong position. Requires update!")]
         public void DrawString(XGraphics gfx, string text, XFont font, XBrush brush, XRect layoutRectangle, XStringFormat format)
         {
             double x = layoutRectangle.X;
@@ -347,16 +348,17 @@ namespace System.Windows.Media
             ActiveCanvas.Children.Add(textBlock);
         }
 
-        /// <summary>
-        /// Resembles the MeasureString function of GDI+.
-        /// </summary>
-        public XSize MeasureString(XGraphics gfx, string text, XFont font, XStringFormat stringFormat)
-        {
-            //Debug.Assert(font.GlyphTypeface != null);
-            TextBlock textBlock = new TextBlock();  //FontHelper.CreateTextBlock(text, font.GlyphTypeface, font.Size, null);
-            // Looks very much like a hack, but is the recommended way documented by Microsoft.
-            return new XSize(textBlock.ActualWidth, textBlock.ActualHeight);
-        }
+        ///// <summary>
+        ///// Resembles the MeasureString function of GDI+.
+        ///// </summary>
+        //[Obsolete("Use XGraphics.MeasureString()")]
+        //public XSize MeasureString(XGraphics gfx, string text, XFont font, XStringFormat stringFormat)
+        //{
+        //    //Debug.Assert(font.GlyphTypeface != null);
+        //    TextBlock textBlock = new TextBlock();  //FontHelper.CreateTextBlock(text, font.GlyphTypeface, font.Size, null);
+        //    // Looks very much like a hack, but is the recommended way documented by Microsoft.
+        //    return new XSize(textBlock.ActualWidth, textBlock.ActualHeight);
+        //}
 
         /// <summary>
         /// Create new canvas and add it to the children of the current canvas.

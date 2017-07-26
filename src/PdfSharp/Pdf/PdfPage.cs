@@ -71,9 +71,11 @@ namespace PdfSharp.Pdf
             : base(dict)
         {
             // Set Orientation depending on /Rotate.
-            int rotate = Elements.GetInteger(InheritablePageKeys.Rotate);
-            if (Math.Abs((rotate / 90)) % 2 == 1)
-                _orientation = PageOrientation.Landscape;
+
+            //!!!modTHHO 16-06-16 Do not set Orientation here. Setting Orientation is not enough. Other properties must also be changed when setting Orientation.
+            //int rotate = Elements.GetInteger(InheritablePageKeys.Rotate);
+            //if (Math.Abs((rotate / 90)) % 2 == 1)
+            //    _orientation = PageOrientation.Landscape;
         }
 
         void Initialize()

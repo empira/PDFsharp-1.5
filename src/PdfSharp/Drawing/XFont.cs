@@ -102,6 +102,10 @@ namespace PdfSharp.Drawing
             Initialize();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="XFont"/> class with enforced style simulation.
+        /// Only for testing PDFsharp.
+        /// </summary>
         internal XFont(string familyName, double emSize, XFontStyle style, XPdfFontOptions pdfOptions, XStyleSimulations styleSimulations)
         {
             _familyName = familyName;

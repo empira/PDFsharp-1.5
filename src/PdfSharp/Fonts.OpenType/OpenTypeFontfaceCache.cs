@@ -1,4 +1,4 @@
-#region PDFsharp - A .NET library for processing PDF
+﻿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -37,7 +37,7 @@ using PdfSharp.Internal;
 namespace PdfSharp.Fonts.OpenType
 {
     /// <summary>
-    /// Global table of all OpenType fontfaces chached by their face name and check sum.
+    /// Global table of all OpenType fontfaces cached by their face name and check sum.
     /// </summary>
     [DebuggerDisplay("{DebuggerDisplay}")]
     internal class OpenTypeFontfaceCache

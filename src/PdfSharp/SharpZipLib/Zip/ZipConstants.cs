@@ -469,9 +469,9 @@ namespace PdfSharp.SharpZipLib.Zip
         #endregion
 
 #if true//NETCF_1_0 || NETCF_2_0
-        // This isnt so great but is better than nothing.
+        // This isn't so great but is better than nothing.
         // Trying to work out an appropriate OEM code page would be good.
-        // 850 is a good default for english speakers particularly in Europe.
+        // 850 is a good default for English speakers particularly in Europe.
 #if SILVERLIGHT || NETFX_CORE || UWP
         // TODO Do we need this for PDFsharp? If so, make it work.
         static int defaultCodePage = 65001;
@@ -484,7 +484,7 @@ namespace PdfSharp.SharpZipLib.Zip
 	    /// But sometimes it yields the special value of 1 which is nicknamed <c>CodePageNoOEM</c> in <see cref="Encoding"/> sources (might also mean <c>CP_OEMCP</c>, but Encoding puts it so).
 	    /// This was observed on Ukranian and Hindu systems.
 	    /// Given this value, <see cref="Encoding.GetEncoding(int)"/> throws an <see cref="ArgumentException"/>.
-	    /// So replace it with some fallback, e.g. 437 which is the default cpcp in a console in a default Windows installation.
+	    /// So replace it with some fallback, e.g. 437 which is the default codepage in a console in a default Windows installation.
 	    /// </remarks>
 	    static int defaultCodePage =
             // these values cause ArgumentException in subsequent calls to Encoding::GetEncoding()
@@ -496,9 +496,9 @@ namespace PdfSharp.SharpZipLib.Zip
         /// <summary>
         /// Default encoding used for string conversion.  0 gives the default system OEM code page.
         /// Dont use unicode encodings if you want to be Zip compatible!
-        /// Using the default code page isnt the full solution neccessarily
+        /// Using the default code page isnt the full solution necessarily
         /// there are many variable factors, codepage 850 is often a good choice for
-        /// European users, however be careful about compatability.
+        /// European users, however be careful about compatibility.
         /// </summary>
         public static int DefaultCodePage
         {

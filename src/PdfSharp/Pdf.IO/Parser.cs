@@ -38,18 +38,18 @@ using PdfSharp.Pdf.Internal;
 namespace PdfSharp.Pdf.IO
 {
     /*
-       Direct and indireckt objects
+       Direct and indirect objects
      
        * If a simple object (boolean, integer, number, date, string, rectangle etc.) is referenced indirect,
-         the parser reads this objects immediatly and consumes the indirection.
+         the parser reads this objects immediately and consumes the indirection.
        
        * If a composite object (dictionary, array etc.) is referenced indirect, a PdfReference objects
          is returned.
        
        * If a composite object is a direct object, no PdfReference is created and the object is
-         parsed immediatly.
+         parsed immediately.
        
-       * A refernece to a non existing object is specified as legal, therefore null is returned.
+       * A reference to a non existing object is specified as legal, therefore null is returned.
     */
 
     /// <summary>
@@ -200,6 +200,12 @@ namespace PdfSharp.Pdf.IO
                         ReadSymbol(Symbol.EndObj);
                     return pdfObject;
 
+                // Empty object. Invalid PDF, but we need to handle it. Treat as null object.
+                case Symbol.EndObj:
+                    pdfObject = new PdfNullObject(_document);
+                    pdfObject.SetObjectID(objectNumber, generationNumber);
+                    return pdfObject;
+
                 case Symbol.Boolean:
                     pdfObject = new PdfBooleanObject(_document, String.Compare(_lexer.Token, Boolean.TrueString, StringComparison.OrdinalIgnoreCase) == 0);
                     pdfObject.SetObjectID(objectNumber, generationNumber);
@@ -229,6 +235,9 @@ namespace PdfSharp.Pdf.IO
                     return pdfObject;
 
                 case Symbol.String:
+                case Symbol.UnicodeString:
+                case Symbol.HexString:
+                case Symbol.UnicodeHexString:
                     pdfObject = new PdfStringObject(_document, _lexer.Token);
                     pdfObject.SetObjectID(objectNumber, generationNumber);
                     if (!fromObjecStream)
@@ -478,7 +487,7 @@ namespace PdfSharp.Pdf.IO
                             if (iref == null)
                             {
                                 // If a document has more than one PdfXRefTable it is possible that the first trailer has
-                                // indirect references to objects whos iref entry is not yet read in.
+                                // indirect references to objects whose iref entry is not yet read in.
                                 if (_document._irefTable.IsUnderConstruction)
                                 {
                                     // XRefTable not complete when trailer is read. Create temporary irefs that are
@@ -631,6 +640,10 @@ namespace PdfSharp.Pdf.IO
             {
                 Skip:
                 char ch = _lexer.MoveToNonWhiteSpace();
+
+                if (ch == Chars.EOF)
+                    ParserDiagnostics.HandleUnexpectedCharacter(ch);
+
                 if (ch != 'e')
                 {
                     _lexer.ScanNextChar(false);
@@ -673,7 +686,7 @@ namespace PdfSharp.Pdf.IO
             protected string ReadString(bool canBeIndirect)
             {
               Symbol symbol = Symbol.None; //lexer.ScanNextToken(canBeIndirect);
-              if (symbol == Symbol.String || symbol == Symbol.HexString)
+              if (symbol == Symbol.String || symbol == Symbol.UnicodeString || symbol == Symbol.HexString || symbol == Symbol.UnicodeHexString)
                 return lexer.Token;
               else if (symbol == Symbol.R)
               {
@@ -957,7 +970,7 @@ namespace PdfSharp.Pdf.IO
         /// <summary>
         /// Reads the object stream header as pairs of integers from the beginning of the 
         /// stream of an object stream. Parameter first is the value of the First entry of
-        /// the the object stream object.
+        /// the object stream object.
         /// </summary>
         internal int[][] ReadObjectStreamHeader(int n, int first)
         {
@@ -1006,7 +1019,7 @@ namespace PdfSharp.Pdf.IO
                 _lexer.Position = length - 1031 + idx;
             }
 
-            // SAP sometimes creates files with a size of several MByte and place "startxref" somewhere in the middle...
+            // SAP sometimes creates files with a size of several MByte and places "startxref" somewhere in the middle...
             if (idx == -1)
             {
                 // If "startxref" was still not found yet, read the file completely.
@@ -1095,7 +1108,7 @@ namespace PdfSharp.Pdf.IO
                 // Reference: 3.4.7  Cross-Reference Streams / Page 93
                 // TODO: Handle PDF files larger than 2 GiB, see implementation note 21 in Appendix H.
 
-                // The parsed integer is the object id of the cross-refernece stream.
+                // The parsed integer is the object id of the cross-reference stream.
                 return ReadXRefStream(xrefTable);
             }
             return null;
@@ -1173,7 +1186,7 @@ namespace PdfSharp.Pdf.IO
                 // Setup with default values.
                 subsectionCount = 1;
                 subsections = new int[subsectionCount][];
-                subsections[0] = new int[] { 0, size }; // HACK: What is size? Contratiction in PDF reference.
+                subsections[0] = new int[] { 0, size }; // HACK: What is size? Contradiction in PDF reference.
                 subsectionEntryCount = size;
             }
             else
@@ -1384,7 +1397,7 @@ namespace PdfSharp.Pdf.IO
             protected DateTime ReadDate(bool canBeIndirect)
             {
               Symbol symbol = lexer.ScanNextToken(canBeIndirect);
-              if (symbol == Symbol.String)
+              if (symbol == Symbol.String || symbol == Symbol.UnicodeString || symbol == Symbol.HexString || symbol == Symbol.UnicodeHexString)
               {
                 // D:YYYYMMDDHHmmSSOHH'mm'
                 //   ^2      ^10   ^16 ^20

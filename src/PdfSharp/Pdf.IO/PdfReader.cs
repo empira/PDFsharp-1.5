@@ -262,7 +262,7 @@ namespace PdfSharp.Pdf.IO
         /// </summary>
         public static PdfDocument Open(Stream stream, PdfDocumentOpenMode openmode, PdfPasswordProvider passwordProvider)
         {
-            return Open(stream, null, openmode);
+            return Open(stream, null, openmode, passwordProvider);
         }
         /// <summary>
         /// Opens an existing PDF document.

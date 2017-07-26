@@ -335,7 +335,10 @@ namespace PdfSharp.Pdf
                         stream.Close();
 #endif
                     else
-                        stream.Position = 0; // Reset the stream position if the stream is kept open.
+                    {
+                        if (stream.CanRead && stream.CanSeek)
+                            stream.Position = 0; // Reset the stream position if the stream is kept open.
+                    }
                 }
                 if (writer != null)
                     writer.Close(closeStream);
@@ -371,7 +374,12 @@ namespace PdfSharp.Pdf
             {
                 // HACK: Remove XRefTrailer
                 if (_trailer is PdfCrossReferenceStream)
+                {
+                    // HACK^2: Preserve the SecurityHandler.
+                    PdfStandardSecurityHandler securityHandler = _securitySettings.SecurityHandler;
                     _trailer = new PdfTrailer((PdfCrossReferenceStream)_trailer);
+                    _trailer._securityHandler = securityHandler;
+                }
 
                 bool encrypt = _securitySettings.DocumentSecurityLevel != PdfDocumentSecurityLevel.None;
                 if (encrypt)
@@ -843,6 +851,17 @@ namespace PdfSharp.Pdf
             if (!CanModify)
                 throw new InvalidOperationException(PSSR.CannotModify);
             return Catalog.Pages.Insert(index, page);
+        }
+
+        /// <summary>  
+        /// Flattens a document (make the fields non-editable).  
+        /// </summary>  
+        public void Flatten()
+        {
+            for (int idx = 0; idx < AcroForm.Fields.Count; idx++)
+            {
+                AcroForm.Fields[idx].ReadOnly = true;
+            }
         }
 
         /// <summary>

@@ -217,12 +217,15 @@ namespace PdfSharp.Pdf.Advanced
                 double height = rect.Height;
                 matrix.RotateAtPrepend(-rotate, new XPoint(width / 2, height / 2));
 
-                // Translate the image such that its center lies on the center of the rotated bounding box
-                double offset = (height - width) / 2;
-                if (height > width)
-                    matrix.TranslatePrepend(offset, offset);
-                else
-                    matrix.TranslatePrepend(-offset, -offset);
+                if (rotate != 180)
+                {
+                    // Translate the image such that its center lies on the center of the rotated bounding box
+                    double offset = (height - width) / 2;
+                    if (height > width)
+                        matrix.TranslatePrepend(offset, offset);
+                    else
+                        matrix.TranslatePrepend(-offset, -offset);
+                }
 
                 //string item = "[" + PdfEncoders.ToString(matrix) + "]";
                 //Elements[Keys.Matrix] = new PdfLiteral(item);
