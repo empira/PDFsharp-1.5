@@ -311,9 +311,12 @@ namespace PdfSharp.Pdf.Internal
 
             Debug.Assert(!unicode || bytes.Length % 2 == 0, "Odd number of bytes in Unicode string.");
 
+            byte[] originalBytes = null;
+
             bool encrypted = false;
-            if (securityHandler != null)
+            if (securityHandler != null && !hex)
             {
+                originalBytes = bytes;
                 bytes = (byte[])bytes.Clone();
                 bytes = securityHandler.EncryptBytes(bytes);
                 encrypted = true;
@@ -403,23 +406,58 @@ namespace PdfSharp.Pdf.Internal
             }
             else
             {
-            Hex:
+                //Hex:
                 if (hex)
                 {
-                    pdf.Append(prefix ? "<FEFF" : "<");
-                    for (int idx = 0; idx < count; idx += 2)
+                    if (securityHandler != null && prefix)
                     {
-                        pdf.AppendFormat("{0:X2}{1:X2}", bytes[idx], bytes[idx + 1]);
-                        if (idx != 0 && (idx % 48) == 0)
-                            pdf.Append("\n");
+                        // TODO Reduce redundancy.
+                        // Encrypt data after padding BOM.
+                        var bytes2 = new byte[bytes.Length + 2];
+                        // Add BOM.
+                        bytes2[0] = 0xfe;
+                        bytes2[1] = 0xff;
+                        // Copy bytes.
+                        Array.Copy(bytes, 0, bytes2, 2, bytes.Length);
+                        // Encyption.
+                        bytes2 = securityHandler.EncryptBytes(bytes2);
+                        encrypted = true;
+                        pdf.Append("<");
+                        var count2 = bytes2.Length;
+                        for (int idx = 0; idx < count2; idx += 2)
+                        {
+                            pdf.AppendFormat("{0:X2}{1:X2}", bytes2[idx], bytes2[idx + 1]);
+                            if (idx != 0 && (idx % 48) == 0)
+                                pdf.Append("\n");
+                        }
+                        pdf.Append(">");
                     }
-                    pdf.Append(">");
+                    else
+                    {
+                        // No prefix or no encryption.
+                        pdf.Append(prefix ? "<FEFF" : "<");
+                        for (int idx = 0; idx < count; idx += 2)
+                        {
+                            pdf.AppendFormat("{0:X2}{1:X2}", bytes[idx], bytes[idx + 1]);
+                            if (idx != 0 && (idx % 48) == 0)
+                                pdf.Append("\n");
+                        }
+                        pdf.Append(">");
+                    }
                 }
                 else
                 {
                     // TODO non hex literals... not sure how to treat linefeeds, '(', '\' etc.
-                    hex = true;
-                    goto Hex;
+                    if (encrypted)
+                    {
+                        // Hack: Call self with hex := true.
+                        return FormatStringLiteral(originalBytes, unicode, prefix, true, securityHandler);
+                    }
+                    else
+                    {
+                        Debug.Assert(false, "Test if this code can be invoked.");
+                        return FormatStringLiteral(bytes, true, prefix, true, null);
+                    }
                 }
             }
             return RawEncoding.GetBytes(pdf.ToString());
