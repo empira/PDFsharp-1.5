@@ -289,7 +289,7 @@ namespace PdfSharp.Pdf.IO
 						return _symbol = Symbol.Name;
 					case '[':
 						//TODO: Not Complete
-						if (IsWhiteSpace(_nextChar) || IsDelimiter(_nextChar) || char.IsNumber(_nextChar) || _nextChar == '-')
+						if (IsWhiteSpace(_nextChar) || IsDelimiter(_nextChar) || char.IsNumber(_nextChar) || _nextChar == '-' || PeekArrayKeyword())
 						{
 							return _symbol = Symbol.Name;
 						}
@@ -740,6 +740,39 @@ namespace PdfSharp.Pdf.IO
             Position = positon;
             return false;
         }
+
+		bool PeekArrayKeyword()
+		{
+			StringBuilder token = _token;
+			int position = Position;
+			ScanNextChar(true);
+
+			//Pretty sure I want to skip any non white space
+			char ch = MoveToNonWhiteSpace();
+
+			//reset the _token
+			_token = new StringBuilder();
+
+			while (!IsWhiteSpace(ch) && !IsDelimiter(ch))
+			{
+				ch = AppendAndScanNextChar();
+			}
+
+			bool b_is_keyword = false;
+			switch (_token.ToString())
+			{
+				case "null":
+				case "true":
+				case "false":
+					b_is_keyword = true;
+					break;
+			}
+
+			Position = position;
+			_token = token;
+
+			return b_is_keyword;
+		}
 
         /// <summary>
         /// Appends current character to the token and reads next one.
