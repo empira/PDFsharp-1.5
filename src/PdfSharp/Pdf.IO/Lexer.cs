@@ -271,21 +271,21 @@ namespace PdfSharp.Pdf.IO
 					//TODO: Check that the white space is valid.
 					return _symbol = Symbol.Name;
 				}
-				
-				//Handle invalid delimeters
+
+				//Handle invalid delimiters
 				switch (ch)
 				{
 					case '(':
-						//TODO: Handle invalid delimeters
+						//TODO: Handle invalid delimiters
 						return _symbol = Symbol.Name;
 					case ')':
-						//TODO: Handle invalid delimeters
+						//TODO: Handle invalid delimiters
 						return _symbol = Symbol.Name;
 					case '<':
-						//TODO: Handle invalid delimeters
+						//TODO: Handle invalid delimiters
 						return _symbol = Symbol.Name;
 					case '>':
-						//TODO: Handle invalid delimeters
+						//TODO: Handle invalid delimiters
 						return _symbol = Symbol.Name;
 					case '[':
 						//TODO: Not Complete
@@ -296,16 +296,16 @@ namespace PdfSharp.Pdf.IO
 						break;
 					case ']':
 						//TODO: Not Complete
-						if (IsWhiteSpace(_nextChar) || IsDelimiter(_nextChar))
+						if (IsWhiteSpace(_nextChar) || IsDelimiter(_nextChar) || _nextChar == Chars.EOF)
 						{
 							return _symbol = Symbol.Name;
 						}
 						break;
 					case '{':
-						//TODO: Handle invalid delimeters
+						//TODO: Handle invalid delimiters
 						return _symbol = Symbol.Name;
 					case '}':
-						//TODO: Handle invalid delimeters
+						//TODO: Handle invalid delimiters
 						return _symbol = Symbol.Name;
 				}
             }
