@@ -23,7 +23,7 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
 // THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
@@ -400,14 +400,14 @@ namespace PdfSharp.Drawing
                 if (IsEmpty)
                     throw new InvalidOperationException("CannotModifyEmptyRect"); //SR.Get(SRID.Rect_CannotModifyEmptyRect, new object[0]));
                 if (value < 0)
-                    throw new ArgumentException("WidthCannotBeNegative"); //SR.Get(SRID.Size_WidthCannotBeNegative, new object[0]));
+                    throw new ArgumentException("HeightCannotBeNegative"); //SR.Get(SRID.Size_HeightCannotBeNegative, new object[0]));
                 _height = value;
             }
         }
         double _height;
 
         /// <summary>
-        /// Gets the x-axis value of the left side of the rectangle. 
+        /// Gets the x-axis value of the left side of the rectangle.
         /// </summary>
         public double Left
         {
@@ -415,7 +415,7 @@ namespace PdfSharp.Drawing
         }
 
         /// <summary>
-        /// Gets the y-axis value of the top side of the rectangle. 
+        /// Gets the y-axis value of the top side of the rectangle.
         /// </summary>
         public double Top
         {
@@ -423,7 +423,7 @@ namespace PdfSharp.Drawing
         }
 
         /// <summary>
-        /// Gets the x-axis value of the right side of the rectangle. 
+        /// Gets the x-axis value of the right side of the rectangle.
         /// </summary>
         public double Right
         {
@@ -436,7 +436,7 @@ namespace PdfSharp.Drawing
         }
 
         /// <summary>
-        /// Gets the y-axis value of the bottom side of the rectangle. 
+        /// Gets the y-axis value of the bottom side of the rectangle.
         /// </summary>
         public double Bottom
         {
@@ -449,7 +449,7 @@ namespace PdfSharp.Drawing
         }
 
         /// <summary>
-        /// Gets the position of the top-left corner of the rectangle. 
+        /// Gets the position of the top-left corner of the rectangle.
         /// </summary>
         public XPoint TopLeft
         {
@@ -457,7 +457,7 @@ namespace PdfSharp.Drawing
         }
 
         /// <summary>
-        /// Gets the position of the top-right corner of the rectangle. 
+        /// Gets the position of the top-right corner of the rectangle.
         /// </summary>
         public XPoint TopRight
         {
@@ -465,7 +465,7 @@ namespace PdfSharp.Drawing
         }
 
         /// <summary>
-        /// Gets the position of the bottom-left corner of the rectangle. 
+        /// Gets the position of the bottom-left corner of the rectangle.
         /// </summary>
         public XPoint BottomLeft
         {
@@ -473,7 +473,7 @@ namespace PdfSharp.Drawing
         }
 
         /// <summary>
-        /// Gets the position of the bottom-right corner of the rectangle. 
+        /// Gets the position of the bottom-right corner of the rectangle.
         /// </summary>
         public XPoint BottomRight
         {
@@ -490,7 +490,7 @@ namespace PdfSharp.Drawing
         }
 
         /// <summary>
-        /// Indicates whether the rectangle contains the specified point. 
+        /// Indicates whether the rectangle contains the specified point.
         /// </summary>
         public bool Contains(XPoint point)
         {
@@ -498,7 +498,7 @@ namespace PdfSharp.Drawing
         }
 
         /// <summary>
-        /// Indicates whether the rectangle contains the specified point. 
+        /// Indicates whether the rectangle contains the specified point.
         /// </summary>
         public bool Contains(double x, double y)
         {
@@ -508,7 +508,7 @@ namespace PdfSharp.Drawing
         }
 
         /// <summary>
-        /// Indicates whether the rectangle contains the specified rectangle. 
+        /// Indicates whether the rectangle contains the specified rectangle.
         /// </summary>
         public bool Contains(XRect rect)
         {
@@ -636,7 +636,7 @@ namespace PdfSharp.Drawing
         }
 
         /// <summary>
-        /// Returns a rectangle that is offset from the specified rectangle by using the specified vector. 
+        /// Returns a rectangle that is offset from the specified rectangle by using the specified vector.
         /// </summary>
         public static XRect Offset(XRect rect, XVector offsetVector)
         {
@@ -645,7 +645,7 @@ namespace PdfSharp.Drawing
         }
 
         /// <summary>
-        /// Returns a rectangle that is offset from the specified rectangle by using specified horizontal and vertical amounts. 
+        /// Returns a rectangle that is offset from the specified rectangle by using specified horizontal and vertical amounts.
         /// </summary>
         public static XRect Offset(XRect rect, double offsetX, double offsetY)
         {
