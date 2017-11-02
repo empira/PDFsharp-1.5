@@ -1031,30 +1031,91 @@ namespace PdfSharp.Pdf.IO
                 throw new Exception("The StartXRef table could not be found, the file cannot be opened.");
 
             ReadSymbol(Symbol.StartXRef);
-            _lexer.Position = ReadInteger();
+			int startxref = _lexer.Position = ReadInteger();
 
-            // Read all trailers.
-            while (true)
-            {
-                PdfTrailer trailer = ReadXRefTableAndTrailer(_document._irefTable);
-                // 1st trailer seems to be the best.
-                if (_document._trailer == null)
-                    _document._trailer = trailer;
-                int prev = trailer.Elements.GetInteger(PdfTrailer.Keys.Prev);
-                if (prev == 0)
-                    break;
-                //if (prev > lexer.PdfLength)
-                //  break;
-                _lexer.Position = prev;
-            }
+			// Must be before the first 'goto valid_xref;' statement.
+			int xref_offset = 0;
 
-            return _document._trailer;
-        }
+			// Check for valid startxref
+			if (IsValidXref())
+			{
+				goto valid_xref;
+			}
 
-        /// <summary>
-        /// Reads cross reference table(s) and trailer(s).
-        /// </summary>
-        private PdfTrailer ReadXRefTableAndTrailer(PdfCrossReferenceTable xrefTable)
+			// If we reach this point, we have an invalid startxref
+			// First look for bytes preceding "%PDF-". Some pdf producers ignore these.
+			if (length >= 1024)
+			{
+				// "%PDF-" should be in this range
+				string header = _lexer.ReadRawString(0, 1024);
+				idx = header.IndexOf("%PDF-", StringComparison.Ordinal);
+			}
+			else
+			{
+				string header = _lexer.ReadRawString(0, length);
+				idx = header.IndexOf("%PDF-", StringComparison.Ordinal);
+			}
+
+			if (idx > 0)
+			{
+				//_lexer.ByteOffset = idx;
+				_lexer.Position = startxref + idx;
+				if (IsValidXref())
+				{
+					xref_offset = idx;
+					goto valid_xref;
+				}
+			}
+
+			valid_xref:
+			_lexer.Position = startxref + xref_offset;
+
+			// Read all trailers.
+			while (true)
+			{
+				PdfTrailer trailer = ReadXRefTableAndTrailer(_document._irefTable, xref_offset);
+				// 1st trailer seems to be the best.
+				if (_document._trailer == null)
+					_document._trailer = trailer;
+				int prev = trailer.Elements.GetInteger(PdfTrailer.Keys.Prev);
+				if (prev == 0)
+					break;
+				//if (prev > lexer.PdfLength)
+				//  break;
+				_lexer.Position = prev;
+			}
+
+			return _document._trailer;
+		}
+
+		/// <summary>
+		/// Checks that the current _lexer location is a valid xref.
+		/// </summary>
+		/// <returns></returns>
+		private bool IsValidXref()
+		{
+			Symbol symbol = ScanNextToken();
+			if (symbol == Symbol.XRef)
+			{
+				return true;
+			}
+
+			if (symbol == Symbol.Integer)
+			{
+				// Just because we have an integer, doesn't mean the startxref is actually valid
+				if (ScanNextToken() == Symbol.Integer && ScanNextToken() == Symbol.Obj)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// Reads cross reference table(s) and trailer(s).
+		/// </summary>
+		private PdfTrailer ReadXRefTableAndTrailer(PdfCrossReferenceTable xrefTable, int xrefOffset)
         {
             Debug.Assert(xrefTable != null);
 
@@ -1072,7 +1133,7 @@ namespace PdfSharp.Pdf.IO
                         int length = ReadInteger();
                         for (int id = start; id < start + length; id++)
                         {
-                            int position = ReadInteger();
+                            int position = ReadInteger() + xrefOffset;
                             int generation = ReadInteger();
                             ReadSymbol(Symbol.Keyword);
                             string token = _lexer.Token;
@@ -1114,10 +1175,10 @@ namespace PdfSharp.Pdf.IO
             return null;
         }
 
-        /// <summary>
-        /// Reads cross reference stream(s).
-        /// </summary>
-        private PdfTrailer ReadXRefStream(PdfCrossReferenceTable xrefTable)
+		/// <summary>
+		/// Reads cross reference stream(s).
+		/// </summary>
+		private PdfTrailer ReadXRefStream(PdfCrossReferenceTable xrefTable)
         {
             // Read cross reference stream.
             //Debug.Assert(_lexer.Symbol == Symbol.Integer);
