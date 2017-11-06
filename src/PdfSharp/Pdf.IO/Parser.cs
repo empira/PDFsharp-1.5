@@ -1094,6 +1094,42 @@ namespace PdfSharp.Pdf.IO
 		/// <returns></returns>
 		private bool IsValidXref()
 		{
+			int length = _lexer.PdfLength;
+			int position = _lexer.Position;
+			// Make sure not inside a stream.
+
+			string content = "";
+			int content_pos = position;
+			while (true)
+			{
+				// look for stream and endstream in 1k chunks.
+				int read_length = Math.Min(1024, length - content_pos);
+				content += _lexer.ReadRawString(content_pos, read_length);
+
+				int ss = content.IndexOf("stream", StringComparison.Ordinal);
+				int es = content.IndexOf("endstream", StringComparison.Ordinal);
+
+				if (ss < es)
+				{
+					// Not inside of stream
+					break;
+				}
+				else if (ss > es)
+				{
+					// inside of stream
+					return false;
+				}
+
+				content_pos = content_pos + read_length;
+				if (content_pos + read_length >= length)
+				{
+					// reached the end of the document without finding either.
+					break;
+				}
+			}
+
+			_lexer.Position = position;
+
 			Symbol symbol = ScanNextToken();
 			if (symbol == Symbol.XRef)
 			{
