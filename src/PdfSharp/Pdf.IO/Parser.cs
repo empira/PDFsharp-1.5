@@ -1095,7 +1095,7 @@ namespace PdfSharp.Pdf.IO
 					// Not inside of stream
 					break;
 				}
-				else if (ss > es)
+				else if (es != -1 && ss > es)
 				{
 					// inside of stream
 					return false;
