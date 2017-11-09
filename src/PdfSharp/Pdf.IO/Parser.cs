@@ -1068,20 +1068,26 @@ namespace PdfSharp.Pdf.IO
                     symbol = ScanNextToken();
                     if (symbol == Symbol.Integer)
                     {
-                        int start = _lexer.TokenToInteger;
                         int length = ReadInteger();
-                        for (int id = start; id < start + length; id++)
+                        for (int idx = 0; idx < length; idx++)
                         {
                             int position = ReadInteger();
                             int generation = ReadInteger();
                             ReadSymbol(Symbol.Keyword);
                             string token = _lexer.Token;
                             // Skip start entry
-                            if (id == 0)
+                            if (idx == 0)
                                 continue;
                             // Skip unused entries.
                             if (token != "n")
                                 continue;
+
+							// Some PDF producers don't follow xref specs. Can't assume object number.
+							int pos = _lexer.Position;
+							_lexer.Position = position;
+							int id = ReadInteger();
+							_lexer.Position = pos;
+
                             // Even it is restricted, an object can exists in more than one subsection.
                             // (PDF Reference Implementation Notes 15).
                             PdfObjectID objectID = new PdfObjectID(id, generation);
