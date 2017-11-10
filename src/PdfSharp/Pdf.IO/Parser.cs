@@ -537,10 +537,41 @@ namespace PdfSharp.Pdf.IO
                     //case Symbol.StartXRef:
                     //case Symbol.Eof:
                     default:
-                        ParserDiagnostics.HandleUnexpectedToken(_lexer.Token);
-                        SkipCharsUntil(stop);
-                        return;
-                }
+						// Any Keyword can be treated as a literal string.
+						switch (stop)
+						{
+							case Symbol.EndArray:
+								// Arrays are space delimited.
+								while (true)
+								{
+									char ch = _lexer.AppendAndScanNextChar();
+									if (Lexer.IsWhiteSpace(ch) || ch == Chars.EOF || ch == Chars.BracketRight)
+									{
+										_stack.Shift(new PdfString(_lexer.Token, PdfStringFlags.RawEncoding));
+										break;
+									}
+								}
+								break;
+							case Symbol.EndDictionary:
+								// Dictionaries are key value pairs where key must be a name.
+								while (true)
+								{
+									char ch = _lexer.AppendAndScanNextChar();
+									if (ch == Chars.Slash || ch == Chars.Greater)
+									{
+										_stack.Shift(new PdfString(_lexer.Token, PdfStringFlags.RawEncoding));
+										break;
+									}
+								}
+								break;
+							default:
+								ParserDiagnostics.HandleUnexpectedToken(_lexer.Token);
+								SkipCharsUntil(stop);
+								break;
+						}
+
+						return;
+				}
             }
             ParserDiagnostics.ThrowParserException("Unexpected end of file.");
         }
