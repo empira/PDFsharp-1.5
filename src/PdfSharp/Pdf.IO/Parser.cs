@@ -1075,9 +1075,12 @@ namespace PdfSharp.Pdf.IO
                             int generation = ReadInteger();
                             ReadSymbol(Symbol.Keyword);
                             string token = _lexer.Token;
+
+							// Start entry should be marked as free.
                             // Skip start entry
-                            if (idx == 0)
-                                continue;
+                            //if (idx == 0)
+                            //    continue;
+
                             // Skip unused entries.
                             if (token != "n")
                                 continue;
