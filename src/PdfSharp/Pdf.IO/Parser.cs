@@ -1088,17 +1088,21 @@ namespace PdfSharp.Pdf.IO
 				content += _lexer.ReadRawString(content_pos, read_length);
 
 				int ss = content.IndexOf("stream", StringComparison.Ordinal);
+				int eof = content.IndexOf("%%EOF", StringComparison.Ordinal);
 				int es = content.IndexOf("endstream", StringComparison.Ordinal);
 
-				if (ss < es)
+				int s = Math.Min(ss, eof);
+
+				if (s != es)
 				{
-					// Not inside of stream
-					break;
-				}
-				else if (es != -1 && ss > es)
-				{
-					// inside of stream
-					return false;
+					if (s == -1)
+						return false;
+					else if (es == -1)
+						break;
+					else if (s < es)
+						break;
+					else if (s > es)
+						return false;
 				}
 
 				content_pos = content_pos + read_length;
