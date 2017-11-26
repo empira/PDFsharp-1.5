@@ -91,7 +91,8 @@ namespace PdfSharp.Charting.Renderers
                 XGraphics gfx = _rendererParms.Graphics;
                 if (atri.AxisTitleOrientation != 0)
                 {
-                    XRect layout = atri.Rect;
+                    XRect layout = new XRect(new XPoint(0, 0), gfx.MeasureString(atri.AxisTitleText, atri.AxisTitleFont));
+                    layout.Height = atri.Rect.Height;
                     layout.X = -(layout.Width / 2);
                     layout.Y = -(layout.Height / 2);
 
