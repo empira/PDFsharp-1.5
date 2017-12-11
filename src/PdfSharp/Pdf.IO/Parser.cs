@@ -1069,71 +1069,82 @@ namespace PdfSharp.Pdf.IO
             return _document._trailer;
         }
 
-		/// <summary>
-		/// Checks that the current _lexer location is a valid xref.
-		/// </summary>
-		/// <returns></returns>
-		private bool IsValidXref()
-		{
-			int length = _lexer.PdfLength;
-			int position = _lexer.Position;
-			// Make sure not inside a stream.
+        /// <summary>
+        /// Checks that the current _lexer location is a valid xref.
+        /// </summary>
+        /// <returns></returns>
+        private bool IsValidXref()
+        {
+            int length = _lexer.PdfLength;
+            int position = _lexer.Position;
+            // Make sure not inside a stream.
 
-			string content = "";
-			int content_pos = position;
-			while (true)
-			{
-				// look for stream and endstream in 1k chunks.
-				int read_length = Math.Min(1024, length - content_pos);
-				content += _lexer.ReadRawString(content_pos, read_length);
+            string content = "";
+            int content_pos = position;
+            while (true)
+            {
+                // look for stream and endstream in 1k chunks.
+                int read_length = Math.Min(1024, length - content_pos);
+                content += _lexer.ReadRawString(content_pos, read_length);
 
-				int ss = content.IndexOf("stream", StringComparison.Ordinal);
-				int eof = content.IndexOf("%%EOF", StringComparison.Ordinal);
-				int es = content.IndexOf("endstream", StringComparison.Ordinal);
+                int ss = content.IndexOf("stream", StringComparison.Ordinal);
+                int es = content.IndexOf("endstream", StringComparison.Ordinal);
+                int eof = content.IndexOf("%%EOF", StringComparison.Ordinal);
 
-				int s = Math.Min(ss, eof);
+                if (ss != es)
+                {
+                    if (ss == -1)
+                    {
+                        if (eof != -1 && eof < es)
+                            break;
+                        else
+                            return false;
+                    }
+                    else if (es == -1)
+                        break;
+                    else if (ss < es)
+                        break;
+                    else if (ss > es)
+                    {
+                        if (eof != -1 && eof < ss && eof < es)
+                            break;
+                        else
+                            return false;
+                    }
+                }
 
-				if (s != es)
-				{
-					if (s == -1)
-						return false;
-					else if (es == -1)
-						break;
-					else if (s < es)
-						break;
-					else if (s > es)
-						return false;
-				}
+                if (eof != -1)
+                    break;
 
-				content_pos = content_pos + read_length;
-				if (content_pos + read_length >= length)
-				{
-					// reached the end of the document without finding either.
-					break;
-				}
-			}
+                content_pos = content_pos + read_length;
+                if (content_pos + read_length >= length)
+                {
+                    // reached the end of the document without finding either.
+                    break;
+                }
+            }
 
-			_lexer.Position = position;
+            _lexer.Position = position;
 
-			Symbol symbol = ScanNextToken();
-			if (symbol == Symbol.XRef)
-			{
-				return true;
-			}
+            Symbol symbol = ScanNextToken();
+            if (symbol == Symbol.XRef)
+            {
+                return true;
+            }
 
-			if (symbol == Symbol.Integer)
-			{
-				// Just because we have an integer, doesn't mean the startxref is actually valid
-				if (ScanNextToken() == Symbol.Integer && ScanNextToken() == Symbol.Obj)
-				{
-					return true;
-				}
-			}
+            if (symbol == Symbol.Integer)
+            {
+                // Just because we have an integer, doesn't mean the startxref is actually valid
+                if (ScanNextToken() == Symbol.Integer && ScanNextToken() == Symbol.Obj)
+                {
+                    return true;
+                }
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		private PdfTrailer TryRecreateXRefTableAndTrailer(PdfCrossReferenceTable xrefTable)
+        private PdfTrailer TryRecreateXRefTableAndTrailer(PdfCrossReferenceTable xrefTable)
 		{
 			// Let's first check for a trailer
 			int length = _lexer.PdfLength;
