@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -772,7 +772,7 @@ namespace PdfSharp.Pdf.Content.Objects  // TODO: split into single files
             set
             {
                 if (String.IsNullOrEmpty(_name))
-                    throw new ArgumentNullException("name");
+                    throw new ArgumentNullException(nameof(value));
                 if (_name[0] != '/')
                     throw new ArgumentException(PSSR.NameMustStartWithSlash);
                 _name = value;

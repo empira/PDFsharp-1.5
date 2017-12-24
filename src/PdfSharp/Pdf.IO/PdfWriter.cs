@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -57,11 +57,13 @@ namespace PdfSharp.Pdf.IO
         public void Close(bool closeUnderlyingStream)
         {
             if (_stream != null && closeUnderlyingStream)
+            {
 #if UWP
-            _stream.Dispose();
+                _stream.Dispose();
 #else
-            _stream.Close();
+                _stream.Close();
 #endif
+            }
             _stream = null;
         }
 
@@ -621,7 +623,7 @@ namespace PdfSharp.Pdf.IO
             NewLine,
             Character,
             Delimiter,
-        };
+        }
         CharCat _lastCat;
 
         /// <summary>

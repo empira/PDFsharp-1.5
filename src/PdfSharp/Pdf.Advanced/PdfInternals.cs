@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -126,7 +126,7 @@ namespace PdfSharp.Pdf.Advanced
         {
             PdfFormXObjectTable table = _document.FormTable;
             PdfImportedObjectTable iot = table.GetImportedObjectTable(externalObject.Owner);
-            PdfReference reference= iot[externalObject.ObjectID];
+            PdfReference reference = iot[externalObject.ObjectID];
             return reference == null ? null : reference.Value;
         }
 
@@ -194,11 +194,15 @@ namespace PdfSharp.Pdf.Advanced
         }
 
         /// <summary>
-        /// Creates the indirect object of the specified type, adds it to the document, and
-        /// returns the object.
+        /// Creates the indirect object of the specified type, adds it to the document,
+        /// and returns the object.
         /// </summary>
         public T CreateIndirectObject<T>() where T : PdfObject
         {
+#if true
+            T obj = Activator.CreateInstance<T>();
+            _document._irefTable.Add(obj);
+#else
             T result = null;
 #if !NETFX_CORE && !UWP
             ConstructorInfo ctorInfo = typeof(T).GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.ExactBinding,
@@ -213,7 +217,8 @@ namespace PdfSharp.Pdf.Advanced
                 AddObject(result);
             }
             Debug.Assert(result != null, "CreateIndirectObject failed with type " + typeof(T).FullName);
-            return result;
+#endif
+            return obj;
         }
 
         /// <summary>

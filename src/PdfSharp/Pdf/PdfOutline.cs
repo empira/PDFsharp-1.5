@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -44,8 +44,10 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Represents an outline item in the outlines tree. An 'outline' is also known as a 'bookmark'.
     /// </summary>
-    public sealed class PdfOutline : PdfDictionary  // Reference: 8.2.2 Document Outline / Page 584
+    public sealed class PdfOutline : PdfDictionary
     {
+        // Reference: 8.2.2  Document Outline / Page 584
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PdfOutline"/> class.
         /// </summary>
@@ -327,7 +329,7 @@ namespace PdfSharp.Pdf
         PdfOutlineCollection _outlines;
 
         /// <summary>
-        /// Initializes this instance from an exisiting PDF document.
+        /// Initializes this instance from an existing PDF document.
         /// </summary>
         void Initialize()
         {

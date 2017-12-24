@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -148,10 +148,10 @@ namespace PdfSharp.Fonts
                     string typefaceKeyBold = XGlyphTypeface.ComputeKey(familyName, true, false);
                     FontResolverInfo infoBold = ResolveTypeface(familyName,
                         new FontResolvingOptions(FontHelper.CreateStyle(true, false)), typefaceKeyBold);
-                    // Use it if it does not base on simulateion.
+                    // Use it if it does not base on simulation.
                     if (infoBold != null && infoBold.StyleSimulations == XStyleSimulations.None)
                     {
-                        // Use existing bold typeface and simualte italic.
+                        // Use existing bold typeface and simulate italic.
                         fontResolverInfo = new PlatformFontResolverInfo(typefaceKeyBold, false, true,
                             wpfFontFamily, wpfTypeface, wpfGlyphTypeface);
                     }
@@ -257,7 +257,7 @@ namespace PdfSharp.Fonts
             }
             else
             {
-                // Get or create the font source and cache it unter the specified typeface key.
+                // Get or create the font source and cache it under the specified typeface key.
                 fontSource = XFontSource.GetOrCreateFromGdi(typefaceKey, font);
             }
             return fontSource;
@@ -308,7 +308,7 @@ namespace PdfSharp.Fonts
             if (!wpfTypeface.TryGetGlyphTypeface(out wpfGlyphTypeface))
                 throw new InvalidOperationException(PSSR.CannotGetGlyphTypeface(familyName));
 
-            // Get or create the font source and cache it unter the specified typeface key.
+            // Get or create the font source and cache it under the specified typeface key.
             XFontSource fontSource = XFontSource.GetOrCreateFromWpf(typefaceKey, wpfGlyphTypeface);
             return fontSource;
         }
@@ -316,12 +316,12 @@ namespace PdfSharp.Fonts
 
 #if SILVERLIGHT
         /// <summary>
-        /// Silverlight has no access to the bytes of its fonts and threrefore return null.
+        /// Silverlight has no access to the bytes of its fonts and therefore return null.
         /// </summary>
         internal static XFontSource CreateFontSource(string familyName, bool isBold, bool isItalic)
         {
             // PDFsharp does not provide a default font because this would blow up the assembly
-            // unneccessarily if the font is not needed. Provide your own font resolver to generate
+            // unnecessarily if the font is not needed. Provide your own font resolver to generate
             // PDF files containing text.
             return null;
         }

@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -280,7 +280,7 @@ namespace PdfSharp.Forms
         internal Color _desktopColor = SystemColors.ControlDark;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the scrollbars are visilbe.
+        /// Gets or sets a value indicating whether the scrollbars are visible.
         /// </summary>
         [DefaultValue(true), Description("Determines whether the scrollbars are visible."), Category("Preview Properties")]
         public bool ShowScrollbars
@@ -300,7 +300,7 @@ namespace PdfSharp.Forms
         bool _showScrollbars = true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the page is visilbe.
+        /// Gets or sets a value indicating whether the page is visible.
         /// </summary>
         [DefaultValue(true), Description("Determines whether the page visible."), Category("Preview Properties")]
         public bool ShowPage
@@ -348,7 +348,7 @@ namespace PdfSharp.Forms
         }
 
         /// <summary>
-        /// Sets a delagate that is invoked when the preview wants to be painted.
+        /// Sets a delegate that is invoked when the preview wants to be painted.
         /// </summary>
         public void SetRenderFunction(Action<XGraphics> renderEvent)
         {
@@ -358,7 +358,7 @@ namespace PdfSharp.Forms
         Action<XGraphics> _renderAction;
 
         /// <summary>
-        /// Sets a delagate that is invoked when the preview wants to be painted.
+        /// Sets a delegate that is invoked when the preview wants to be painted.
         /// </summary>
         [Obsolete("Use SetRenderFunction")]
         public void SetRenderEvent(RenderEvent renderEvent)
@@ -546,7 +546,7 @@ namespace PdfSharp.Forms
                 BestFit:
                     //zoomPercent = Convert.ToInt32(25400.0 * (rcCanvas.Width - (leftBorder + rightBorder)) / (this.pageSize.Width * xdpiScreen));
                     _zoomPercent = (int)(7200f * (rcCanvas.Width - horzBorders) / (_pageSize.Width * xdpiScreen));
-                    //--zoomPercent;  // prevend round up errors
+                    //--zoomPercent;  // prevent round up errors
                     break;
 
                 case Zoom.TextFit:
@@ -565,7 +565,7 @@ namespace PdfSharp.Forms
                         int zoomX = (int)(7200f * (rcCanvas.Width - horzBorders) / (_pageSize.Width * xdpiScreen));
                         int zoomY = (int)(7200f * (rcCanvas.Height - vertBorders) / (_pageSize.Height * ydpiScreen));
                         _zoomPercent = Math.Min(zoomX, zoomY);
-                        //--zoomPercent;  // prevend round up errors
+                        //--zoomPercent;  // prevent round up errors
                     }
                     break;
 
@@ -599,7 +599,7 @@ namespace PdfSharp.Forms
             // Border do not depend on zoom anymore
             _virtualCanvas = new Size(_virtualPage.Width + horzBorders, _virtualPage.Height + vertBorders);
 
-            // Adjust virtual canvas to at least acutal window size
+            // Adjust virtual canvas to at least actual window size
             if (_virtualCanvas.Width < rcCanvas.Width)
             {
                 _virtualCanvas.Width = rcCanvas.Width;
@@ -907,7 +907,7 @@ namespace PdfSharp.Forms
             Rectangle clientRect = _canvas.ClientRectangle;
             Size clientAreaSize = clientRect.Size;
 
-            // Scoll range
+            // Scroll range
             int dx = _virtualCanvas.Width - clientAreaSize.Width;
             int dy = _virtualCanvas.Height - clientAreaSize.Height;
 
@@ -1064,7 +1064,7 @@ namespace PdfSharp.Forms
         Rectangle _virtualPage;
 
         /// <summary>
-        /// The size in pixel of an area that completely contains the virtual page and at leat a small 
+        /// The size in pixels of an area that completely contains the virtual page and at least a small 
         /// border around it. If this area is larger than the canvas window, it is scrolled.
         /// </summary>
         Size _virtualCanvas;

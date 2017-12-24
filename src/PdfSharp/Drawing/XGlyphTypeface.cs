@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -471,7 +471,7 @@ namespace PdfSharp.Drawing
                     case XStyleSimulations.ItalicSimulation: simulationSuffix = "|b-/i+"; break;
                     case XStyleSimulations.BoldItalicSimulation: simulationSuffix = "|b+/i+"; break;
                     case XStyleSimulations.None: break;
-                    default: throw new ArgumentOutOfRangeException();
+                    default: throw new ArgumentOutOfRangeException("fontResolvingOptions");
                 }
             }
             string key = KeyPrefix + familyName.ToLowerInvariant()

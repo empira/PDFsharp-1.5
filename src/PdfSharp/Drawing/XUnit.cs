@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -68,7 +68,7 @@ namespace PdfSharp.Drawing
         {
             if (!Enum.IsDefined(typeof(XGraphicsUnit), type))
 #if !SILVERLIGHT && !NETFX_CORE && !UWP
-                throw new System.ComponentModel.InvalidEnumArgumentException("type");
+                throw new System.ComponentModel.InvalidEnumArgumentException(nameof(type), (int)type, typeof(XGraphicsUnit));
 #else
                 throw new ArgumentException("type");
 #endif
@@ -401,7 +401,7 @@ namespace PdfSharp.Drawing
 
             int count = value.Length;
             int valLen = 0;
-            for (; valLen < count; )
+            for (; valLen < count;)
             {
                 char ch = value[valLen];
                 if (ch == '.' || ch == '-' || ch == '+' || char.IsNumber(ch))

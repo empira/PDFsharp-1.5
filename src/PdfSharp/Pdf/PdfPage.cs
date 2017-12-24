@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -302,7 +302,7 @@ namespace PdfSharp.Pdf
             get { return _elements.GetInteger(InheritablePageKeys.Rotate); }
             set
             {
-                if (value / 90 * 90 != value)
+                if (value % 90 != 0)
                     throw new ArgumentException("Value must be a multiple of 90.");
                 _elements.SetInteger(InheritablePageKeys.Rotate, value);
             }

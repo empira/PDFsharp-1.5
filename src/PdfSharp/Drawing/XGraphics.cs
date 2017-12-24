@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -30,6 +30,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -921,7 +922,8 @@ namespace PdfSharp.Drawing  // #??? Clean up
                     _dc.Close();
 #if !SILVERLIGHT
                     // Free resources. Only needed when running on a server, but does no harm with desktop applications.
-                    _dc.Dispatcher.InvokeShutdown();
+                    // Needed on server, but causes harm with WPF desktop application. So now what?
+                    //_dc.Dispatcher.InvokeShutdown();
 
                     _dv = null;
 #endif
@@ -1091,7 +1093,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
             }
 
             if (_renderer != null)
-                _renderer.DrawLines(pen, new XPoint[] { new XPoint(x1, y1), new XPoint(x2, y2) });
+                _renderer.DrawLines(pen, new[] { new XPoint(x1, y1), new XPoint(x2, y2) });
         }
 
         // ----- DrawLines ----------------------------------------------------------------------------
@@ -1127,7 +1129,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
             if (points == null)
                 throw new ArgumentNullException("points");
             if (points.Length < 2)
-                throw new ArgumentException("points", PSSR.PointArrayAtLeast(2));
+                throw new ArgumentException(PSSR.PointArrayAtLeast(2), "points");
 
             if (_drawGraphics)
             {
@@ -1154,7 +1156,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
             if (points == null)
                 throw new ArgumentNullException("points");
             if (points.Length < 2)
-                throw new ArgumentException("points", PSSR.PointArrayAtLeast(2));
+                throw new ArgumentException(PSSR.PointArrayAtLeast(2), "points");
 
             if (_drawGraphics)
             {
@@ -2544,7 +2546,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
             if (points == null)
                 throw new ArgumentNullException("points");
             if (points.Length < 2)
-                throw new ArgumentException("points", PSSR.PointArrayAtLeast(2));
+                throw new ArgumentException(PSSR.PointArrayAtLeast(2), "points");
 
             if (_drawGraphics)
             {
@@ -2613,7 +2615,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
             if (points == null)
                 throw new ArgumentNullException("points");
             if (points.Length < 2)
-                throw new ArgumentException("points", PSSR.PointArrayAtLeast(2));
+                throw new ArgumentException(PSSR.PointArrayAtLeast(2), "points");
 
             if (_drawGraphics)
             {
@@ -2680,7 +2682,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
             if (points == null)
                 throw new ArgumentNullException("points");
             if (points.Length < 2)
-                throw new ArgumentException("points", PSSR.PointArrayAtLeast(2));
+                throw new ArgumentException(PSSR.PointArrayAtLeast(2), "points");
 
             if (_drawGraphics)
             {
@@ -3510,6 +3512,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
 
             if (format == null)
                 format = XStringFormats.Default;
+            // format cannot be null below this line.
 
             if (_drawGraphics)
             {
@@ -3537,7 +3540,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
                         //_gfx.DrawString(text, font.Realize_GdiFont(), brush.RealizeGdiBrush(), rect,
                         //    format != null ? format.RealizeGdiStringFormat() : null);
                         _gfx.DrawString(text, font.GdiFont, brush.RealizeGdiBrush(), rect,
-                            format != null ? format.RealizeGdiStringFormat() : null);
+                            format.RealizeGdiStringFormat());
                     }
                     finally { Lock.ExitGdiPlus(); }
                 }

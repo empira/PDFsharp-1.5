@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -64,7 +64,7 @@ namespace PdfSharp.Pdf.Advanced
             set
             {
                 if (value % 90 != 0)
-                    throw new ArgumentException("Rotate", "The value must be a multiple of 90.");
+                    throw new ArgumentException("The value must be a multiple of 90.", nameof(value));
                 _rotate = value;
             }
         }

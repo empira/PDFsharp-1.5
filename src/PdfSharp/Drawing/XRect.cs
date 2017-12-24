@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -400,7 +400,7 @@ namespace PdfSharp.Drawing
                 if (IsEmpty)
                     throw new InvalidOperationException("CannotModifyEmptyRect"); //SR.Get(SRID.Rect_CannotModifyEmptyRect, new object[0]));
                 if (value < 0)
-                    throw new ArgumentException("WidthCannotBeNegative"); //SR.Get(SRID.Size_WidthCannotBeNegative, new object[0]));
+                    throw new ArgumentException("HeightCannotBeNegative"); //SR.Get(SRID.Size_HeightCannotBeNegative, new object[0]));
                 _height = value;
             }
         }
@@ -825,7 +825,7 @@ namespace PdfSharp.Drawing
             s_empty = CreateEmptyRect();
         }
 
-        private static readonly XRect s_empty;
+        static readonly XRect s_empty;
 
         /// <summary>
         /// Gets the DebuggerDisplayAttribute text.

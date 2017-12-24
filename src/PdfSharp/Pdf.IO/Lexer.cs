@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -464,25 +464,26 @@ namespace PdfSharp.Pdf.IO
                                     continue;
 
                                 default:
-                                    if (char.IsDigit(ch))  // First octal character.
+                                    // TODO IsOctalDigit(ch).
+                                    if (char.IsDigit(ch) && _nextChar != '8' && _nextChar != '9')  // First octal character.
                                     {
-                                        // Octal character code.
-                                        if (ch >= '8')
-                                            ParserDiagnostics.HandleUnexpectedCharacter(ch);
+                                        //// Octal character code.
+                                        //if (ch >= '8')
+                                        //    ParserDiagnostics.HandleUnexpectedCharacter(ch);
 
                                         int n = ch - '0';
-                                        if (char.IsDigit(_nextChar))  // Second octal character.
+                                        if (char.IsDigit(_nextChar) && _nextChar != '8' && _nextChar != '9')  // Second octal character.
                                         {
                                             ch = ScanNextChar(false);
-                                            if (ch >= '8')
-                                                ParserDiagnostics.HandleUnexpectedCharacter(ch);
+                                            //if (ch >= '8')
+                                            //    ParserDiagnostics.HandleUnexpectedCharacter(ch);
 
                                             n = n * 8 + ch - '0';
-                                            if (char.IsDigit(_nextChar))  // Third octal character.
+                                            if (char.IsDigit(_nextChar) && _nextChar != '8' && _nextChar != '9')  // Third octal character.
                                             {
                                                 ch = ScanNextChar(false);
-                                                if (ch >= '8')
-                                                    ParserDiagnostics.HandleUnexpectedCharacter(ch);
+                                                //if (ch >= '8')
+                                                //    ParserDiagnostics.HandleUnexpectedCharacter(ch);
 
                                                 n = n * 8 + ch - '0';
                                             }
@@ -491,9 +492,11 @@ namespace PdfSharp.Pdf.IO
                                     }
                                     else
                                     {
+                                        // PDF 32000: "If the character following the REVERSE SOLIDUS is not one of those shown in Table 3, the REVERSE SOLIDUS shall be ignored."
                                         //TODO
                                         // Debug.As sert(false, "Not implemented; unknown escape character.");
-                                        ParserDiagnostics.HandleUnexpectedCharacter(ch);
+                                        // ParserDiagnostics.HandleUnexpectedCharacter(ch);
+                                        //GetType();
                                     }
                                     break;
                             }

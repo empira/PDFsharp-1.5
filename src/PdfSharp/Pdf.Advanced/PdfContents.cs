@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -128,7 +128,7 @@ namespace PdfSharp.Pdf.Advanced
         public PdfContent ReplaceContent(CSequence cseq)
         {
             if (cseq == null)
-                throw new ArgumentException("cseq");
+                throw new ArgumentNullException(nameof(cseq));
 
             return ReplaceContent(cseq.ToContent());
         }

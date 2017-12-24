@@ -3,7 +3,7 @@
 // Authors:
 //   Niklas Schneider
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -94,22 +94,19 @@ namespace PdfSharp.Charting.Renderers
                 return;
 
             SeriesRendererInfo sri = cri.seriesRendererInfos[0];
-            if (sri._dataLabelRendererInfo == null)
+            if (sri == null || sri._dataLabelRendererInfo == null)
                 return;
 
-            if (sri != null)
+            XGraphics gfx = _rendererParms.Graphics;
+            XFont font = sri._dataLabelRendererInfo.Font;
+            XBrush fontColor = sri._dataLabelRendererInfo.FontColor;
+            XStringFormat format = XStringFormats.Center;
+            format.LineAlignment = XLineAlignment.Center;
+            foreach (DataLabelEntryRendererInfo dataLabel in sri._dataLabelRendererInfo.Entries)
             {
-                XGraphics gfx = _rendererParms.Graphics;
-                XFont font = sri._dataLabelRendererInfo.Font;
-                XBrush fontColor = sri._dataLabelRendererInfo.FontColor;
-                XStringFormat format = XStringFormats.Center;
-                format.LineAlignment = XLineAlignment.Center;
-                foreach (DataLabelEntryRendererInfo dataLabel in sri._dataLabelRendererInfo.Entries)
-                {
-                    if (dataLabel.Text != null)
-                        gfx.DrawString(dataLabel.Text, font, fontColor, dataLabel.Rect, format);
-                }
-            }
+                if (dataLabel.Text != null)
+                    gfx.DrawString(dataLabel.Text, font, fontColor, dataLabel.Rect, format);
+             }
         }
 
         /// <summary>

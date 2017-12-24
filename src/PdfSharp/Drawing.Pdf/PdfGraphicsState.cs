@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -238,7 +238,7 @@ namespace PdfSharp.Drawing.Pdf
         public void RealizeBrush(XBrush brush, PdfColorMode colorMode, int renderingMode, double fontEmSize)
         {
             // Rendering mode 2 is used for bold simulation.
-            // Reference: TABLE 5.3  Text rendering modes / Page 402
+            // Reference: TABLE 5.3  Text rendering modes / Page 402
 
             XSolidBrush solidBrush = brush as XSolidBrush;
             if (solidBrush != null)

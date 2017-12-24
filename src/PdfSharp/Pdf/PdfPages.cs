@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -194,6 +194,7 @@ namespace PdfSharp.Pdf
             }
             if (Owner.Settings.TrimMargins.AreSet)
                 page.TrimMargins = Owner.Settings.TrimMargins;
+            
             return page;
         }
 
@@ -441,7 +442,7 @@ namespace PdfSharp.Pdf
             CloneElement(page, importPage, PdfPage.Keys.ArtBox, true);
 #if true
             // Do not deep copy annotations.
-            //CloneElement(page, importPage, PdfPage.Keys.Annots, false);
+            CloneElement(page, importPage, PdfPage.Keys.Annots, false);
 #else
             // Deep copy annotations.
             CloneElement(page, importPage, PdfPage.Keys.Annots, true);

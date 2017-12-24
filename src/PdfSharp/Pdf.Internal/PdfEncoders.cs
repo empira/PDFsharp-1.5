@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -455,7 +455,7 @@ namespace PdfSharp.Pdf.Internal
                     }
                     else
                     {
-                        Debug.Assert(false, "Test if this code can be invoked.");
+                        // Hack: Call self with hex := true.
                         return FormatStringLiteral(bytes, true, prefix, true, null);
                     }
                 }

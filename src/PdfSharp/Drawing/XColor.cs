@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -110,7 +110,8 @@ namespace PdfSharp.Drawing
                 _gs = 0;
             else if (gray > 1)
                 _gs = 1;
-            _gs = (float)gray;
+            else
+                _gs = (float)gray;
 
             _a = 1;
             _r = 0;

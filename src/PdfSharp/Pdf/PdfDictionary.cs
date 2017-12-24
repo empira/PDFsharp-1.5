@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -71,7 +71,7 @@ namespace PdfSharp.Pdf
     [DebuggerDisplay("{DebuggerDisplay}")]
     public class PdfDictionary : PdfObject, IEnumerable<KeyValuePair<string, PdfItem>>
     {
-        // Reference: 3.2.6  Dictionary Objects / Page 59
+        // Reference: 3.2.6  Dictionary Objects / Page 59
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PdfDictionary"/> class.

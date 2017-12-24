@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -347,7 +347,7 @@ namespace PdfSharp.Drawing
 
         /// <summary>
         /// Creates an image from the specified stream.<br/>
-        /// Silverlight supports PNG and JPEF only.
+        /// Silverlight supports PNG and JPEG only.
         /// </summary>
         /// <param name="stream">The stream containing a BMP, PNG, GIF, JPEG, TIFF, or PDF file.</param>
         public static XImage FromStream(Stream stream)
@@ -355,9 +355,8 @@ namespace PdfSharp.Drawing
             if (stream == null)
                 throw new ArgumentNullException("stream");
 
-            // TODO: Check PDF stream.
-            //if (PdfReader.TestPdfFile(path) > 0)
-            //  return new XPdfForm(path);
+            if (PdfReader.TestPdfFile(stream) > 0)
+                return new XPdfForm(stream);
             return new XImage(stream);
         }
 

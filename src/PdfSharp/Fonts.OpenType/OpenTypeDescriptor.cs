@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -122,6 +122,10 @@ namespace PdfSharp.Fonts.OpenType
 
             UnderlinePosition = FontFace.post.underlinePosition;
             UnderlineThickness = FontFace.post.underlineThickness;
+
+            // PDFlib states that some Apple fonts miss the OS/2 table.
+            Debug.Assert(FontFace.os2 != null, "TrueType font has no OS/2 table.");
+
             StrikeoutPosition = FontFace.os2.yStrikeoutPosition;
             StrikeoutSize = FontFace.os2.yStrikeoutSize;
 
@@ -132,9 +136,6 @@ namespace PdfSharp.Fonts.OpenType
             //float weight = (float)(image.os2.usWeightClass / 65.0f);
             //stemV = (int)(50 + weight * weight);  // MAGIC
             StemV = 0;
-
-            // PDFlib states that some Apple fonts miss the OS/2 table.
-            Debug.Assert(FontFace.os2 != null, "TrueType font has no OS/2 table.");
 
             UnitsPerEm = FontFace.head.unitsPerEm;
 

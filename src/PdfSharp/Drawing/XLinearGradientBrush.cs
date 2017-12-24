@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -33,7 +33,7 @@ using PdfSharp.Internal;
 #if GDI
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using GdiLinearGradientBrush =System.Drawing.Drawing2D.LinearGradientBrush;
+using GdiLinearGradientBrush = System.Drawing.Drawing2D.LinearGradientBrush;
 #endif
 #if WPF
 using System.Windows;
@@ -42,6 +42,7 @@ using SysPoint = System.Windows.Point;
 using SysSize = System.Windows.Size;
 using SysRect = System.Windows.Rect;
 using WpfBrush = System.Windows.Media.Brush;
+using WpfLinearGradientBrush = System.Windows.Media.LinearGradientBrush;
 #endif
 #if UWP
 using Windows.UI;
@@ -59,13 +60,18 @@ namespace PdfSharp.Drawing
     /// </summary>
     public sealed class XLinearGradientBrush : XBrush
     {
-        //internal XLinearGradientBrush();
-
 #if GDI
         /// <summary>
         /// Initializes a new instance of the <see cref="XLinearGradientBrush"/> class.
         /// </summary>
         public XLinearGradientBrush(System.Drawing.Point point1, System.Drawing.Point point2, XColor color1, XColor color2)
+            : this(new XPoint(point1), new XPoint(point2), color1, color2)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="XLinearGradientBrush"/> class.
+        /// </summary>
+        public XLinearGradientBrush(PointF point1, PointF point2, XColor color1, XColor color2)
             : this(new XPoint(point1), new XPoint(point2), color1, color2)
         { }
 #endif
@@ -75,15 +81,6 @@ namespace PdfSharp.Drawing
         /// Initializes a new instance of the <see cref="XLinearGradientBrush"/> class.
         /// </summary>
         public XLinearGradientBrush(SysPoint point1, SysPoint point2, XColor color1, XColor color2)
-            : this(new XPoint(point1), new XPoint(point2), color1, color2)
-        { }
-#endif
-
-#if GDI
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XLinearGradientBrush"/> class.
-        /// </summary>
-        public XLinearGradientBrush(PointF point1, PointF point2, XColor color1, XColor color2)
             : this(new XPoint(point1), new XPoint(point2), color1, color2)
         { }
 #endif
@@ -302,11 +299,11 @@ namespace PdfSharp.Drawing
             //  dirty = false;
             //}
 
-            System.Windows.Media.LinearGradientBrush brush;
+            WpfLinearGradientBrush brush;
             if (_useRect)
             {
 #if !SILVERLIGHT
-                brush = new System.Windows.Media.LinearGradientBrush(_color1.ToWpfColor(), _color2.ToWpfColor(), new SysPoint(0, 0), new SysPoint(1, 1));// rect.TopLeft, this.rect.BottomRight);
+                brush = new WpfLinearGradientBrush(_color1.ToWpfColor(), _color2.ToWpfColor(), new SysPoint(0, 0), new SysPoint(1, 1));// rect.TopLeft, this.rect.BottomRight);
                 //brush = new System.Drawing.Drawing2D.LinearGradientBrush(rect.ToRectangleF(),
                 //  color1.ToGdiColor(), color2.ToGdiColor(), (LinearGradientMode)linearGradientMode);
 #else
@@ -326,7 +323,6 @@ namespace PdfSharp.Drawing
                 brush.StartPoint = new Point(0, 0);
                 brush.EndPoint = new Point(1, 1);
 #endif
-
             }
             else
             {

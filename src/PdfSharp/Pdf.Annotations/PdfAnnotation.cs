@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -327,6 +327,14 @@ namespace PdfSharp.Pdf.Annotations
             /// </summary>
             [KeyInfo("1.1", KeyType.Array | KeyType.Optional)]
             public const string C = "/C";
+
+            // @PDF/UA
+            /// <summary>
+            /// (Required if the annotation is a structural content item; PDF 1.3)
+            /// The integer key of the annotation’s entry in the structural parent tree.
+            /// </summary>
+            [KeyInfo("1.3", KeyType.Integer | KeyType.Optional)]
+            public const string StructParent = "/StructParent";
 
             /// <summary>
             /// (Optional; PDF 1.1) An action to be performed when the annotation is activated.

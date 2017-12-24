@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -329,7 +329,7 @@ namespace PdfSharp.Drawing.Pdf
 
             int count = points.Length;
             if (points.Length < 2)
-                throw new ArgumentException("points", PSSR.PointArrayAtLeast(2));
+                throw new ArgumentException(PSSR.PointArrayAtLeast(2), "points");
 
             const string format = Config.SignificantFigures4;
             AppendFormatPoint("{0:" + format + "} {1:" + format + "} m\n", points[0].X, points[0].Y);
@@ -434,8 +434,6 @@ namespace PdfSharp.Drawing.Pdf
             double cyDescent = lineSpace * font.CellDescent / font.CellSpace;
             double width = _gfx.MeasureString(s, font).Width;
 
-            //bool bold = (font.Style & XFontStyle.Bold) != 0;
-            //bool italic = (font.Style & XFontStyle.Italic) != 0;
             bool italicSimulation = (font.GlyphTypeface.StyleSimulations & XStyleSimulations.ItalicSimulation) != 0;
             bool boldSimulation = (font.GlyphTypeface.StyleSimulations & XStyleSimulations.BoldSimulation) != 0;
             bool strikeout = (font.Style & XFontStyle.Strikeout) != 0;

@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2016 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -190,9 +190,11 @@ namespace PdfSharp.Pdf.Advanced
         /// </summary>
         internal override void PrepareForSave()
         {
+            // Prepare pages.
             if (_pages != null)
                 _pages.PrepareForSave();
 
+            // Create outline objects.
             if (_outline != null && _outline.Outlines.Count > 0)
             {
                 if (Elements[Keys.PageMode] == null)
@@ -216,6 +218,8 @@ namespace PdfSharp.Pdf.Advanced
         /// </summary>
         internal sealed class Keys : KeysBase
         {
+            // ReSharper disable InconsistentNaming
+
             /// <summary>
             /// (Required) The type of PDF object that this dictionary describes; 
             /// must be Catalog for the catalog dictionary.
@@ -273,24 +277,24 @@ namespace PdfSharp.Pdf.Advanced
             /// <summary>
             /// (Optional) A name object specifying the page layout to be used when the document is 
             /// opened:
-            /// SinglePage - Display one page at a time.
-            /// OneColumn - Display the pages in one column.
-            /// TwoColumnLeft - Display the pages in two columns, with oddnumbered pages on the left.
-            /// TwoColumnRight - Display the pages in two columns, with oddnumbered pages on the right.
-            /// TwoPageLeft - (PDF 1.5) Display the pages two at a time, with odd-numbered pages on the left
-            /// TwoPageRight - (PDF 1.5) Display the pages two at a time, with odd-numbered pages on the right.
+            ///     SinglePage - Display one page at a time.
+            ///     OneColumn - Display the pages in one column.
+            ///     TwoColumnLeft - Display the pages in two columns, with oddnumbered pages on the left.
+            ///     TwoColumnRight - Display the pages in two columns, with oddnumbered pages on the right.
+            ///     TwoPageLeft - (PDF 1.5) Display the pages two at a time, with odd-numbered pages on the left
+            ///     TwoPageRight - (PDF 1.5) Display the pages two at a time, with odd-numbered pages on the right.
             /// </summary>
             [KeyInfo(KeyType.Name | KeyType.Optional)]
             public const string PageLayout = "/PageLayout";
 
             /// <summary>
             /// (Optional) A name object specifying how the document should be displayed when opened:
-            /// UseNone - Neither document outline nor thumbnail images visible.
-            /// UseOutlines - Document outline visible.
-            /// UseThumbs - Thumbnail images visible.
-            /// FullScreen - Full-screen mode, with no menu bar, windowcontrols, or any other window visible.
-            /// UseOC - (PDF 1.5) Optional content group panel visible.
-            /// UseAttachments (PDF 1.6) Attachments panel visible.
+            ///     UseNone - Neither document outline nor thumbnail images visible.
+            ///     UseOutlines - Document outline visible.
+            ///     UseThumbs - Thumbnail images visible.
+            ///     FullScreen - Full-screen mode, with no menu bar, windowcontrols, or any other window visible.
+            ///     UseOC - (PDF 1.5) Optional content group panel visible.
+            ///     UseAttachments (PDF 1.6) Attachments panel visible.
             /// Default value: UseNone.
             /// </summary>
             [KeyInfo(KeyType.Name | KeyType.Optional)]
@@ -407,6 +411,36 @@ namespace PdfSharp.Pdf.Advanced
             /// </summary>
             [KeyInfo("1.5", KeyType.Dictionary | KeyType.Optional)]
             public const string Legal = "/Legal";
+
+            /// <summary>
+            /// (Optional; PDF 1.7) An array of requirement dictionaries representing
+            /// requirements for the document.
+            /// </summary>
+            [KeyInfo("1.7", KeyType.Array | KeyType.Optional)]
+            public const string Requirements = "/Requirements";
+
+            /// <summary>
+            /// (Optional; PDF 1.7) A collection dictionary that a PDF consumer uses to enhance
+            /// the presentation of file attachments stored in the PDF document.
+            /// </summary>
+            [KeyInfo("1.7", KeyType.Dictionary | KeyType.Optional)]
+            public const string Collection = "/Collection";
+
+            /// <summary>
+            /// (Optional; PDF 1.7) A flag used to expedite the display of PDF documents containing XFA forms.
+            /// It specifies whether the document must be regenerated when the document is first opened.
+            /// If true, the viewer application treats the document as a shell and regenerates the content
+            /// when the document is opened, regardless of any dynamic forms settings that appear in the XFA
+            /// stream itself. This setting is used to expedite the display of documents whose layout varies
+            /// depending on the content of the XFA streams. 
+            /// If false, the viewer application does not regenerate the content when the document is opened.
+            /// See the XML Forms Architecture (XFA) Specification (Bibliography).
+            /// Default value: false.
+            /// </summary>
+            [KeyInfo("1.7", KeyType.Boolean | KeyType.Optional)]
+            public const string NeedsRendering = "/NeedsRendering";
+
+            // ReSharper restore InconsistentNaming
 
             /// <summary>
             /// Gets the KeysMeta for these keys.
