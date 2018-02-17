@@ -26,7 +26,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
 // DEALINGS IN THE SOFTWARE.
 #endregion
-
+#define NET_ZIP
 using System;
 using System.IO;
 using PdfSharp.Internal;
@@ -126,11 +126,17 @@ namespace PdfSharp.Pdf.Filters
             //
             //    The information in FLEVEL is not needed for decompression; it
             //    is there to indicate if recompression might be worthwhile.
-            ms.WriteByte(0x49);
+            ms.WriteByte(0x01);
 
             DeflateStream zip = new DeflateStream(ms, CompressionMode.Compress, true);
             zip.Write(data, 0, data.Length);
             zip.Close();
+
+            var checksum = CalcChecksum(data);
+            ms.WriteByte((byte)checksum);
+            ms.WriteByte((byte)(checksum >> 8));
+            ms.WriteByte((byte)(checksum >> 16));
+            ms.WriteByte((byte)(checksum >> 24));
 #else
             int level = Deflater.DEFAULT_COMPRESSION;
             switch (mode)
@@ -152,6 +158,21 @@ namespace PdfSharp.Pdf.Filters
 #else
             return ms.ToArray();
 #endif
+        }
+        
+        private const int Modulus = 65521;
+
+        private static int CalcChecksum(byte[] data)
+        {
+            var a = 1;
+            var b = 0;
+            for (int i = 0; i < data.Length; ++i)
+            {
+                a = (a + data[i]) % Modulus;
+                b = (b + a) % Modulus;
+            }
+
+            return b * 65536 + a;
         }
 
         /// <summary>

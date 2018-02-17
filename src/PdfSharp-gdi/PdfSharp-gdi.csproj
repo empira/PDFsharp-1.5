@@ -1139,63 +1139,6 @@
     <Compile Include="..\PdfSharp\root\VersionInfo.cs">
       <Link>root\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Checksums\Adler32.cs">
-      <Link>SharpZipLib\Checksums\Adler32.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Checksums\CRC32.cs">
-      <Link>SharpZipLib\Checksums\CRC32.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Checksums\IChecksum.cs">
-      <Link>SharpZipLib\Checksums\IChecksum.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\SharpZipBaseException.cs">
-      <Link>SharpZipLib\SharpZipBaseException.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\Compression\Deflater.cs">
-      <Link>SharpZipLib\Zip\Compression\Deflater.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\Compression\DeflaterConstants.cs">
-      <Link>SharpZipLib\Zip\Compression\DeflaterConstants.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\Compression\DeflaterEngine.cs">
-      <Link>SharpZipLib\Zip\Compression\DeflaterEngine.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\Compression\DeflaterHuffman.cs">
-      <Link>SharpZipLib\Zip\Compression\DeflaterHuffman.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\Compression\DeflaterPending.cs">
-      <Link>SharpZipLib\Zip\Compression\DeflaterPending.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\Compression\Inflater.cs">
-      <Link>SharpZipLib\Zip\Compression\Inflater.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\Compression\InflaterDynHeader.cs">
-      <Link>SharpZipLib\Zip\Compression\InflaterDynHeader.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\Compression\InflaterHuffmanTree.cs">
-      <Link>SharpZipLib\Zip\Compression\InflaterHuffmanTree.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\Compression\PendingBuffer.cs">
-      <Link>SharpZipLib\Zip\Compression\PendingBuffer.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\Compression\Streams\DeflaterOutputStream.cs">
-      <Link>SharpZipLib\Zip\Compression\Streams\DeflaterOutputStream.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\Compression\Streams\InflaterInputStream.cs">
-      <Link>SharpZipLib\Zip\Compression\Streams\InflaterInputStream.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\Compression\Streams\OutputWindow.cs">
-      <Link>SharpZipLib\Zip\Compression\Streams\OutputWindow.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\Compression\Streams\StreamManipulator.cs">
-      <Link>SharpZipLib\Zip\Compression\Streams\StreamManipulator.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\ZipConstants.cs">
-      <Link>SharpZipLib\Zip\ZipConstants.cs</Link>
-    </Compile>
-    <Compile Include="..\PdfSharp\SharpZipLib\Zip\ZipException.cs">
-      <Link>SharpZipLib\Zip\ZipException.cs</Link>
-    </Compile>
     <EmbeddedResource Include="..\PdfSharp\Forms\PagePreview.resx">
       <Link>Forms\PagePreview.resx</Link>
       <DependentUpon>PagePreview.cs</DependentUpon>
@@ -1243,12 +1186,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\images\" />
-    <Folder Include="SharpZipLib\SharpZip\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\PdfSharp\SharpZipLib\ReadMe.txt">
-      <Link>SharpZipLib\ReadMe.txt</Link>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
