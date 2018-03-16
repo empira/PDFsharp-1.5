@@ -399,7 +399,7 @@ namespace PdfSharp.Pdf.IO
             {
                 PdfItem val = items[idx];
                 if (!(val is PdfName))
-                    ParserDiagnostics.ThrowParserException("name expected");
+                    ParserDiagnostics.ThrowParserException("Name expected."); // TODO L10N using PSSR.
 
                 string key = val.ToString();
                 val = items[idx + 1];
@@ -542,7 +542,7 @@ namespace PdfSharp.Pdf.IO
                         return;
                 }
             }
-            ParserDiagnostics.ThrowParserException("Unexpected end of file.");
+            ParserDiagnostics.ThrowParserException("Unexpected end of file."); // TODO L10N using PSSR.
         }
 
         private Symbol ScanNextToken()
@@ -1040,7 +1040,7 @@ namespace PdfSharp.Pdf.IO
                 // 1st trailer seems to be the best.
                 if (_document._trailer == null)
                     _document._trailer = trailer;
-                int prev = trailer.Elements.GetInteger(PdfTrailer.Keys.Prev);
+                int prev = trailer != null ? trailer.Elements.GetInteger(PdfTrailer.Keys.Prev) : 0;
                 if (prev == 0)
                     break;
                 //if (prev > lexer.PdfLength)
@@ -1094,7 +1094,7 @@ namespace PdfSharp.Pdf.IO
                                 if (generation == generationChecked && id == idChecked + 1)
                                     idToUse = idChecked;
                                 else
-                                    ParserDiagnostics.ThrowParserException("Invalid entry in XRef table, ID=" + id + ", Generation=" + generation + ", Position=" + position + ", ID of referenced object=" + idChecked + ", Generation of referenced object=" + generationChecked);
+                                    ParserDiagnostics.ThrowParserException("Invalid entry in XRef table, ID=" + id + ", Generation=" + generation + ", Position=" + position + ", ID of referenced object=" + idChecked + ", Generation of referenced object=" + generationChecked);  // TODO L10N using PSSR.
                             }
                             //!!!new 2018-03-14 end
 #endif
@@ -1156,7 +1156,7 @@ namespace PdfSharp.Pdf.IO
                 //string token = _lexer.Token;
                 Symbol symbol = _lexer.ScanNextToken();
                 if (symbol != Symbol.Obj)
-                    ParserDiagnostics.ThrowParserException("Invalid entry in XRef table, ID=" + id + ", Generation=" + generation + ", Position=" + position);
+                    ParserDiagnostics.ThrowParserException("Invalid entry in XRef table, ID=" + id + ", Generation=" + generation + ", Position=" + position); // TODO L10N using PSSR.
 
                 if (id != idChecked || generation != generationChecked)
                     return false;
@@ -1167,7 +1167,7 @@ namespace PdfSharp.Pdf.IO
             }
             catch (Exception ex)
             {
-                ParserDiagnostics.ThrowParserException("Invalid entry in XRef table, ID=" + id + ", Generation=" + generation + ", Position=" + position, ex);
+                ParserDiagnostics.ThrowParserException("Invalid entry in XRef table, ID=" + id + ", Generation=" + generation + ", Position=" + position, ex); // TODO L10N using PSSR.
             }
             finally
             {
