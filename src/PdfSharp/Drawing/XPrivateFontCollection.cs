@@ -127,9 +127,9 @@ namespace PdfSharp.Drawing
         /// Family name and style are automatically retrieved from the font.
         /// </summary>
 #if GDI
-        [Obsolete("Use the GDI build of PDFsharp and use Add(Stream stream)")]
-#else
         [Obsolete("Use Add(Stream stream)")]
+#else
+        [Obsolete("Use the GDI build of PDFsharp and use Add(Stream stream)")]
 #endif
         public static void AddFont(string filename)
         {
@@ -239,9 +239,9 @@ namespace PdfSharp.Drawing
         /// Family name and style are automatically retrieved from the font.
         /// </summary>
 #if GDI
-        [Obsolete("Use the GDI build of PDFsharp and use Add(Stream stream)")]
-#else
         [Obsolete("Use Add(Stream stream)")]
+#else
+        [Obsolete("Use the GDI build of PDFsharp and use Add(Stream stream)")]
 #endif
         public static void AddFont(Stream stream, string facename)
         {
