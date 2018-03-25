@@ -1141,12 +1141,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\PdfSharp\Resources\Messages.de.restext">
+    <EmbeddedResource Include="..\PdfSharp\Resources\Messages.de.restext">
       <Link>Resources\Messages.de.restext</Link>
-    </None>
-    <None Include="..\PdfSharp\Resources\Messages.restext">
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\PdfSharp\Resources\Messages.restext">
       <Link>Resources\Messages.restext</Link>
-    </None>
+    </EmbeddedResource>
     <None Include="StrongnameKey.snk" />
   </ItemGroup>
   <ItemGroup>
