@@ -74,9 +74,13 @@ namespace PdfSharp.Pdf
 
             //!!!modTHHO 2016-06-16 Do not set Orientation here. Setting Orientation is not enough. Other properties must also be changed when setting Orientation.
             //!!!modTHHO 2018-04-05 Restored the old behavior. Commenting the next three lines out is not enough either.
+            // New approach: remember that Orientation was set based on rotation.
             int rotate = Elements.GetInteger(InheritablePageKeys.Rotate);
             if (Math.Abs((rotate / 90)) % 2 == 1)
+            {
                 _orientation = PageOrientation.Landscape;
+                _orientationSetByCodeForRotatedDocument = true;
+            }
         }
 
         void Initialize()
@@ -149,9 +153,15 @@ namespace PdfSharp.Pdf
         public PageOrientation Orientation
         {
             get { return _orientation; }
-            set { _orientation = value; }
+            set
+            {
+                _orientation = value;
+                _orientationSetByCodeForRotatedDocument = false;
+            }
         }
         PageOrientation _orientation;
+        bool _orientationSetByCodeForRotatedDocument;
+        // TODO Simplify the implementation. Should /Rotate 90 lead to Landscape format?
 
         /// <summary>
         /// Gets or sets one of the predefined standard sizes like.
@@ -586,6 +596,9 @@ namespace PdfSharp.Pdf
             //!!!newTHHO 2018-04-05 Stop manipulating the MediaBox - Height and Width properties already take orientation into account.
             //!!!delTHHO 2018-04-05 if (_orientation == PageOrientation.Landscape)
             //!!!delTHHO 2018-04-05     MediaBox = new PdfRectangle(mediaBox.X1, mediaBox.Y1, mediaBox.Y2, mediaBox.X2);
+            // One step back - swap members in MediaBox for landscape orientation.
+            if (_orientation == PageOrientation.Landscape && !_orientationSetByCodeForRotatedDocument)
+                MediaBox = new PdfRectangle(mediaBox.X1, mediaBox.Y1, mediaBox.Y2, mediaBox.X2);
 
 #if true
             // Add transparency group to prevent rendering problems of Adobe viewer.
@@ -617,6 +630,9 @@ namespace PdfSharp.Pdf
 
             //!!!delTHHO 2018-04-05 if (_orientation == PageOrientation.Landscape)
             //!!!delTHHO 2018-04-05    MediaBox = mediaBox;
+            // One step back - swap members in MediaBox for landscape orientation.
+            if (_orientation == PageOrientation.Landscape && !_orientationSetByCodeForRotatedDocument)
+                MediaBox = mediaBox;
         }
 
         /// <summary>
