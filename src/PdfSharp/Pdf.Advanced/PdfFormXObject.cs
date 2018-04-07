@@ -148,7 +148,7 @@ namespace PdfSharp.Pdf.Advanced
                     }
                     else
                     {
-                        // External object was not imported ealier and must be cloned
+                        // External object was not imported earlier and must be cloned
                         PdfObject clone = obj.Clone();
                         Debug.Assert(clone.Reference == null);
                         clone.Document = Owner;
@@ -197,13 +197,14 @@ namespace PdfSharp.Pdf.Advanced
 #endif
             }
 
-            // Take /Rotate into account
+            // Take /Rotate into account.
             PdfRectangle rect = importPage.Elements.GetRectangle(PdfPage.Keys.MediaBox);
-            int rotate = importPage.Elements.GetInteger(PdfPage.Keys.Rotate);
+            // Reduce rotation to 0, 90, 180, or 270.
+            int rotate = (importPage.Elements.GetInteger(PdfPage.Keys.Rotate) % 360 + 360) % 360;
             //rotate = 0;
-            if (rotate == 0)
+            if (rotate == 0 || rotate == 180)
             {
-                // Set bounding box to media box
+                // Set bounding box to media box.
                 Elements["/BBox"] = rect;
             }
             else
@@ -211,20 +212,27 @@ namespace PdfSharp.Pdf.Advanced
                 // TODO: Have to adjust bounding box? (I think not, but I'm not sure -> wait for problem)
                 Elements["/BBox"] = rect;
 
-                // Rotate the image such that it is upright
+                // Rotate the image such that it is upright.
                 XMatrix matrix = new XMatrix();
                 double width = rect.Width;
                 double height = rect.Height;
                 matrix.RotateAtPrepend(-rotate, new XPoint(width / 2, height / 2));
 
-                if (rotate != 180)
+                // Translate the image such that its center lies on the center of the rotated bounding box.
+                double offset = (height - width) / 2;
+                if (rotate == 90)
                 {
-                    // Translate the image such that its center lies on the center of the rotated bounding box
-                    double offset = (height - width) / 2;
                     if (height > width)
                         matrix.TranslatePrepend(offset, offset);
                     else
                         matrix.TranslatePrepend(-offset, -offset);
+                }
+                else // if (rotate == 270)
+                {
+                    if (height > width)
+                        matrix.TranslatePrepend(-offset, -offset);
+                    else
+                        matrix.TranslatePrepend(offset, offset);
                 }
 
                 //string item = "[" + PdfEncoders.ToString(matrix) + "]";
@@ -232,7 +240,7 @@ namespace PdfSharp.Pdf.Advanced
                 Elements.SetMatrix(Keys.Matrix, matrix);
             }
 
-            // Preserve filter because the content keeps unmodified
+            // Preserve filter because the content keeps unmodified.
             PdfContent content = importPage.Contents.CreateSingleContent();
 #if !DEBUG
             content.Compressed = true;
