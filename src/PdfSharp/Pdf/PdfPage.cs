@@ -72,10 +72,11 @@ namespace PdfSharp.Pdf
         {
             // Set Orientation depending on /Rotate.
 
-            //!!!modTHHO 16-06-16 Do not set Orientation here. Setting Orientation is not enough. Other properties must also be changed when setting Orientation.
-            //int rotate = Elements.GetInteger(InheritablePageKeys.Rotate);
-            //if (Math.Abs((rotate / 90)) % 2 == 1)
-            //    _orientation = PageOrientation.Landscape;
+            //!!!modTHHO 2016-06-16 Do not set Orientation here. Setting Orientation is not enough. Other properties must also be changed when setting Orientation.
+            //!!!modTHHO 2018-04-05 Restored the old behavior. Commenting the next three lines out is not enough either.
+            int rotate = Elements.GetInteger(InheritablePageKeys.Rotate);
+            if (Math.Abs((rotate / 90)) % 2 == 1)
+                _orientation = PageOrientation.Landscape;
         }
 
         void Initialize()
@@ -293,7 +294,6 @@ namespace PdfSharp.Pdf
         /// <summary>
         /// Gets or sets the /Rotate entry of the PDF page. The value is the number of degrees by which the page 
         /// should be rotated clockwise when displayed or printed. The value must be a multiple of 90.
-        /// TODO: Next statement is not correct: 
         /// PDFsharp does not set this value, but for imported pages this value can be set and must be taken
         /// into account when adding graphic to such a page.
         /// </summary>
@@ -583,12 +583,13 @@ namespace PdfSharp.Pdf
             // HACK: temporarily flip media box if Landscape
             PdfRectangle mediaBox = MediaBox;
             // TODO: Take /Rotate into account
-            if (_orientation == PageOrientation.Landscape)
-                MediaBox = new PdfRectangle(mediaBox.X1, mediaBox.Y1, mediaBox.Y2, mediaBox.X2);
+            //!!!newTHHO 2018-04-05 Stop manipulating the MediaBox - Height and Width properties already take orientation into account.
+            //!!!delTHHO 2018-04-05 if (_orientation == PageOrientation.Landscape)
+            //!!!delTHHO 2018-04-05     MediaBox = new PdfRectangle(mediaBox.X1, mediaBox.Y1, mediaBox.Y2, mediaBox.X2);
 
 #if true
             // Add transparency group to prevent rendering problems of Adobe viewer.
-            // Update (PDFsharp 1.50 beta 3): Add transparency group only of ColorMode is defined.
+            // Update (PDFsharp 1.50 beta 3): Add transparency group only if ColorMode is defined.
             // Rgb is the default for the ColorMode, but if user sets it to Undefined then
             // we respect this and skip the transparency group.
             TransparencyUsed = true; // TODO: check XObjects
@@ -614,8 +615,8 @@ namespace PdfSharp.Pdf
 #endif
             base.WriteObject(writer);
 
-            if (_orientation == PageOrientation.Landscape)
-                MediaBox = mediaBox;
+            //!!!delTHHO 2018-04-05 if (_orientation == PageOrientation.Landscape)
+            //!!!delTHHO 2018-04-05    MediaBox = mediaBox;
         }
 
         /// <summary>
