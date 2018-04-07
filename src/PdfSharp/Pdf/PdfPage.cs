@@ -101,8 +101,8 @@ namespace PdfSharp.Pdf
         object _tag;
 
         /// <summary>
-        /// Closes the page. A closes page cannot be modified anymore and it is not possible to
-        /// get an XGraphics object for a closed page. Closing a page is not required, but may saves
+        /// Closes the page. A closed page cannot be modified anymore and it is not possible to
+        /// get an XGraphics object for a closed page. Closing a page is not required, but may save
         /// resources if the document has many pages. 
         /// </summary>
         public void Close()
