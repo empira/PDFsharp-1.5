@@ -35,7 +35,7 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Represents trim margins added to the page.
     /// </summary>
-    [DebuggerDisplay("(Left={left.Millimeter}mm, Right={right.Millimeter}mm, Top={top.Millimeter}mm, Bottom={bottom.Millimeter}mm)")]
+    [DebuggerDisplay("(Left={_left.Millimeter}mm, Right={_right.Millimeter}mm, Top={_top.Millimeter}mm, Bottom={_bottom.Millimeter}mm)")]
     public sealed class TrimMargins
     {
         ///// <summary>
