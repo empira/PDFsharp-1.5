@@ -222,17 +222,19 @@ namespace PdfSharp.Pdf.Advanced
                 double offset = (height - width) / 2;
                 if (rotate == 90)
                 {
+                    // TODO It seems we can simplify this as the sign of offset changes too.
                     if (height > width)
-                        matrix.TranslatePrepend(offset, offset);
+                        matrix.TranslatePrepend(offset, offset); // Tested.
                     else
-                        matrix.TranslatePrepend(-offset, -offset);
+                        matrix.TranslatePrepend(offset, offset); // TODO Test case.
                 }
                 else // if (rotate == 270)
                 {
+                    // TODO It seems we can simplify this as the sign of offset changes too.
                     if (height > width)
-                        matrix.TranslatePrepend(-offset, -offset);
+                        matrix.TranslatePrepend(-offset, -offset); // Tested.
                     else
-                        matrix.TranslatePrepend(offset, offset);
+                        matrix.TranslatePrepend(-offset, -offset); // Tested.
                 }
 
                 //string item = "[" + PdfEncoders.ToString(matrix) + "]";
