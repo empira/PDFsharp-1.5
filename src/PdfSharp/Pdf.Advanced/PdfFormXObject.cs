@@ -202,7 +202,7 @@ namespace PdfSharp.Pdf.Advanced
             // Reduce rotation to 0, 90, 180, or 270.
             int rotate = (importPage.Elements.GetInteger(PdfPage.Keys.Rotate) % 360 + 360) % 360;
             //rotate = 0;
-            if (rotate == 0 || rotate == 180)
+            if (rotate == 0)
             {
                 // Set bounding box to media box.
                 Elements["/BBox"] = rect;
@@ -228,7 +228,7 @@ namespace PdfSharp.Pdf.Advanced
                     else
                         matrix.TranslatePrepend(offset, offset); // TODO Test case.
                 }
-                else // if (rotate == 270)
+                else if (rotate == 270)
                 {
                     // TODO It seems we can simplify this as the sign of offset changes too.
                     if (height > width)

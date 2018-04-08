@@ -78,8 +78,16 @@ namespace PdfSharp.Pdf
             int rotate = Elements.GetInteger(InheritablePageKeys.Rotate);
             if (Math.Abs((rotate / 90)) % 2 == 1)
             {
+#if true
                 _orientation = PageOrientation.Landscape;
+                // Hacky approach: do not swap width and height on saving when orientation was set here.
                 _orientationSetByCodeForRotatedDocument = true;
+#else
+                // Cleaner approach: Swap width and height here. But some drawing routines will not draw the XPdfForm correctly, so this needs more testing and more changes.
+                // When saving, width and height will be swapped. So we have to swap them here too.
+                PdfRectangle mediaBox = MediaBox;
+                MediaBox = new PdfRectangle(mediaBox.X1, mediaBox.Y1, mediaBox.Y2, mediaBox.X2);
+#endif
             }
         }
 
@@ -88,7 +96,7 @@ namespace PdfSharp.Pdf
             Size = RegionInfo.CurrentRegion.IsMetric ? PageSize.A4 : PageSize.Letter;
 
 #pragma warning disable 168
-            // Force creation of MediaBox object by invoking property
+            // Force creation of MediaBox object by invoking property.
             PdfRectangle rect = MediaBox;
 #pragma warning restore 168
         }
@@ -162,6 +170,7 @@ namespace PdfSharp.Pdf
         PageOrientation _orientation;
         bool _orientationSetByCodeForRotatedDocument;
         // TODO Simplify the implementation. Should /Rotate 90 lead to Landscape format?
+        // TODO Clean implementation without _orientationSetByCodeForRotatedDocument.
 
         /// <summary>
         /// Gets or sets one of the predefined standard sizes like.
@@ -385,7 +394,7 @@ namespace PdfSharp.Pdf
         }
         PdfContents _contents;
 
-        #region Annotations
+#region Annotations
 
         /// <summary>
         /// Gets the annotations array of this page.
@@ -458,7 +467,7 @@ namespace PdfSharp.Pdf
             return annotation;
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Gets or sets the custom values.
