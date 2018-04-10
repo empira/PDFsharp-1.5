@@ -194,6 +194,7 @@ namespace PdfSharp.Drawing.Layout
                     blockLength = 0;
                     _blocks.Add(new Block(BlockType.LineBreak));
                 }
+                // The non-breaking space is whitespace, so we treat it like non-whitespace.
                 else if (ch != Chars.NonBreakableSpace && char.IsWhiteSpace(ch))
                 {
                     if (inNonWhiteSpace)
