@@ -1,0 +1,11 @@
+language: csharp
+install:
+  - sudo apt-get install mono-devel nunit-console libpoppler-cil xvfb libgtk2.0-cil libpoppler-cil nuget 
+  - sudo sh -c "echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections"
+  - sudo apt-get install ttf-mscorefonts-installer -y > /dev/null
+ 
+script:
+  - nuget restore src/PdfSharp/PdfSharp.csproj -NonInteractive
+  - xbuild /p:Configuration=ReleaseMono src/PdfSharp/PdfSharp.csproj
+  - xbuild /p:Configuration=ReleaseMono src/PdfSharp.Tests/PdfSharp.Tests.csproj
+  - nunit-console src/PdfSharp.Tests/bin/ReleaseMono/PdfSharp.Tests.dll
