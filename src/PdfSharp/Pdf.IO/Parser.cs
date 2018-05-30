@@ -1382,6 +1382,14 @@ namespace PdfSharp.Pdf.IO
                             // Skip unused entries.
                             if (token != "n")
                                 continue;
+
+                            // Mac OS X 10.12.6 Quartz PDFContext fails to mark 0 position entries as free.
+                            // According to spec, we could skip anything less than 8 (e.g. '%PDF-1.n' where n is a digit between 0 and 7 must be the header of a file)
+                            // but anything between 0 and 8 (1-7) could be the indication of a much larger problem.
+                            // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/PDF32000_2008.pdf 7.5.2
+                            // Skip 0 position entries.
+                            if (position == 0)
+                                continue;
 #if true
                             //!!!new 2018-03-14 begin
                             // Check if the object at the address has the correct ID and generation.
