@@ -279,7 +279,7 @@ namespace PdfSharp.Pdf.IO
         public static PdfDocument Open(Stream stream, string password, PdfDocumentOpenMode openmode, PdfPasswordProvider passwordProvider)
         {
             PdfDocument document;
-            try
+            //try
             {
                 Lexer lexer = new Lexer(stream);
                 document = new PdfDocument(lexer);
@@ -500,11 +500,11 @@ namespace PdfSharp.Pdf.IO
                     document._irefTable.CheckConsistence();
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                throw;
-            }
+//             catch (Exception ex)
+//             {
+//                 Debug.WriteLine(ex.Message);
+//                 throw;
+//             }
             return document;
         }
 

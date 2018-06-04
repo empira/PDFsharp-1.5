@@ -117,7 +117,10 @@ namespace PdfSharp.Pdf.IO
                 case '%':
                     // Eat comments, the parser doesn't handle them
                     //return symbol = ScanComment();
-                    ScanComment();
+                    symbol = _symbol = ScanComment();
+                    // Do not eat EOF
+                    if (symbol == Symbol.Eof)
+                        return true;
                     goto Again;
 
                 case '/':
