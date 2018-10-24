@@ -139,10 +139,15 @@ namespace PdfSharp.Pdf.Security
             {
                 if (str.Length != 0)
                 {
-                    byte[] bytes = str.EncryptionValue;
-                    PrepareRC4Key();
-                    EncryptRC4(bytes);
-                    str.EncryptionValue = bytes;
+                    if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes)
+                    {
+                        str.EncryptionValue = EncryptAes(str.EncryptionValue);
+                    }
+                    else
+                    {
+                        PrepareRC4Key();
+                        EncryptRC4(str.EncryptionValue);
+                    }
                 }
             }
         }
@@ -165,14 +170,16 @@ namespace PdfSharp.Pdf.Security
                 else if ((value3 = item.Value as PdfArray) != null)
                     EncryptArray(value3);
             }
-            if (dict.Stream != null)
+            if (dict.Stream != null && dict.Stream.Value.Length != 0)
             {
-                byte[] bytes = dict.Stream.Value;
-                if (bytes.Length != 0)
+                if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes)
+                {
+                    dict.Stream.Value = EncryptAes(dict.Stream.Value);
+                }
+                else
                 {
                     PrepareRC4Key();
-                    EncryptRC4(bytes);
-                    dict.Stream.Value = bytes;
+                    EncryptRC4(dict.Stream.Value);
                 }
             }
         }
@@ -205,10 +212,15 @@ namespace PdfSharp.Pdf.Security
         {
             if (value.Length != 0)
             {
-                byte[] bytes = value.EncryptionValue;
-                PrepareRC4Key();
-                EncryptRC4(bytes);
-                value.EncryptionValue = bytes;
+                if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes)
+                {
+                    value.EncryptionValue = EncryptAes(value.EncryptionValue);
+                }
+                else
+                {
+                    PrepareRC4Key();
+                    EncryptRC4(value.EncryptionValue);
+                }
             }
         }
 
@@ -221,6 +233,17 @@ namespace PdfSharp.Pdf.Security
             {
                 PrepareRC4Key();
                 EncryptRC4(bytes);
+
+                if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes)
+                {
+                    return EncryptAes(bytes);
+                }
+                else
+                {
+                    PrepareRC4Key();
+                    EncryptRC4(bytes);
+                    return bytes;
+                }
             }
             return bytes;
         }
