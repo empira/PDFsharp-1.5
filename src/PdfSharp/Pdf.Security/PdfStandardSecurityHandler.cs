@@ -511,6 +511,30 @@ namespace PdfSharp.Pdf.Security
         }
 
         /// <summary>
+        /// Encrypts the data and returns the result, which will be larger than the original data.
+        /// </summary>
+        byte[] EncryptAes(byte[] data)
+        {
+            using (Rijndael aes = Rijndael.Create())
+            {
+                // Settings defined in PDF 32000 spec
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.PKCS7;
+                aes.BlockSize = 128; // 16 bytes
+                aes.KeySize = 128;
+                aes.Key = _key;
+                using (ICryptoTransform encryptor = aes.CreateEncryptor())
+                {
+                    byte[] encrypted = encryptor.TransformFinalBlock(data, 0, data.Length);
+                    byte[] result = new byte[aes.IV.Length + encrypted.Length];
+                    aes.IV.CopyTo(result, 0);
+                    encrypted.CopyTo(result, aes.IV.Length);
+                    return result;
+                }
+            }
+        }
+
+        /// <summary>
         /// Checks whether the calculated key correct.
         /// </summary>
         bool EqualsKey(byte[] value, int length)
