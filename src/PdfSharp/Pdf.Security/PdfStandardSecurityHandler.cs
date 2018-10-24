@@ -231,9 +231,6 @@ namespace PdfSharp.Pdf.Security
         {
             if (bytes != null && bytes.Length != 0)
             {
-                PrepareRC4Key();
-                EncryptRC4(bytes);
-
                 if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes)
                 {
                     return EncryptAes(bytes);
