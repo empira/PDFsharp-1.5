@@ -530,7 +530,8 @@ namespace PdfSharp.Pdf.Security
         {
 #if !NETFX_CORE
             //#if !SILVERLIGHT
-            byte[] objectId = new byte[5];
+            byte[] objectId = new byte[9];
+            int objectIdLength = 5;
             _md5.Initialize();
             // Split the object number and generation
             objectId[0] = (byte)id.ObjectNumber;
@@ -538,8 +539,17 @@ namespace PdfSharp.Pdf.Security
             objectId[2] = (byte)(id.ObjectNumber >> 16);
             objectId[3] = (byte)id.GenerationNumber;
             objectId[4] = (byte)(id.GenerationNumber >> 8);
+            if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes) 
+            {
+                // Additional padding needed for AES encryption
+                objectIdLength = 9;
+                objectId[5] = 0x73; // 's'
+                objectId[6] = 0x41; // 'A'
+                objectId[7] = 0x6C; // 'l'
+                objectId[8] = 0x54; // 'T'
+            }
             _md5.TransformBlock(_encryptionKey, 0, _encryptionKey.Length, _encryptionKey, 0);
-            _md5.TransformFinalBlock(objectId, 0, objectId.Length);
+            _md5.TransformFinalBlock(objectId, 0, objectIdLength);
             _key = _md5.Hash;
             _md5.Initialize();
             _keySize = _encryptionKey.Length + 5;
