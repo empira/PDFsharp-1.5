@@ -141,7 +141,7 @@ namespace PdfSharp.Pdf.Security
                 {
                     if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes)
                     {
-                        str.EncryptionValue = EncryptAes(str.EncryptionValue);
+                        str.EncryptionValue = DecryptAes(str.EncryptionValue);
                     }
                     else
                     {
@@ -174,7 +174,7 @@ namespace PdfSharp.Pdf.Security
             {
                 if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes)
                 {
-                    dict.Stream.Value = EncryptAes(dict.Stream.Value);
+                    dict.Stream.Value = DecryptAes(dict.Stream.Value);
                 }
                 else
                 {
@@ -214,7 +214,7 @@ namespace PdfSharp.Pdf.Security
             {
                 if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes)
                 {
-                    value.EncryptionValue = EncryptAes(value.EncryptionValue);
+                    value.EncryptionValue = DecryptAes(value.EncryptionValue);
                 }
                 else
                 {
@@ -550,6 +550,29 @@ namespace PdfSharp.Pdf.Security
                     aes.IV.CopyTo(result, 0);
                     encrypted.CopyTo(result, aes.IV.Length);
                     return result;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Decrypts the data and returns the result, which will be smaller than the encrypted data.
+        /// </summary>
+        byte[] DecryptAes(byte[] encryptedData)
+        {
+            using (Rijndael aes = Rijndael.Create())
+            {
+                // Settings defined in PDF 32000 spec
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.PKCS7;
+                aes.BlockSize = 128; // 16 bytes
+                aes.KeySize = 128;
+                aes.Key = _key;
+                // Retrieve the IV from the encrypted data
+                Array.Copy(encryptedData, aes.IV, 16);
+                using (ICryptoTransform decryptor = aes.CreateDecryptor())
+                {
+                    byte[] decrypted = decryptor.TransformFinalBlock(encryptedData, 16, encryptedData.Length - 16);
+                    return decrypted;
                 }
             }
         }
