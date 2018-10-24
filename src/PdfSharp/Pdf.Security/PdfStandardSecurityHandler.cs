@@ -140,7 +140,7 @@ namespace PdfSharp.Pdf.Security
                 if (str.Length != 0)
                 {
                     byte[] bytes = str.EncryptionValue;
-                    PrepareKey();
+                    PrepareRC4Key();
                     EncryptRC4(bytes);
                     str.EncryptionValue = bytes;
                 }
@@ -170,7 +170,7 @@ namespace PdfSharp.Pdf.Security
                 byte[] bytes = dict.Stream.Value;
                 if (bytes.Length != 0)
                 {
-                    PrepareKey();
+                    PrepareRC4Key();
                     EncryptRC4(bytes);
                     dict.Stream.Value = bytes;
                 }
@@ -206,7 +206,7 @@ namespace PdfSharp.Pdf.Security
             if (value.Length != 0)
             {
                 byte[] bytes = value.EncryptionValue;
-                PrepareKey();
+                PrepareRC4Key();
                 EncryptRC4(bytes);
                 value.EncryptionValue = bytes;
             }
@@ -219,7 +219,7 @@ namespace PdfSharp.Pdf.Security
         {
             if (bytes != null && bytes.Length != 0)
             {
-                PrepareKey();
+                PrepareRC4Key();
                 EncryptRC4(bytes);
             }
             return bytes;
@@ -429,7 +429,7 @@ namespace PdfSharp.Pdf.Security
         /// <summary>
         /// Prepare the encryption key.
         /// </summary>
-        void PrepareKey()
+        void PrepareRC4Key()
         {
             if (_key != null && _keySize > 0) //!!!mod 2017-11-06 Added "if" because PrepareRC4Key fails if _key is null. But _key appears to be always null, so maybe PrepareKey() is obsolete.
             PrepareRC4Key(_key, 0, _keySize);
