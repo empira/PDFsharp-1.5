@@ -536,14 +536,14 @@ namespace PdfSharp.Pdf.Security
                 aes.Mode = CipherMode.CBC;
                 aes.Padding = PaddingMode.PKCS7;
                 aes.BlockSize = 128; // 16 bytes
-                aes.KeySize = 128;
+                aes.KeySize = _keySize * 8;
                 aes.Key = _key;
                 using (ICryptoTransform encryptor = aes.CreateEncryptor())
                 {
                     byte[] encrypted = encryptor.TransformFinalBlock(data, 0, data.Length);
                     byte[] result = new byte[aes.IV.Length + encrypted.Length];
-                    aes.IV.CopyTo(result, 0);
-                    encrypted.CopyTo(result, aes.IV.Length);
+                    Array.Copy(aes.IV, 0, result, 0, aes.IV.Length);
+                    Array.Copy(encrypted, 0, result, aes.IV.Length, encrypted.Length);
                     return result;
                 }
             }
@@ -560,7 +560,7 @@ namespace PdfSharp.Pdf.Security
                 aes.Mode = CipherMode.CBC;
                 aes.Padding = PaddingMode.PKCS7;
                 aes.BlockSize = 128; // 16 bytes
-                aes.KeySize = 128;
+                aes.KeySize = _keySize * 8;
                 aes.Key = _key;
                 // Retrieve the IV from the encrypted data
                 Array.Copy(encryptedData, aes.IV, 16);
@@ -592,26 +592,26 @@ namespace PdfSharp.Pdf.Security
         {
 #if !NETFX_CORE
             //#if !SILVERLIGHT
-            byte[] objectId = new byte[9];
-            int objectIdLength = 5;
-            _md5.Initialize();
+            byte[] objectId = new byte[5];
             // Split the object number and generation
             objectId[0] = (byte)id.ObjectNumber;
             objectId[1] = (byte)(id.ObjectNumber >> 8);
             objectId[2] = (byte)(id.ObjectNumber >> 16);
             objectId[3] = (byte)id.GenerationNumber;
             objectId[4] = (byte)(id.GenerationNumber >> 8);
+            _md5.Initialize();
+            _md5.TransformBlock(_encryptionKey, 0, _encryptionKey.Length, _encryptionKey, 0);
+            _md5.TransformBlock(objectId, 0, objectId.Length, objectId, 0);
             if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes) 
             {
                 // Additional padding needed for AES encryption
-                objectIdLength = 9;
-                objectId[5] = 0x73; // 's'
-                objectId[6] = 0x41; // 'A'
-                objectId[7] = 0x6C; // 'l'
-                objectId[8] = 0x54; // 'T'
+                byte[] aesPadding = new byte[] { 0x73, 0x41, 0x6C, 0x54 }; // 'sAlT'
+                _md5.TransformFinalBlock(aesPadding, 0, aesPadding.Length);
             }
-            _md5.TransformBlock(_encryptionKey, 0, _encryptionKey.Length, _encryptionKey, 0);
-            _md5.TransformFinalBlock(objectId, 0, objectIdLength);
+            else
+            {
+                _md5.TransformFinalBlock(objectId, 0, 0);
+            }
             _key = _md5.Hash;
             _md5.Initialize();
             _keySize = _encryptionKey.Length + 5;
@@ -639,10 +639,10 @@ namespace PdfSharp.Pdf.Security
                 Elements[Keys.R] = new PdfInteger(4);
                 Elements[Keys.StmF] = new PdfName(CryptFilterKeys.StdCF);
                 Elements[Keys.StrF] = new PdfName(CryptFilterKeys.StdCF);
-                Elements[Keys.EFF] = new PdfName(CryptFilterKeys.StdCF);
                 PdfDictionary aesCryptFilter = new PdfDictionary();
                 aesCryptFilter.Elements[CryptFilterKeys.Type] = new PdfName("/CryptFilter");
                 aesCryptFilter.Elements[CryptFilterKeys.CFM] = new PdfName("/AESV2");
+                aesCryptFilter.Elements[CryptFilterKeys.AuthEvent] = new PdfName("/DocOpen");
                 aesCryptFilter.Elements[CryptFilterKeys.Length] = new PdfInteger(16); // 128 bits
                 PdfDictionary cryptFilters = new PdfDictionary();
                 cryptFilters.Elements[CryptFilterKeys.StdCF] = aesCryptFilter;
