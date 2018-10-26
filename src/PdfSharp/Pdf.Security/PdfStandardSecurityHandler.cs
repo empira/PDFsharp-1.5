@@ -629,17 +629,35 @@ namespace PdfSharp.Pdf.Security
             //#if !SILVERLIGHT
             Debug.Assert(_document._securitySettings.DocumentSecurityLevel != PdfDocumentSecurityLevel.None);
             int permissions = (int)Permission;
-            bool strongEncryption = _document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128Bit
-                || _document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes;
+            bool strongEncryption;
 
-            if (strongEncryption)
+            if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes)
             {
+                strongEncryption = true;
+                Elements[Keys.V] = new PdfInteger(4);
+                // Length is not included for V=4
+                Elements[Keys.R] = new PdfInteger(4);
+                Elements[Keys.StmF] = new PdfName(CryptFilterKeys.StdCF);
+                Elements[Keys.StrF] = new PdfName(CryptFilterKeys.StdCF);
+                Elements[Keys.EFF] = new PdfName(CryptFilterKeys.StdCF);
+                PdfDictionary aesCryptFilter = new PdfDictionary();
+                aesCryptFilter.Elements[CryptFilterKeys.Type] = new PdfName("CryptFilter");
+                aesCryptFilter.Elements[CryptFilterKeys.CFM] = new PdfName("AESV2");
+                aesCryptFilter.Elements[CryptFilterKeys.Length] = new PdfInteger(16); // 128 bits
+                PdfDictionary cryptFilters = new PdfDictionary();
+                cryptFilters.Elements[CryptFilterKeys.StdCF] = aesCryptFilter;
+                Elements[Keys.CF] = cryptFilters;
+            }
+            else if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128Bit)
+            {
+                strongEncryption = true;
                 Elements[Keys.V] = new PdfInteger(2);
                 Elements[Keys.Length] = new PdfInteger(128);
                 Elements[Keys.R] = new PdfInteger(3);
             }
             else
             {
+                strongEncryption = false;
                 Elements[Keys.V] = new PdfInteger(1);
                 Elements[Keys.Length] = new PdfInteger(40);
                 Elements[Keys.R] = new PdfInteger(2);
@@ -845,6 +863,11 @@ namespace PdfSharp.Pdf.Security
             /// </summary>
             [KeyInfo(KeyType.Integer | KeyType.Optional)]
             public const string Length = "/Length";
+
+            /// <summary>
+            /// The required crypt filter name for use with the standard security handler.
+            /// </summary>
+            public const string StdCF = "StdCF";
         }
 
         /// <summary>
