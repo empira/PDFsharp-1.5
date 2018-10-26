@@ -632,21 +632,17 @@ namespace PdfSharp.Pdf.Security
             bool strongEncryption = _document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128Bit
                 || _document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes;
 
-            PdfInteger vValue;
-            PdfInteger length;
-            PdfInteger rValue;
-
             if (strongEncryption)
             {
-                vValue = new PdfInteger(2);
-                length = new PdfInteger(128);
-                rValue = new PdfInteger(3);
+                Elements[Keys.V] = new PdfInteger(2);
+                Elements[Keys.Length] = new PdfInteger(128);
+                Elements[Keys.R] = new PdfInteger(3);
             }
             else
             {
-                vValue = new PdfInteger(1);
-                length = new PdfInteger(40);
-                rValue = new PdfInteger(2);
+                Elements[Keys.V] = new PdfInteger(1);
+                Elements[Keys.Length] = new PdfInteger(40);
+                Elements[Keys.R] = new PdfInteger(2);
             }
 
             if (String.IsNullOrEmpty(_userPassword))
@@ -674,9 +670,6 @@ namespace PdfSharp.Pdf.Security
             PdfString uValue = new PdfString(PdfEncoders.RawEncoding.GetString(_userKey, 0, _userKey.Length));
 
             Elements[Keys.Filter] = new PdfName("/Standard");
-            Elements[Keys.V] = vValue;
-            Elements[Keys.Length] = length;
-            Elements[Keys.R] = rValue;
             Elements[Keys.O] = oValue;
             Elements[Keys.U] = uValue;
             Elements[Keys.P] = pValue;
@@ -796,6 +789,62 @@ namespace PdfSharp.Pdf.Security
                 get { return _meta ?? (_meta = CreateMeta(typeof(Keys))); }
             }
             static DictionaryMeta _meta;
+        }
+
+        /// <summary>
+        /// Predefined keys of crypt filter dictionaries.
+        /// </summary>
+        internal sealed class CryptFilterKeys
+        {
+            /// <summary>
+            /// (Optional) If present, shall be CryptFilter for a crypt filter dictionary.
+            /// </summary>
+            [KeyInfo(KeyType.Name | KeyType.Optional, FixedValue = "CryptFilter")]
+            public const string Type = "/Type";
+
+            /// <summary>
+            /// (Optional) The method used, if any, by the conforming reader to decrypt data. The following
+            /// values shall be supported:
+            /// • None The application shall not decrypt data but shall direct the input stream to the security
+            ///   handler for decryption.
+            /// • V2 The application shall ask the security handler for the encryption key and shall implicity
+            ///   decrypt data with "Algorithm 1: Encryption of data using the RC4 or AES algorithms", using the
+            ///   RC4 algorithm.
+            /// • AESV2 (PDF 1.6) The application shall ask the security handler for the encryption key and shall
+            ///   implicitly decrypt data with "Algorithm 1: Encryption of data using the RC4 or AES algorithms",
+            ///   using the AES algorithm in Cipher Block Chaining (CBC) mode with a 16-byte block size and an
+            ///   initialization vector that shall be randomly generated and placed as the first 16 bytes in the
+            ///   stream or string.
+            /// When the value is V2 or AESV2, the application may ask once for this encryption key and cache the key
+            /// for subsequent use for streams that use the same crypt filter. Therefore, there shall be a one-to-one
+            /// relationship between a crypt filter name and the corresponding encryption key.
+            /// Only the values listed here shall be supported. Applications that encounter other values shall report
+            /// that the file is encrypted with an unsupported algorithm.
+            /// Default value: None.
+            /// </summary>
+            [KeyInfo(KeyType.Name | KeyType.Optional)]
+            public const string CFM = "/CFM";
+
+            /// <summary>
+            /// (Optional) The event to be used to trigger the authorization that is required to access encryption
+            /// keys used by this filter. If authorization fails, the event shall fail. Valid values shall be:
+            /// • DocOpen: Authorization shall be required when a document is opened.
+            /// • EFOpen: Authorization shall be required when accessing embedded files.
+            /// Default value: DocOpen.
+            /// If this filter is used as the value of StrF or StmF in the encryption dictionary, the conforming
+            /// reader shall ignore this key and behave as if the value is DocOpen.
+            /// </summary>
+            [KeyInfo(KeyType.Name | KeyType.Optional)]
+            public const string AuthEvent = "/AuthEvent";
+
+            /// <summary>
+            /// (Optional) The bit length of the encryption key. It shall be a multiple of 8 in the range of 40 to 128.
+            /// Security handleres may define their own use of the Length entry and should use it to define the bit length
+            /// of the encryption key. Standard security handler expresses the length in multiples of 8 (16 means 128)
+            /// and public-key security handler express it as is (128 means 128)
+            /// </summary>
+            [KeyInfo(KeyType.Integer | KeyType.Optional)]
+            public const string Length = "/Length";
         }
 
         /// <summary>
