@@ -641,8 +641,8 @@ namespace PdfSharp.Pdf.Security
                 Elements[Keys.StrF] = new PdfName(CryptFilterKeys.StdCF);
                 Elements[Keys.EFF] = new PdfName(CryptFilterKeys.StdCF);
                 PdfDictionary aesCryptFilter = new PdfDictionary();
-                aesCryptFilter.Elements[CryptFilterKeys.Type] = new PdfName("CryptFilter");
-                aesCryptFilter.Elements[CryptFilterKeys.CFM] = new PdfName("AESV2");
+                aesCryptFilter.Elements[CryptFilterKeys.Type] = new PdfName("/CryptFilter");
+                aesCryptFilter.Elements[CryptFilterKeys.CFM] = new PdfName("/AESV2");
                 aesCryptFilter.Elements[CryptFilterKeys.Length] = new PdfInteger(16); // 128 bits
                 PdfDictionary cryptFilters = new PdfDictionary();
                 cryptFilters.Elements[CryptFilterKeys.StdCF] = aesCryptFilter;
@@ -867,7 +867,7 @@ namespace PdfSharp.Pdf.Security
             /// <summary>
             /// The required crypt filter name for use with the standard security handler.
             /// </summary>
-            public const string StdCF = "StdCF";
+            public const string StdCF = "/StdCF";
         }
 
         /// <summary>
