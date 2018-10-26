@@ -251,7 +251,7 @@ namespace PdfSharp.Pdf.Security
             // We can handle 40 and 128 bit standard encryption.
             string filter = Elements.GetName(PdfSecurityHandler.Keys.Filter);
             int v = Elements.GetInteger(PdfSecurityHandler.Keys.V);
-            if (filter != "/Standard" || !(v >= 1 && v <= 3))
+            if (filter != "/Standard" || !(v >= 1 && v <= 4))
                 throw new PdfReaderException(PSSR.UnknownEncryption);
 
             byte[] documentID = PdfEncoders.RawEncoding.GetBytes(Owner.Internals.FirstDocumentID);
@@ -263,8 +263,8 @@ namespace PdfSharp.Pdf.Security
             if (inputPassword == null)
                 inputPassword = "";
 
-            bool strongEncryption = rValue == 3;
-            int keyLength = strongEncryption ? 16 : 32;
+            bool strongEncryption = rValue == 3 || rValue == 4;
+            int keyLength = strongEncryption ? 16 : 5;
 
             // Try owner password first.
             //byte[] password = PdfEncoders.RawEncoding.GetBytes(inputPassword);
