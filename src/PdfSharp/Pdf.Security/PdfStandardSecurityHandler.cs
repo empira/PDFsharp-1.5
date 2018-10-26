@@ -104,21 +104,21 @@ namespace PdfSharp.Pdf.Security
         }
 
         /// <summary>
-        /// Encrypts the whole document.
+        /// Decrypts the whole document.
         /// </summary>
-        public void EncryptDocument()
+        public void DecryptDocument()
         {
             foreach (PdfReference iref in _document._irefTable.AllReferences)
             {
                 if (!ReferenceEquals(iref.Value, this))
-                    EncryptObject(iref.Value);
+                    DecryptObject(iref.Value);
             }
         }
 
         /// <summary>
-        /// Encrypts an indirect object.
+        /// Decrypts an indirect object.
         /// </summary>
-        internal void EncryptObject(PdfObject value)
+        internal void DecryptObject(PdfObject value)
         {
             Debug.Assert(value.Reference != null);
 
@@ -132,30 +132,22 @@ namespace PdfSharp.Pdf.Security
             PdfArray array;
             PdfStringObject str;
             if ((dict = value as PdfDictionary) != null)
-                EncryptDictionary(dict);
+                DecryptDictionary(dict);
             else if ((array = value as PdfArray) != null)
-                EncryptArray(array);
+                DecryptArray(array);
             else if ((str = value as PdfStringObject) != null)
             {
                 if (str.Length != 0)
                 {
-                    if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes)
-                    {
-                        str.EncryptionValue = DecryptAes(str.EncryptionValue);
-                    }
-                    else
-                    {
-                        PrepareRC4Key();
-                        EncryptRC4(str.EncryptionValue);
-                    }
+                    str.EncryptionValue = DecryptBytes(str.EncryptionValue);
                 }
             }
         }
 
         /// <summary>
-        /// Encrypts a dictionary.
+        /// Decrypts a dictionary.
         /// </summary>
-        void EncryptDictionary(PdfDictionary dict)
+        void DecryptDictionary(PdfDictionary dict)
         {
             PdfName[] names = dict.Elements.KeyNames;
             foreach (KeyValuePair<string, PdfItem> item in dict.Elements)
@@ -164,30 +156,22 @@ namespace PdfSharp.Pdf.Security
                 PdfDictionary value2;
                 PdfArray value3;
                 if ((value1 = item.Value as PdfString) != null)
-                    EncryptString(value1);
+                    DecryptString(value1);
                 else if ((value2 = item.Value as PdfDictionary) != null)
-                    EncryptDictionary(value2);
+                    DecryptDictionary(value2);
                 else if ((value3 = item.Value as PdfArray) != null)
-                    EncryptArray(value3);
+                    DecryptArray(value3);
             }
             if (dict.Stream != null && dict.Stream.Value.Length != 0)
             {
-                if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes)
-                {
-                    dict.Stream.Value = DecryptAes(dict.Stream.Value);
-                }
-                else
-                {
-                    PrepareRC4Key();
-                    EncryptRC4(dict.Stream.Value);
-                }
+                dict.Stream.Value = DecryptBytes(dict.Stream.Value);
             }
         }
 
         /// <summary>
-        /// Encrypts an array.
+        /// Decrypts an array.
         /// </summary>
-        void EncryptArray(PdfArray array)
+        void DecryptArray(PdfArray array)
         {
             int count = array.Elements.Count;
             for (int idx = 0; idx < count; idx++)
@@ -197,30 +181,22 @@ namespace PdfSharp.Pdf.Security
                 PdfDictionary value2;
                 PdfArray value3;
                 if ((value1 = item as PdfString) != null)
-                    EncryptString(value1);
+                    DecryptString(value1);
                 else if ((value2 = item as PdfDictionary) != null)
-                    EncryptDictionary(value2);
+                    DecryptDictionary(value2);
                 else if ((value3 = item as PdfArray) != null)
-                    EncryptArray(value3);
+                    DecryptArray(value3);
             }
         }
 
         /// <summary>
-        /// Encrypts a string.
+        /// Decrypt a string.
         /// </summary>
-        void EncryptString(PdfString value)
+        void DecryptString(PdfString value)
         {
             if (value.Length != 0)
             {
-                if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes)
-                {
-                    value.EncryptionValue = DecryptAes(value.EncryptionValue);
-                }
-                else
-                {
-                    PrepareRC4Key();
-                    EncryptRC4(value.EncryptionValue);
-                }
+                value.EncryptionValue = DecryptBytes(value.EncryptionValue);
             }
         }
 
@@ -237,6 +213,25 @@ namespace PdfSharp.Pdf.Security
                 }
                 else
                 {
+                    PrepareRC4Key();
+                    EncryptRC4(bytes);
+                    return bytes;
+                }
+            }
+            return bytes;
+        }
+
+        private byte[] DecryptBytes(byte[] bytes)
+        {
+            if (bytes != null && bytes.Length != 0)
+            {
+                if (_document._securitySettings.DocumentSecurityLevel == PdfDocumentSecurityLevel.Encrypted128BitAes)
+                {
+                    return DecryptAes(bytes);
+                }
+                else
+                {
+                    // RC4 decryption is equivalent to RC4 encryption
                     PrepareRC4Key();
                     EncryptRC4(bytes);
                     return bytes;
