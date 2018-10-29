@@ -452,7 +452,7 @@ namespace PdfSharp.Pdf.IO
                         iref.ObjectNumber);
                 }
 
-                // Encrypt all objects.
+                // Decrypt all objects.
                 if (xrefEncrypt != null)
                 {
                     document.SecurityHandler.DecryptDocument();

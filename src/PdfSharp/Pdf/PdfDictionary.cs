@@ -193,9 +193,17 @@ namespace PdfSharp.Pdf
             PdfName[] keys = Elements.KeyNames;
 
 #if DEBUG
-            // TODO: automatically set length
             if (_stream != null)
-                Debug.Assert(Elements.ContainsKey(PdfStream.Keys.Length), "Dictionary has a stream but no length is set.");
+            {
+                if (writer.SecurityHandler != null)
+                {
+                    // Encryption could change the size of the stream.
+                    // Encrypt the bytes before writing the dictionary to get the actual size.
+                    byte[] bytes = (byte[])_stream.Value.Clone();
+                    _stream.Value = writer.SecurityHandler.EncryptBytes(bytes);
+                }
+                Elements[PdfStream.Keys.Length] = new PdfInteger(_stream.Length);
+            }
 #endif
 
 #if DEBUG

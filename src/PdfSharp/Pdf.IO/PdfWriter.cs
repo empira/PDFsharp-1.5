@@ -427,11 +427,12 @@ namespace PdfSharp.Pdf.IO
                 byte[] bytes = value.Stream.Value;
                 if (bytes.Length != 0)
                 {
-                    if (_securityHandler != null)
-                    {
-                        bytes = (byte[])bytes.Clone();
-                        bytes = _securityHandler.EncryptBytes(bytes);
-                    }
+                    // Dictionary stream has already been encrypted
+                    // if (_securityHandler != null)
+                    // {
+                    //     bytes = (byte[])bytes.Clone();
+                    //     bytes = _securityHandler.EncryptBytes(bytes);
+                    // }
                     Write(bytes);
                     if (_lastCat != CharCat.NewLine)
                         WriteRaw('\n');
