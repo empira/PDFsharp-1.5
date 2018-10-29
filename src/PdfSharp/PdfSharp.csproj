@@ -295,6 +295,7 @@
     <Compile Include="Pdf.IO\PdfWriter.cs" />
     <Compile Include="Pdf.IO\ShiftStack.cs" />
     <Compile Include="Pdf.Printing\PdfFilePrinter.cs" />
+    <Compile Include="Pdf.Security\CryptFilterDictionary.cs" />
     <Compile Include="Pdf.Security\enums\PdfDocumentSecurity.cs" />
     <Compile Include="Pdf.Security\enums\PdfUserAccessPermission.cs" />
     <Compile Include="Pdf.Security\MD5Managed.cs" />
