@@ -560,10 +560,9 @@ namespace PdfSharp.Pdf.Security
                 aes.Padding = PaddingMode.PKCS7;
                 aes.BlockSize = 128; // 16 bytes
                 aes.KeySize = _keySize * 8;
-                aes.Key = _key;
                 // Enable for debugging only! Provides a consistent IV when testing the encryption
                 // aes.IV = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
-                using (ICryptoTransform encryptor = aes.CreateEncryptor())
+                using (ICryptoTransform encryptor = aes.CreateEncryptor(_key, aes.IV))
                 {
                     byte[] encrypted = encryptor.TransformFinalBlock(data, 0, data.Length);
                     byte[] result = new byte[aes.IV.Length + encrypted.Length];
@@ -586,10 +585,10 @@ namespace PdfSharp.Pdf.Security
                 aes.Padding = PaddingMode.PKCS7;
                 aes.BlockSize = 128; // 16 bytes
                 aes.KeySize = _keySize * 8;
-                aes.Key = _key;
                 // Retrieve the IV from the encrypted data
-                Array.Copy(encryptedData, 0, aes.IV, 0, 16);
-                using (ICryptoTransform decryptor = aes.CreateDecryptor())
+                byte[] iv = new byte[16];
+                Array.Copy(encryptedData, 0, iv, 0, 16);
+                using (ICryptoTransform decryptor = aes.CreateDecryptor(_key, iv))
                 {
                     byte[] decrypted = decryptor.TransformFinalBlock(encryptedData, 16, encryptedData.Length - 16);
                     return decrypted;
