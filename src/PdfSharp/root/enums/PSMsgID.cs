@@ -72,5 +72,10 @@ namespace PdfSharp
         /// PSMsgID.
         /// </summary>
         UnknownEncryption,
+
+        /// <summary>
+        /// PSMsgID.
+        /// </summary>
+        UnsupportedCryptFilter,
     }
 }

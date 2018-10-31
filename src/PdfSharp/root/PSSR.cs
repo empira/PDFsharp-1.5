@@ -334,6 +334,11 @@ namespace PdfSharp
             //get { return "The PDF document is protected with an encryption not supported by PDFsharp."; }
         }
 
+        public static string UnsupportedCryptFilter
+        {
+            get { return GetString(PSMsgID.UnsupportedCryptFilter); }
+        }
+
         #endregion
 
         #region Resource manager

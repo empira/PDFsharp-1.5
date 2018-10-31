@@ -18,3 +18,4 @@ UserOrOwnerPasswordRequired = Zum Verschlüsseln des Dokuments muss ein Kennwort
 
 UnexpectedToken = Token '{0}' wird an dieser Stelle nicht erwartet.
 UnknownEncryption = Das PDF-Dokument ist mit einer von PDFsharp nicht unterstützten Verschlüsselung geschützt.
+UnsupportedCryptFilter = Das PDF-Dokument verwendet einen Verschlüsselungsfilter, der vom Standardsicherheitshandler nicht unterstützt wird.
