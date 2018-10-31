@@ -54,12 +54,18 @@ namespace PdfSharp.Pdf.Security
     internal class CryptFilterDictionary : PdfDictionary
     {
         /// <summary>
-        /// Constructs a new CryptFilterDictionary with the required Type name.
+        /// Initializes a new CryptFilterDictionary with the required Type name.
         /// </summary>
         public CryptFilterDictionary()
         {
             Type = "CryptFilter";
         }
+
+        /// <summary>
+        /// Initializes a new CryptFilterDictionary from an existing dictionary. Used for object type transformation.
+        /// </summary>
+        /// <param name="cryptFilterDictionary">An existing dictionary to read as a crypt filter dictionary.</param>
+        public CryptFilterDictionary(PdfDictionary cryptFilterDictionary) : base(cryptFilterDictionary) { }
 
         /// <summary>
         /// (Optional) If present, shall be CryptFilter for a crypt filter dictionary.

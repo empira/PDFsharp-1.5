@@ -263,8 +263,31 @@ namespace PdfSharp.Pdf.Security
             if (inputPassword == null)
                 inputPassword = "";
 
-            bool strongEncryption = rValue == 3 || rValue == 4;
-            int keyLength = strongEncryption ? 16 : 5;
+            bool strongEncryption;
+            int keyLength;
+            switch (rValue)
+            {
+                case 2:
+                    strongEncryption = false;
+                    keyLength = 5;
+                    break;
+                case 3:
+                    strongEncryption = true;
+                    keyLength = Elements.GetInteger(Keys.Length) / 8;
+                    break;
+                case 4:
+                    CryptFilterDictionary cryptFilter = new CryptFilterDictionary(Elements.GetDictionary(Keys.CF).Elements.GetDictionary("/StdCF"));
+                    if (cryptFilter.CFM != CFM.V2 && cryptFilter.CFM != CFM.AESV2 && cryptFilter.AuthEvent != AuthEvent.DocOpen)
+                        throw new PdfReaderException(PSSR.UnsupportedCryptFilter);
+
+                    strongEncryption = true;
+                    keyLength = cryptFilter.Length;
+                    if (cryptFilter.CFM == CFM.AESV2)
+                        _document.SecuritySettings.DocumentSecurityLevel = PdfDocumentSecurityLevel.Encrypted128BitAes;
+                    break;
+                default:
+                    throw new PdfReaderException(PSSR.UnsupportedRevisionNumber);
+            }
 
             // Try owner password first.
             //byte[] password = PdfEncoders.RawEncoding.GetBytes(inputPassword);
@@ -565,7 +588,7 @@ namespace PdfSharp.Pdf.Security
                 aes.KeySize = _keySize * 8;
                 aes.Key = _key;
                 // Retrieve the IV from the encrypted data
-                Array.Copy(encryptedData, aes.IV, 16);
+                Array.Copy(encryptedData, 0, aes.IV, 0, 16);
                 using (ICryptoTransform decryptor = aes.CreateDecryptor())
                 {
                     byte[] decrypted = decryptor.TransformFinalBlock(encryptedData, 16, encryptedData.Length - 16);
