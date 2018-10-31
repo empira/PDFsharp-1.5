@@ -339,6 +339,11 @@ namespace PdfSharp
             get { return GetString(PSMsgID.UnsupportedCryptFilter); }
         }
 
+        public static string UnsupportedRevisionNumber
+        {
+            get { return GetString(PSMsgID.UnsupportedRevisionNumber); }
+        }
+
         #endregion
 
         #region Resource manager
