@@ -110,7 +110,7 @@ namespace PdfSharp.Pdf.Security
         {
             foreach (PdfReference iref in _document._irefTable.AllReferences)
             {
-                if (!ReferenceEquals(iref.Value, this))
+                if (iref.ObjectID != this.ObjectID)
                     DecryptObject(iref.Value);
             }
         }
@@ -149,7 +149,9 @@ namespace PdfSharp.Pdf.Security
         /// </summary>
         void DecryptDictionary(PdfDictionary dict)
         {
-            PdfName[] names = dict.Elements.KeyNames;
+            // The Cross-Reference stream is not encrypted.
+            if (dict.Elements.GetName("/Type") == "/XRef") return;
+
             foreach (KeyValuePair<string, PdfItem> item in dict.Elements)
             {
                 PdfString value1;
