@@ -179,9 +179,9 @@ namespace PdfSharp.Pdf.Security
 
         /// <summary>
         /// (Optional) The bit length of the encryption key. It shall be a multiple of 8 in the range of 40 to 128.
-        /// Security handleres may define their own use of the Length entry and should use it to define the bit length
+        /// Security handlers may define their own use of the Length entry and should use it to define the bit length
         /// of the encryption key. Standard security handler expresses the length in multiples of 8 (16 means 128)
-        /// and public-key security handler express it as is (128 means 128)
+        /// and public-key security handler express it as is (128 means 128).
         /// </summary>
         public int Length
         {
