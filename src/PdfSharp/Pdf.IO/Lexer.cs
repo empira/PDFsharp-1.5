@@ -348,7 +348,7 @@ namespace PdfSharp.Pdf.IO
 						return _symbol = Symbol.Name;
 					case '[':
 						//TODO: Not Complete
-						if (IsWhiteSpace(_nextChar) || IsDelimiter(_nextChar) || char.IsNumber(_nextChar) || _nextChar == '-' || PeekArrayKeyword())
+						if (IsWhiteSpace(_nextChar) || IsDelimiter(_nextChar) || char.IsNumber(_nextChar) || _nextChar == '.' || _nextChar == '-' || PeekArrayKeyword())
 						{
 							return _symbol = Symbol.Name;
 						}
