@@ -90,7 +90,7 @@ namespace PdfSharp
         /// <summary>
         /// The copyright information.
         /// </summary>
-        public const string Copyright = "Copyright © 2005-2017 empira Software GmbH.";
+        public const string Copyright = "Copyright © 2005-2019 empira Software GmbH.";
 
         /// <summary>
         /// The trademark the product.
@@ -115,7 +115,7 @@ namespace PdfSharp
         /// <summary>
         /// The build number of the product.
         /// </summary>
-        public const string VersionBuild = "4740";  // V16G // Build = days since 2005-01-01  -  change this values ONLY HERE
+        public const string VersionBuild = "5147";  // V16G // Build = days since 2005-01-01  -  change this values ONLY HERE
 
         /// <summary>
         /// The patch number of the product.
@@ -125,7 +125,7 @@ namespace PdfSharp
         /// <summary>
         /// The Version Prerelease String for NuGet.
         /// </summary>
-        public const string VersionPrerelease = "beta5"; // "" for stable Release, e.g. "beta" or "rc.1.2" for Prerelease. // Also used for NuGet Version.
+        public const string VersionPrerelease = ""; // "" for stable Release, e.g. "beta" or "rc.1.2" for Prerelease. // Also used for NuGet Version.
 
 #if DEBUG
         /// <summary>
@@ -133,7 +133,7 @@ namespace PdfSharp
         /// </summary>
 // ReSharper disable RedundantNameQualifier
         public static int BuildNumber = (System.DateTime.Now - new System.DateTime(2005, 1, 1)).Days;
-// ReSharper restore RedundantNameQualifier
+        // ReSharper restore RedundantNameQualifier
 #endif
 
         /// <summary>
