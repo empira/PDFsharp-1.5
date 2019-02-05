@@ -262,7 +262,7 @@ namespace PdfSharp.Drawing
 #endif
             return FontHelper.IsStyleAvailable(this, xStyle);
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
             throw new InvalidOperationException("In NETFX_CORE build it is the responsibility of the developer to provide all required font faces.");
 #endif
         }

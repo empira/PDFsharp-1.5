@@ -206,7 +206,7 @@ namespace PdfSharp.Pdf.Filters
             msOutput.Flush();
             if (msOutput.Length >= 0)
             {
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                 return msOutput.ToArray();
 #else
                 msOutput.Capacity = (int)msOutput.Length;

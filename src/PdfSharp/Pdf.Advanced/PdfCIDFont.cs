@@ -1,5 +1,4 @@
-﻿
-#region PDFsharp - A .NET library for processing PDF
+﻿#region PDFsharp - A .NET library for processing PDF
 //
 // Authors:
 //   Stefan Lange
@@ -53,6 +52,8 @@ namespace PdfSharp.Pdf.Advanced
             cid.Elements.SetString("/Registry", "Adobe");
             cid.Elements.SetInteger("/Supplement", 0);
             Elements.SetValue(Keys.CIDSystemInfo, cid);
+            // @PDF/UA / 'Identity' or a stream must obviously be set for CIDFonts to satisfy PDF/UA requirements.
+            Elements.SetName(Keys.CIDToGIDMap, "Identity");
 
             FontDescriptor = fontDescriptor;
             // ReSharper disable once DoNotCallOverridableMethodsInConstructor
@@ -72,6 +73,8 @@ namespace PdfSharp.Pdf.Advanced
             cid.Elements.SetString("/Registry", "Adobe");
             cid.Elements.SetInteger("/Supplement", 0);
             Elements.SetValue(Keys.CIDSystemInfo, cid);
+            // @PDF/UA / 'Identity' or a stream must obviously be set for CIDFonts to satisfy PDF/UA requirements.
+            Elements.SetName(Keys.CIDToGIDMap, "Identity");
 
             FontDescriptor = fontDescriptor;
             // ReSharper disable once DoNotCallOverridableMethodsInConstructor

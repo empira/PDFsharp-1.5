@@ -35,6 +35,8 @@ using PdfSharp.Pdf.Internal;
 
 namespace PdfSharp.Pdf
 {
+    // TODO: Make code more readeable with PDF 1.7 strings: text string, ASCII string, byte string etc.
+
     /// <summary>
     /// Determines the encoding of a PdfString or PdfStringObject.
     /// </summary>

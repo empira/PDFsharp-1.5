@@ -110,12 +110,12 @@ namespace PdfSharp
         /// <summary>
         /// The minor version number of the product.
         /// </summary>
-        public const string VersionMinor = "50";
+        public const string VersionMinor = "51";
 
         /// <summary>
         /// The build number of the product.
         /// </summary>
-        public const string VersionBuild = "5147";  // V16G // Build = days since 2005-01-01  -  change this values ONLY HERE
+        public const string VersionBuild = "5148";  // V16G // Build = days since 2005-01-01  -  change this values ONLY HERE
 
         /// <summary>
         /// The patch number of the product.
@@ -125,7 +125,7 @@ namespace PdfSharp
         /// <summary>
         /// The Version Prerelease String for NuGet.
         /// </summary>
-        public const string VersionPrerelease = ""; // "" for stable Release, e.g. "beta" or "rc.1.2" for Prerelease. // Also used for NuGet Version.
+        public const string VersionPrerelease = "beta"; // "" for stable Release, e.g. "beta" or "rc.1.2" for Prerelease. // Also used for NuGet Version.
 
 #if DEBUG
         /// <summary>
@@ -262,8 +262,12 @@ namespace PdfSharp
         // Windows Universal App
         public const string Technology = "-uwp";
 #endif
+#if DNC10
+        // .net Core
+        public const string Technology = "-dnc";
+#endif
 #if CORE
-        // .net without GDI+ and WPF
+        // .net classic without GDI+ and WPF
         public const string Technology = "";  // no extension
 #endif
     }

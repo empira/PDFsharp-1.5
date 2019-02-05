@@ -30,6 +30,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using PdfSharp.Events;
 #if NETFX_CORE
 using System.Threading.Tasks;
 #endif
@@ -185,6 +186,15 @@ namespace PdfSharp.Pdf
             set { _tag = value; }
         }
         object _tag;
+
+        /// <summary>
+        /// Encapsulates the document's events.
+        /// </summary>
+        public DocumentEvents Events
+        {
+            get { return _events ?? (_events = new DocumentEvents()); }
+        }
+        DocumentEvents _events;
 
         /// <summary>
         /// Gets or sets a value used to distinguish PdfDocument objects.
@@ -478,6 +488,10 @@ namespace PdfSharp.Pdf
                 Debug.WriteLine("PrepareForSave: Number of deleted unreachable objects: " + removed);
             _irefTable.Renumber();
 #endif
+            
+            // @PDF/UA
+            // Create PdfMetadata now to include the final document information in XMP generation.
+            Catalog.Elements.SetReference(PdfCatalog.Keys.Metadata, new PdfMetadata(this));
         }
 
         /// <summary>
@@ -852,6 +866,17 @@ namespace PdfSharp.Pdf
         }
 
         /// <summary>  
+        /// Adds a named destination to the document.
+        /// </summary>
+        /// <param name="destinationName">The Named Destination's name.</param>
+        /// <param name="destinationPage">The page to navigate to.</param>
+        /// <param name="parameters">The PdfNamedDestinationParameters defining the named destination's parameters.</param>
+        public void AddNamedDestination(string destinationName, int destinationPage, PdfNamedDestinationParameters parameters)
+        {
+            Internals.Catalog.Names.AddNamedDestination(destinationName, destinationPage, parameters);
+        }
+
+        /// <summary>  
         /// Flattens a document (make the fields non-editable).  
         /// </summary>  
         public void Flatten()
@@ -954,5 +979,8 @@ namespace PdfSharp.Pdf
                 return !(left == right);
             }
         }
+
+#pragma warning disable CS0649
+        internal object _uaManager;
     }
 }

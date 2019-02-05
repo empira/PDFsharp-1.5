@@ -58,7 +58,7 @@ namespace PdfSharp.Drawing
     /// <summary>
     /// Defines a Brush with a linear gradient.
     /// </summary>
-    public sealed class XLinearGradientBrush : XBrush
+    public sealed class XLinearGradientBrush : XGradientBrush
     {
 #if GDI
         /// <summary>

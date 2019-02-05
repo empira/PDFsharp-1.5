@@ -153,6 +153,9 @@ namespace PdfSharp.Pdf
                     case KeyType.NumberTree:
                         throw new NotImplementedException("KeyType.NumberTree");
 
+                    case KeyType.NameTree:
+                        throw new NotImplementedException("KeyType.NameTree");
+
                     case KeyType.NameOrArray:
                         throw new NotImplementedException("KeyType.NameOrArray");
 
@@ -224,7 +227,7 @@ namespace PdfSharp.Pdf
 #endif
         }
 
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
         // Background: The function GetRuntimeFields gets constant fields only for the specified type,
         // not for its base types. So we have to walk recursively through base classes.
         // The docmentation says full trust for the immediate caller is required for property BaseClass.

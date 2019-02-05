@@ -362,7 +362,7 @@ namespace PdfSharp.Pdf.Security
             _ownerKey = ownerKey;
             _encryptionKey = new byte[strongEncryption ? 16 : 5];
 
-#if !NETFX_CORE
+#if !NETFX_CORE && !DNC10
             _md5.Initialize();
             _md5.TransformBlock(userPad, 0, userPad.Length, userPad, 0);
             _md5.TransformBlock(ownerKey, 0, ownerKey.Length, ownerKey, 0);
@@ -397,7 +397,7 @@ namespace PdfSharp.Pdf.Security
         /// </summary>
         void SetupUserKey(byte[] documentID)
         {
-#if !NETFX_CORE
+#if !NETFX_CORE && !DNC10
             //#if !SILVERLIGHT
             if (_encryptionKey.Length == 16)
             {
@@ -528,7 +528,7 @@ namespace PdfSharp.Pdf.Security
         /// </summary>
         internal void SetHashKey(PdfObjectID id)
         {
-#if !NETFX_CORE
+#if !NETFX_CORE && !DNC10
             //#if !SILVERLIGHT
             byte[] objectId = new byte[5];
             _md5.Initialize();

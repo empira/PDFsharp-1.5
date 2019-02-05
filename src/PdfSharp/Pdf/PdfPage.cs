@@ -432,13 +432,39 @@ namespace PdfSharp.Pdf
         PdfAnnotations _annotations;
 
         /// <summary>
-        /// Adds an intra document link.
+        /// Adds an internal document link.
         /// </summary>
-        /// <param name="rect">The rect.</param>
+        /// <param name="rect">The link area in default page coordinates.</param>
         /// <param name="destinationPage">The destination page.</param>
         public PdfLinkAnnotation AddDocumentLink(PdfRectangle rect, int destinationPage)
         {
             PdfLinkAnnotation annotation = PdfLinkAnnotation.CreateDocumentLink(rect, destinationPage);
+            Annotations.Add(annotation);
+            return annotation;
+        }
+
+        /// <summary>
+        /// Adds an internal document link.
+        /// </summary>
+        /// <param name="rect">The link area in default page coordinates.</param>
+        /// <param name="destinationName">The Named Destination's name.</param>
+        public PdfLinkAnnotation AddDocumentLink(PdfRectangle rect, string destinationName)
+        {
+            PdfLinkAnnotation annotation = PdfLinkAnnotation.CreateDocumentLink(rect, destinationName);
+            Annotations.Add(annotation);
+            return annotation;
+        }
+
+        /// <summary>
+        /// Adds an external document link.
+        /// </summary>
+        /// <param name="rect">The link area in default page coordinates.</param>
+        /// <param name="documentPath">The path to the target document.</param>
+        /// <param name="destinationName">The Named Destination's name in the target document.</param>
+        /// <param name="newWindow">True, if the destination document shall be opened in a new window. If not set, the viewer application should behave in accordance with the current user preference.</param>
+        public PdfLinkAnnotation AddDocumentLink(PdfRectangle rect, string documentPath, string destinationName, bool? newWindow = null)
+        {
+            PdfLinkAnnotation annotation = PdfLinkAnnotation.CreateDocumentLink(rect, documentPath, destinationName, newWindow);
             Annotations.Add(annotation);
             return annotation;
         }

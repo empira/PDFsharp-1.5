@@ -28,6 +28,7 @@
 #endregion
 
 using System;
+using PdfSharp.Pdf.Actions;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Internal;
 
@@ -41,7 +42,7 @@ namespace PdfSharp.Pdf.Annotations
         // Just a hack to make MigraDoc work with this code.
         enum LinkType
         {
-            None, Document, Web, File
+            None, Document, NamedDestination, Web, File
         }
 
         /// <summary>
@@ -82,6 +83,37 @@ namespace PdfSharp.Pdf.Annotations
         int _destPage;
         LinkType _linkType;
         string _url;
+
+        /// <summary>
+        /// Creates a link within the current document using a named destination.
+        /// </summary>
+        /// <param name="rect">The link area in default page coordinates.</param>
+        /// <param name="destinationName">The named destination's name.</param>
+        public static PdfLinkAnnotation CreateDocumentLink(PdfRectangle rect, string destinationName)
+        {
+            PdfLinkAnnotation link = new PdfLinkAnnotation();
+            link._linkType = LinkType.NamedDestination;
+            link.Rectangle = rect;
+            link._action = PdfGoToAction.CreateGoToAction(destinationName);
+            return link;
+        }
+        PdfAction _action;
+
+        /// <summary>
+        /// Creates a link to an external PDF document using a named destination.
+        /// </summary>
+        /// <param name="rect">The link area in default page coordinates.</param>
+        /// <param name="documentPath">The path to the target document.</param>
+        /// <param name="destinationName">The named destination's name in the target document.</param>
+        /// <param name="newWindow">True, if the destination document shall be opened in a new window. If not set, the viewer application should behave in accordance with the current user preference.</param>
+        public static PdfLinkAnnotation CreateDocumentLink(PdfRectangle rect, string documentPath, string destinationName, bool? newWindow = null)
+        {
+            PdfLinkAnnotation link = new PdfLinkAnnotation();
+            link._linkType = LinkType.NamedDestination;
+            link.Rectangle = rect;
+            link._action = PdfRemoteGoToAction.CreateRemoteGoToAction(documentPath, destinationName, newWindow);
+            return link;
+        }
 
         /// <summary>
         /// Creates a link to the web.
@@ -142,6 +174,10 @@ namespace PdfSharp.Pdf.Annotations
                     dest = Owner.Pages[destIndex];
                     //pdf.AppendFormat("/Dest[{0} 0 R/XYZ null null 0]\n", dest.ObjectID);
                     Elements[Keys.Dest] = new PdfLiteral("[{0} 0 R/XYZ null null 0]", dest.ObjectNumber);
+                    break;
+
+                case LinkType.NamedDestination:
+                    Elements[PdfAnnotation.Keys.A] = _action;
                     break;
 
                 case LinkType.Web:

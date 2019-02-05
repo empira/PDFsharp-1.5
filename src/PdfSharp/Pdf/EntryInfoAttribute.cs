@@ -51,6 +51,7 @@ namespace PdfSharp.Pdf
         Function = 0x0000000C,
         TextString = 0x0000000D,
         ByteString = 0x0000000E,
+        NameTree = 0x0000000F,
 
         NameOrArray = 0x00000010,
         NameOrDictionary = 0x00000020,

@@ -90,7 +90,7 @@ namespace PdfSharp.Fonts
         }
         readonly WpfGlyphTypeface _wpfGlyphTypeface;
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
         public PlatformFontResolverInfo(string faceName, bool mustSimulateBold, bool mustSimulateItalic)
             : base(faceName, mustSimulateBold, mustSimulateItalic)
         {

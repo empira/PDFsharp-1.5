@@ -76,6 +76,7 @@ using SysRect = Windows.Foundation.Rect;
 #endif
 using PdfSharp.Pdf;
 using PdfSharp.Drawing.Pdf;
+using PdfSharp.Events;
 using PdfSharp.Internal;
 using PdfSharp.Pdf.Advanced;
 
@@ -582,7 +583,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
             XGraphics gfx = new XGraphics(new Canvas(), size, pageUnit, pageDirection);
             return gfx;
 #endif
-#if NETFX_CORE || UWP // NETFX_CORE_TODO
+#if NETFX_CORE || UWP || DNC10 // NETFX_CORE_TODO
             return null;
 #endif
         }
@@ -660,7 +661,10 @@ namespace PdfSharp.Drawing  // #??? Clean up
         /// </summary>
         public static XGraphics FromPdfPage(PdfPage page)
         {
-            return new XGraphics(page, XGraphicsPdfPageOptions.Append, XGraphicsUnit.Point, XPageDirection.Downwards);
+            XGraphics gfx = new XGraphics(page, XGraphicsPdfPageOptions.Append, XGraphicsUnit.Point, XPageDirection.Downwards);
+            if (page.Owner._uaManager != null)
+                page.Owner.Events.OnPageGraphicsCreated(page.Owner, new PageGraphicsEventArgs { Page = page, Graphics = gfx, ActionType = PageGraphicsActionType.GraphicsCreated });  // @PDF/UA
+            return gfx;
         }
 
         /// <summary>
@@ -668,7 +672,10 @@ namespace PdfSharp.Drawing  // #??? Clean up
         /// </summary>
         public static XGraphics FromPdfPage(PdfPage page, XGraphicsUnit unit)
         {
-            return new XGraphics(page, XGraphicsPdfPageOptions.Append, unit, XPageDirection.Downwards);
+            XGraphics gfx = new XGraphics(page, XGraphicsPdfPageOptions.Append, unit, XPageDirection.Downwards);
+            if (page.Owner._uaManager != null)
+                page.Owner.Events.OnPageGraphicsCreated(page.Owner, new PageGraphicsEventArgs { Page = page, Graphics = gfx, ActionType = PageGraphicsActionType.GraphicsCreated });  // @PDF/UA
+            return gfx;
         }
 
         /// <summary>
@@ -676,7 +683,10 @@ namespace PdfSharp.Drawing  // #??? Clean up
         /// </summary>
         public static XGraphics FromPdfPage(PdfPage page, XPageDirection pageDirection)
         {
-            return new XGraphics(page, XGraphicsPdfPageOptions.Append, XGraphicsUnit.Point, pageDirection);
+            XGraphics gfx = new XGraphics(page, XGraphicsPdfPageOptions.Append, XGraphicsUnit.Point, pageDirection);
+            if (page.Owner._uaManager != null)
+                page.Owner.Events.OnPageGraphicsCreated(page.Owner, new PageGraphicsEventArgs { Page = page, Graphics = gfx, ActionType = PageGraphicsActionType.GraphicsCreated });  // @PDF/UA
+            return gfx;
         }
 
         /// <summary>
@@ -684,7 +694,10 @@ namespace PdfSharp.Drawing  // #??? Clean up
         /// </summary>
         public static XGraphics FromPdfPage(PdfPage page, XGraphicsPdfPageOptions options)
         {
-            return new XGraphics(page, options, XGraphicsUnit.Point, XPageDirection.Downwards);
+            XGraphics gfx = new XGraphics(page, options, XGraphicsUnit.Point, XPageDirection.Downwards);
+            if (page.Owner._uaManager != null)
+                page.Owner.Events.OnPageGraphicsCreated(page.Owner, new PageGraphicsEventArgs { Page = page, Graphics = gfx, ActionType = PageGraphicsActionType.GraphicsCreated });  // @PDF/UA
+            return gfx;
         }
 
         /// <summary>
@@ -692,7 +705,10 @@ namespace PdfSharp.Drawing  // #??? Clean up
         /// </summary>
         public static XGraphics FromPdfPage(PdfPage page, XGraphicsPdfPageOptions options, XPageDirection pageDirection)
         {
-            return new XGraphics(page, options, XGraphicsUnit.Point, pageDirection);
+            XGraphics gfx = new XGraphics(page, options, XGraphicsUnit.Point, pageDirection);
+            if (page.Owner._uaManager != null)
+                page.Owner.Events.OnPageGraphicsCreated(page.Owner, new PageGraphicsEventArgs { Page = page, Graphics = gfx, ActionType = PageGraphicsActionType.GraphicsCreated });  // @PDF/UA
+            return gfx;
         }
 
         /// <summary>
@@ -700,7 +716,10 @@ namespace PdfSharp.Drawing  // #??? Clean up
         /// </summary>
         public static XGraphics FromPdfPage(PdfPage page, XGraphicsPdfPageOptions options, XGraphicsUnit unit)
         {
-            return new XGraphics(page, options, unit, XPageDirection.Downwards);
+            XGraphics gfx = new XGraphics(page, options, unit, XPageDirection.Downwards);
+            if (page.Owner._uaManager != null)
+                page.Owner.Events.OnPageGraphicsCreated(page.Owner, new PageGraphicsEventArgs { Page = page, Graphics = gfx, ActionType = PageGraphicsActionType.GraphicsCreated });  // @PDF/UA
+            return gfx;
         }
 
         /// <summary>
@@ -708,7 +727,10 @@ namespace PdfSharp.Drawing  // #??? Clean up
         /// </summary>
         public static XGraphics FromPdfPage(PdfPage page, XGraphicsPdfPageOptions options, XGraphicsUnit unit, XPageDirection pageDirection)
         {
-            return new XGraphics(page, options, unit, pageDirection);
+            XGraphics gfx = new XGraphics(page, options, unit, pageDirection);
+            if (page.Owner._uaManager != null)
+                page.Owner.Events.OnPageGraphicsCreated(page.Owner, new PageGraphicsEventArgs { Page = page, Graphics = gfx, ActionType = PageGraphicsActionType.GraphicsCreated });  // @PDF/UA
+            return gfx;
         }
 
         /// <summary>
@@ -3794,7 +3816,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
             return size23;
 #endif
 #endif
-#if CORE || NETFX_CORE || UWP
+#if CORE || NETFX_CORE || UWP || DNC10
             XSize size = FontHelper.MeasureString(text, font, XStringFormats.Default);
             return size;
 #endif
@@ -5201,7 +5223,15 @@ namespace PdfSharp.Drawing  // #??? Clean up
         /// <summary>
         /// Interface to an (optional) renderer. Currently it is the XGraphicsPdfRenderer, if defined.
         /// </summary>
-        IXGraphicsRenderer _renderer;
+        internal IXGraphicsRenderer _renderer;
+
+        // @PDF/UA
+        internal void AppendToContentStream(string str)
+        {
+            XGraphicsPdfRenderer r = _renderer as XGraphicsPdfRenderer;
+            if (r != null)
+                r.Append(str);
+        }
 
         /// <summary>
         /// The transformation matrix from XGraphics world space to page unit space.
@@ -5265,6 +5295,20 @@ namespace PdfSharp.Drawing  // #??? Clean up
                 get { return _gfx._gfx; }
             }
 #endif
+
+            /// <summary>
+            /// Gets the content string builder of XGraphicsPdfRenderer, if it exists.
+            /// </summary>
+            public StringBuilder ContentStringBuilder
+            {
+                get
+                {
+                    XGraphicsPdfRenderer renderer = _gfx._renderer as XGraphicsPdfRenderer;
+                    if (renderer != null)
+                        return renderer._content;
+                    return null;
+                }
+            }
         }
 
         /// <summary>
@@ -5306,6 +5350,20 @@ namespace PdfSharp.Drawing  // #??? Clean up
                 double ymax = Math.Max(Math.Max(points[0].Y, points[1].Y), Math.Max(points[2].Y, points[3].Y));
 
                 return new XRect(xmin, ymin, xmax - xmin, ymax - ymin);
+            }
+
+            /// <summary>
+            /// Gets a point in PDF world space units.
+            /// </summary>
+            public XPoint WorldToDefaultPage(XPoint point)
+            {
+                XMatrix matrix = _gfx.Transform;
+                matrix.Transform(point);
+
+                double height = _gfx.PageSize.Height;
+                point.Y = height - point.Y;
+
+                return point;
             }
         }
     }

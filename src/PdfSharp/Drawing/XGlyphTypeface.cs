@@ -136,7 +136,7 @@ namespace PdfSharp.Drawing
         }
 #endif
 
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
         XGlyphTypeface(string key, XFontFamily fontFamily, XFontSource fontSource, XStyleSimulations styleSimulations)
         {
             _key = key;
@@ -211,7 +211,7 @@ namespace PdfSharp.Drawing
                     fontFamily = XFontFamily.GetOrCreateFromWpf(new WpfFontFamily(familyName));
 #endif
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                     fontFamily = null;
 #endif
                 }
@@ -234,7 +234,7 @@ namespace PdfSharp.Drawing
 #if WPF
                 glyphTypeface = new XGlyphTypeface(typefaceKey, fontFamily, fontSource, fontResolverInfo.StyleSimulations, wpfTypeface, wpfGlyphTypeface);
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                 glyphTypeface = new XGlyphTypeface(typefaceKey, fontFamily, fontSource, fontResolverInfo.StyleSimulations);
 #endif
                 GlyphTypefaceCache.AddGlyphTypeface(glyphTypeface);

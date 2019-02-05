@@ -84,7 +84,7 @@ namespace PdfSharp.Drawing
 #if WPF && !GDI
                 return _wpfImage.PixelWidth;
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                 return _wrtImage.PixelWidth;
 #endif
             }
@@ -114,7 +114,7 @@ namespace PdfSharp.Drawing
 #if WPF && !GDI
                 return _wpfImage.PixelHeight;
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                 return _wrtImage.PixelHeight;
 #endif
             }

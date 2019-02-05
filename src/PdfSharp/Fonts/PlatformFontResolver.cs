@@ -102,7 +102,7 @@ namespace PdfSharp.Fonts
             //GlyphTypeface wpfGlyphTypeface;
             XFontSource fontSource = null;//CreateFontSource(familyName, isBold, isItalic, out wpfGlyphTypeface, typefaceKey);
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
             //GlyphTypeface wpfGlyphTypeface;
             XFontSource fontSource = null;//CreateFontSource(familyName, isBold, isItalic, out wpfGlyphTypeface, typefaceKey);
 #endif

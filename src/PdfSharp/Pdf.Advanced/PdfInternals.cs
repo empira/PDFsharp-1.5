@@ -111,6 +111,15 @@ namespace PdfSharp.Pdf.Advanced
         }
 
         /// <summary>
+        /// This property is not documented by intention.
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        public object UAManager  // @PDF/UA
+        {
+            get { return _document._uaManager; }
+        }
+
+        /// <summary>
         /// Returns the object with the specified Identifier, or null, if no such object exists.
         /// </summary>
         public PdfObject GetObject(PdfObjectID objectID)

@@ -757,7 +757,7 @@ namespace PdfSharp.Drawing.BarCodes
             // WPFHACK
             return null;
 #endif
-#if CORE || NETFX_CORE || UWP
+#if CORE || NETFX_CORE || UWP || DNC10
             return null;
 #endif
         }
