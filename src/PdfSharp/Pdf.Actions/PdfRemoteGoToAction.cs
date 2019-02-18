@@ -58,8 +58,9 @@ namespace PdfSharp.Pdf.Actions
         /// Creates a link to another document.
         /// </summary>
         /// <param name="documentPath">The path to the target document.</param>
-        /// <param name="destinationName">The Named Destination's name in the target document.</param>
-        /// <param name="newWindow">True, if the destination document shall be opened in a new window. If not set, the viewer application should behave in accordance with the current user preference.</param>
+        /// <param name="destinationName">The named destination's name in the target document.</param>
+        /// <param name="newWindow">True, if the destination document shall be opened in a new window.
+        /// If not set, the viewer application should behave in accordance with the current user preference.</param>
         public static PdfRemoteGoToAction CreateRemoteGoToAction(string documentPath, string destinationName, bool? newWindow = null)
         {
             PdfRemoteGoToAction action = new PdfRemoteGoToAction();
@@ -106,7 +107,7 @@ namespace PdfSharp.Pdf.Actions
             ///// (Required) The type of action that this dictionary describes;
             ///// must be GoToR for a remote go-to action.
             ///// </summary>
-            //[KeyInfo(KeyType.Name | KeyType.Required, FixedValue = "GoTo")]
+            //[KeyInfo(KeyType.Name | KeyType.Required, FixedValue = "GoToR")]
             //public const string S = "/S";
 
             /// <summary>

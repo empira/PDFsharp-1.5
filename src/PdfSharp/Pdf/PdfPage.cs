@@ -470,6 +470,41 @@ namespace PdfSharp.Pdf
         }
 
         /// <summary>
+        /// Adds an embedded document link.
+        /// </summary>
+        /// <param name="rect">The link area in default page coordinates.</param>
+        /// <param name="destinationPath">The path to the named destination through the embedded documents.
+        /// The path is separated by '\' and the last segment is the name of the named destination.
+        /// The other segments describe the route from the current (root or embedded) document to the embedded document holding the destination.
+        /// ".." references to the parent, other strings refer to a child with this name in the EmbeddedFiles name dictionary.</param>
+        /// <param name="newWindow">True, if the destination document shall be opened in a new window.
+        /// If not set, the viewer application should behave in accordance with the current user preference.</param>
+        public PdfLinkAnnotation AddEmbeddedDocumentLink(PdfRectangle rect, string destinationPath, bool? newWindow = null)
+        {
+            PdfLinkAnnotation annotation = PdfLinkAnnotation.CreateEmbeddedDocumentLink(rect, destinationPath, newWindow);
+            Annotations.Add(annotation);
+            return annotation;
+        }
+
+        /// <summary>
+        /// Adds an external embedded document link.
+        /// </summary>
+        /// <param name="rect">The link area in default page coordinates.</param>
+        /// <param name="documentPath">The path to the target document.</param>
+        /// <param name="destinationPath">The path to the named destination through the embedded documents in the target document.
+        /// The path is separated by '\' and the last segment is the name of the named destination.
+        /// The other segments describe the route from the root document to the embedded document.
+        /// Each segment name refers to a child with this name in the EmbeddedFiles name dictionary.</param>
+        /// <param name="newWindow">True, if the destination document shall be opened in a new window.
+        /// If not set, the viewer application should behave in accordance with the current user preference.</param>
+        public PdfLinkAnnotation AddEmbeddedDocumentLink(PdfRectangle rect, string documentPath, string destinationPath, bool? newWindow = null)
+        {
+            PdfLinkAnnotation annotation = PdfLinkAnnotation.CreateEmbeddedDocumentLink(rect, documentPath, destinationPath, newWindow);
+            Annotations.Add(annotation);
+            return annotation;
+        }
+
+        /// <summary>
         /// Adds a link to the Web.
         /// </summary>
         /// <param name="rect">The rect.</param>

@@ -613,6 +613,9 @@
     <Compile Include="..\PdfSharp\Pdf.Actions\PdfAction.cs">
       <Link>Pdf.Actions\PdfAction.cs</Link>
     </Compile>
+        <Compile Include="..\PdfSharp\Pdf.Actions\PdfEmbeddedGoToAction.cs">
+            <Link>Pdf.Actions\PdfEmbeddedGoToAction.cs</Link>
+        </Compile>
         <Compile Include="..\PdfSharp\Pdf.Actions\PdfRemoteGoToAction.cs">
             <Link>Pdf.Actions\PdfRemoteGoToAction.cs</Link>
         </Compile>
@@ -643,12 +646,18 @@
     <Compile Include="..\PdfSharp\Pdf.Advanced\PdfDictionaryWithContentStream.cs">
       <Link>Pdf.Advanced\PdfDictionaryWithContentStream.cs</Link>
     </Compile>
+        <Compile Include="..\PdfSharp\Pdf.Advanced\PdfEmbeddedFileStream.cs">
+            <Link>Pdf.Advanced\PdfEmbeddedFileStream.cs</Link>
+        </Compile>
     <Compile Include="..\PdfSharp\Pdf.Advanced\PdfExtGState.cs">
       <Link>Pdf.Advanced\PdfExtGState.cs</Link>
     </Compile>
     <Compile Include="..\PdfSharp\Pdf.Advanced\PdfExtGStateTable.cs">
       <Link>Pdf.Advanced\PdfExtGStateTable.cs</Link>
     </Compile>
+        <Compile Include="..\PdfSharp\Pdf.Advanced\PdfFileSpecification.cs">
+            <Link>Pdf.Advanced\PdfFileSpecification.cs</Link>
+        </Compile>
     <Compile Include="..\PdfSharp\Pdf.Advanced\PdfFont.cs">
       <Link>Pdf.Advanced\PdfFont.cs</Link>
     </Compile>
@@ -1051,6 +1060,9 @@
     <Compile Include="..\PdfSharp\Pdf\PdfNumberObject.cs">
       <Link>Pdf\PdfNumberObject.cs</Link>
     </Compile>
+        <Compile Include="..\PdfSharp\Pdf\PdfNumberTreeNode.cs">
+            <Link>Pdf\PdfNumberTreeNode.cs</Link>
+        </Compile>
     <Compile Include="..\PdfSharp\Pdf\PdfObject.cs">
       <Link>Pdf\PdfObject.cs</Link>
     </Compile>

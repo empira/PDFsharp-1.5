@@ -877,6 +877,27 @@ namespace PdfSharp.Pdf
         }
 
         /// <summary>  
+        /// Adds an embedded file to the document.
+        /// </summary>
+        /// <param name="name">The name used to refer and to entitle the embedded file.</param>
+        /// <param name="path">The path of the file to embed.</param>
+        public void AddEmbeddedFile(string name, string path)
+        {
+            var stream = new FileStream(path, FileMode.Open);
+            AddEmbeddedFile(name, stream);
+        }
+
+        /// <summary>
+        /// Adds an embedded file to the document.
+        /// </summary>
+        /// <param name="name">The name used to refer and to entitle the embedded file.</param>
+        /// <param name="stream">The stream containing the file to embed.</param>
+        public void AddEmbeddedFile(string name, Stream stream)
+        {
+            Internals.Catalog.Names.AddEmbeddedFile(name, stream);
+        }
+
+        /// <summary>  
         /// Flattens a document (make the fields non-editable).  
         /// </summary>  
         public void Flatten()

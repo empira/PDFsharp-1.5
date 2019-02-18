@@ -211,6 +211,7 @@
     <Compile Include="Pdf.AcroForms\PdfSignatureField.cs" />
     <Compile Include="Pdf.AcroForms\PdfTextField.cs" />
     <Compile Include="Pdf.Actions\enums\PdfNamedActionNames.cs" />
+    <Compile Include="Pdf.Actions\PdfEmbeddedGoToAction.cs" />
     <Compile Include="Pdf.Actions\PdfRemoteGoToAction.cs" />
     <Compile Include="Pdf.Actions\PdfGoToAction.cs" />
     <Compile Include="Pdf.Actions\PdfAction.cs" />
@@ -222,8 +223,10 @@
     <Compile Include="Pdf.Advanced\PdfCrossReferenceStream.cs" />
     <Compile Include="Pdf.Advanced\PdfCrossReferenceTable.cs" />
     <Compile Include="Pdf.Advanced\PdfDictionaryWithContentStream.cs" />
+    <Compile Include="Pdf.Advanced\PdfEmbeddedFileStream.cs" />
     <Compile Include="Pdf.Advanced\PdfExtGState.cs" />
     <Compile Include="Pdf.Advanced\PdfExtGStateTable.cs" />
+    <Compile Include="Pdf.Advanced\PdfFileSpecification.cs" />
     <Compile Include="Pdf.Advanced\PdfFont.cs" />
     <Compile Include="Pdf.Advanced\PdfFontDescriptor.cs" />
     <Compile Include="Pdf.Advanced\PdfFontTable.cs" />

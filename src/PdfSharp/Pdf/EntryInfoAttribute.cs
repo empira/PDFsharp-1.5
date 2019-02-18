@@ -52,23 +52,24 @@ namespace PdfSharp.Pdf
         TextString = 0x0000000D,
         ByteString = 0x0000000E,
         NameTree = 0x0000000F,
+        FileSpecification = 0x00000010,
 
-        NameOrArray = 0x00000010,
-        NameOrDictionary = 0x00000020,
-        ArrayOrDictionary = 0x00000030,
-        StreamOrArray = 0x00000040,
-        StreamOrName = 0x00000050,
-        ArrayOrNameOrString = 0x00000060,
-        FunctionOrName = 0x000000070,
-        Various = 0x000000080,
+        NameOrArray = 0x00000100,
+        NameOrDictionary = 0x00000200,
+        ArrayOrDictionary = 0x00000300,
+        StreamOrArray = 0x00000400,
+        StreamOrName = 0x00000500,
+        ArrayOrNameOrString = 0x00000600,
+        FunctionOrName = 0x000000700,
+        Various = 0x000000800,
 
-        TypeMask = 0x000000FF,
+        TypeMask = 0x00000FFF,
 
-        Optional = 0x00000100,
-        Required = 0x00000200,
-        Inheritable = 0x00000400,
-        MustBeIndirect = 0x00001000,
-        MustNotBeIndirect = 0x00002000,
+        Optional = 0x00001000,
+        Required = 0x00002000,
+        Inheritable = 0x00004000,
+        MustBeIndirect = 0x00010000,
+        MustNotBeIndirect = 0x00020000,
     }
 
     /// <summary>

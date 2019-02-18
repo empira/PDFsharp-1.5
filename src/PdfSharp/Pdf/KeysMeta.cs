@@ -31,6 +31,7 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Reflection;
+using PdfSharp.Pdf.Advanced;
 
 namespace PdfSharp.Pdf
 {
@@ -148,13 +149,19 @@ namespace PdfSharp.Pdf
                         type = typeof(PdfDictionary);
                         break;
 
-                    // The following types are not yet used
-
                     case KeyType.NumberTree:
-                        throw new NotImplementedException("KeyType.NumberTree");
+                        type = typeof(PdfNumberTreeNode);
+                        break;
 
                     case KeyType.NameTree:
-                        throw new NotImplementedException("KeyType.NameTree");
+                        type = typeof(PdfNameTreeNode);
+                        break;
+
+                    case KeyType.FileSpecification:
+                        type = typeof(PdfFileSpecification);
+                        break;
+
+                    // The following types are not yet used
 
                     case KeyType.NameOrArray:
                         throw new NotImplementedException("KeyType.NameOrArray");
