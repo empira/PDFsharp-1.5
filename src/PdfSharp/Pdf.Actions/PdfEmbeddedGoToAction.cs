@@ -123,7 +123,7 @@ namespace PdfSharp.Pdf.Actions
         void ParseDestinationName()
         {
             // _destinationPath may contain a path routing through embedded documents.
-            var segments = _destinationPath.Split(new[] { Separator }, StringSplitOptions.RemoveEmptyEntries);
+            var segments = _destinationPath.Split(Separator);
 
             Debug.Assert(segments.Length > 0);
 
@@ -145,7 +145,6 @@ namespace PdfSharp.Pdf.Actions
             // The destination is the last segment of the path. It has to be saved in the embedded GoTo-Action's Elements.
             var destination = segments[segments.Length - 1];
             Elements.SetString(Keys.D, destination);
-
         }
         /// <summary>
         /// Seperator for splitting destination path segments ans destination name.
