@@ -491,7 +491,10 @@ namespace PdfSharp.Pdf
             
             // @PDF/UA
             // Create PdfMetadata now to include the final document information in XMP generation.
-            Catalog.Elements.SetReference(PdfCatalog.Keys.Metadata, new PdfMetadata(this));
+			if( MetadataProvider != null )
+	            Catalog.Elements.SetReference(PdfCatalog.Keys.Metadata, MetadataProvider(this));
+			else
+	            Catalog.Elements.SetReference(PdfCatalog.Keys.Metadata, new PdfMetadata(this));
         }
 
         /// <summary>
@@ -807,6 +810,13 @@ namespace PdfSharp.Pdf
             get { return _catalog ?? (_catalog = _trailer.Root); }
         }
         PdfCatalog _catalog;  // never changes if once created
+
+		public delegate PdfMetadata PdfMetadataProvider(PdfDocument document);
+
+		/// <summary>
+		/// Gets or sets the delegate that will return the PdfMetadata object to use when saving the document
+		/// </summary>
+		public PdfMetadataProvider MetadataProvider { get; set; }
 
         /// <summary>
         /// Gets the PdfInternals object of this document, that grants access to some internal structures
