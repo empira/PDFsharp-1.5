@@ -35,7 +35,7 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Represents an XML Metadata stream.
     /// </summary>
-    public sealed class PdfMetadata : PdfDictionary
+    public class PdfMetadata : PdfDictionary
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PdfMetadata"/> class.
@@ -60,15 +60,15 @@ namespace PdfSharp.Pdf
             SetupStream();
         }
 
-        void SetupStream()
+        protected void SetupStream()
         {
             var stream = GenerateXmp();
             
-            byte[] bytes = PdfEncoders.RawEncoding.GetBytes(stream);
-            CreateStream(bytes);
+			if(stream != null)
+	            CreateStream(stream);
         }
 
-        string GenerateXmp()
+        protected virtual byte[] GenerateXmp()
         {
             var instanceId = Guid.NewGuid().ToString();
             var documentId = Guid.NewGuid().ToString();
@@ -123,7 +123,7 @@ namespace PdfSharp.Pdf
             "    </x:xmpmeta>\n" +
             "<?xpacket end=\"r\"?>\n";
 
-            return str;
+            return PdfEncoders.RawEncoding.GetBytes(str);
         }
 
         /// <summary>
