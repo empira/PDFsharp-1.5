@@ -27,6 +27,7 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using PdfSharp.Pdf.Advanced;
 using System;
 using System.Diagnostics;
 
@@ -201,6 +202,12 @@ namespace PdfSharp.Pdf.Filters
         public static byte[] Decode(byte[] data, PdfItem filterItem)
         {
             byte[] result = null;
+            if (filterItem is PdfReference)
+            {
+                PdfReference iref = (PdfReference)filterItem;
+                Debug.Assert(iref.Value != null, "Indirect /Filter value is null");
+                filterItem = iref.Value;
+            }
             if (filterItem is PdfName)
             {
                 Filter filter = GetFilter(filterItem.ToString());
