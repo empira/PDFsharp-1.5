@@ -80,6 +80,22 @@ namespace PdfSharp.Pdf.IO
             return _lexer.Position = position;
         }
 
+        /// <summary>
+        /// Tries to set PDF input stream position to the specified object.
+        /// </summary>
+        public bool TryMoveToObject(PdfObjectID objectID, out int position)
+        {
+            position = _document._irefTable[objectID].Position;
+            if (position == -1)
+            {
+                position = _lexer.Position;
+                return false;
+            }
+
+            _lexer.Position = position;
+            return true;
+        }
+
         public Symbol Symbol
         {
             get { return _lexer.Symbol; }
@@ -118,7 +134,8 @@ namespace PdfSharp.Pdf.IO
             int generationNumber = objectID.GenerationNumber;
             if (!fromObjecStream)
             {
-                MoveToObject(objectID);
+                if (!TryMoveToObject(objectID, out int position))
+                    return null;
                 objectNumber = ReadInteger();
                 generationNumber = ReadInteger();
             }
@@ -339,11 +356,47 @@ namespace PdfSharp.Pdf.IO
             if (reference != null)
             {
                 ParserState state = SaveState();
-                object length = ReadObject(null, reference.ObjectID, false, false);
+                object pdf_obj = ReadObject(null, reference.ObjectID, false, false);
                 RestoreState(state);
-                int len = ((PdfIntegerObject)length).Value;
-                dict.Elements["/Length"] = new PdfInteger(len);
-                return len;
+
+
+
+
+                int len = -1;
+                if (pdf_obj is PdfIntegerObject length_obj)
+                {
+                    len = length_obj.Value;
+                }
+                // For whatever reason, ReadObject() did not return a valid PdfIntegerObject
+                else
+                {
+                    // Read 1k chunks until we find an "endstream" symbol
+                    string content = "";
+                    int read_pos = _lexer.Position;
+                    int se = -1;
+                    while (true)
+                    {
+                        int read_len = Math.Min(_lexer.PdfLength - read_pos, 1024);
+                        content += _lexer.ReadRawString(read_pos, read_len);
+                        read_pos += 1024;
+
+                        se = content.IndexOf("endstream", StringComparison.Ordinal);
+                        if (se != -1)
+                        {
+                            len = se - 2; // By spec, the stream should start on a new line. remove crlf chars from the count.
+                            break;
+                        }
+
+                        if (read_pos >= _lexer.PdfLength)
+                            break;
+                    }
+                }
+
+                if (len != -1)
+                {
+                    dict.Elements["/Length"] = new PdfInteger(len);
+                    return len;
+                }
             }
             throw new InvalidOperationException("Cannot retrieve stream length.");
         }
