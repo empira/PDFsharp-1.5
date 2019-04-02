@@ -185,7 +185,7 @@ namespace PdfSharp.Pdf.Advanced
         /// <summary>
         /// Gets the fonts map.
         /// </summary>
-        internal PdfResourceMap Fonts
+        public PdfResourceMap Fonts
         {
             get { return _fonts ?? (_fonts = (PdfResourceMap)Elements.GetValue(Keys.Font, VCF.Create)); }
         }
