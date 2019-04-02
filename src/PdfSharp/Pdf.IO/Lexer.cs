@@ -230,23 +230,72 @@ namespace PdfSharp.Pdf.IO
             else
                 pos = _idxChar + 1;
 
-			// Verify stream length and resolve if bad
-			string post_stream = ReadRawString(pos + length, ("endstream").Length);
-			if (post_stream != "endstream")
-			{
+            // Producer: 
+            // Problem: Incorrect stream length
+            // Fix: Find the endstream keyword and measure the length
+            // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/PDF32000_2008.pdf 7.3.8
+
+            // Producer: 
+            // Problem: Not all pdf producers add a eol marker before endstream
+            // Fix: double check for endstream without the eol marker
+            // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/PDF32000_2008.pdf 7.3.8
+
+            // Producer: 
+            // Problem: Some pdf producers replace the eol marker with a carriage return
+            // Fix: double check for endstream without the eol marker
+            // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/PDF32000_2008.pdf 7.3.8
+
+            // Verify stream length and resolve if bad
+            string nendstream = $"{'\n'}endstream";
+            string rendstream = $"{'\r'}endstream";
+            string endstream = "endstream";
+
+			string postStream = ReadRawString(pos + length, nendstream.Length);
+            
+            bool bValid = postStream == nendstream ||
+                          postStream == rendstream ||
+                          postStream.StartsWith(endstream); // Not all pdf producers add a eol marker before endstream
+
+            if (!bValid)
+            {
+                string[] endstreamValues = { nendstream, rendstream, endstream };
+
+                int IndexOfEndStream(string val)
+                {
+                    // Find the smallest value
+                    int offset = -1;
+
+                    foreach (var es in endstreamValues)
+                    {
+                        int o = val.IndexOf(es, StringComparison.Ordinal);
+                        if (o < offset || offset == -1)
+                        {
+                            offset = o;
+                        }
+                    }
+
+                    return offset;
+                }
+
+
 				// find the first endstream occurrence
 				// first check to see if it is within the specified stream length.
-				int endstream_idx = post_stream.IndexOf("endstream", StringComparison.Ordinal);
-				if (endstream_idx == -1)
-				{
-					post_stream = ReadRawString(pos, _pdfLength - pos);
-					endstream_idx = post_stream.IndexOf("endstream", StringComparison.Ordinal);
-				}
+                int idxOffset = IndexOfEndStream(postStream);
+                if (idxOffset != -1)
+                {
+                    length = length + idxOffset;
+                }
 
-				if (endstream_idx != -1)
+                if (idxOffset == -1)
 				{
-					length = endstream_idx;
-				}
+                    // TODO:: read in chunks
+					postStream = ReadRawString(pos, _pdfLength - pos);
+                    idxOffset = IndexOfEndStream(postStream);
+                    if (idxOffset != -1)
+                    {
+                        length = idxOffset;
+                    }
+                }
 			}
 			
 			_pdfSteam.Position = pos;
