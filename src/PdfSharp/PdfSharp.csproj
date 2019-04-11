@@ -180,6 +180,7 @@
     <Compile Include="Fonts\AdobeGlyphList20.cs" />
     <Compile Include="Fonts\AdobeGlyphListForNewFonts.cs" />
     <Compile Include="Fonts\CMapInfo.cs" />
+    <Compile Include="Fonts\enums\StandartType1Fonts.cs" />
     <Compile Include="Fonts\FontResolvingOptions.cs" />
     <Compile Include="Fonts\PlatformFontResolverInfo.cs" />
     <Compile Include="Fonts\PlatformFontResolver.cs" />
@@ -259,11 +260,15 @@
     <Compile Include="Pdf.Advanced\PdfType0Font.cs" />
     <Compile Include="Pdf.Advanced\PdfType1Font.cs" />
     <Compile Include="Pdf.Advanced\PdfXObject.cs" />
+    <Compile Include="Pdf.Annotations\DA\AnnotationDefaultAppearance.cs" />
     <Compile Include="Pdf.Annotations\enums\PdfAnnotationFlags.cs" />
     <Compile Include="Pdf.Annotations\enums\PdfRubberStampAnnotationIcon.cs" />
     <Compile Include="Pdf.Annotations\enums\PdfTextAnnotationIcon.cs" />
     <Compile Include="Pdf.Annotations\PdfAnnotation.cs" />
     <Compile Include="Pdf.Annotations\PdfAnnotations.cs" />
+    <Compile Include="Pdf.Annotations\PdfBorderEffect.cs" />
+    <Compile Include="Pdf.Annotations\PdfBorderStyle.cs" />
+    <Compile Include="Pdf.Annotations\PdfFreeTextAnnotation.cs" />
     <Compile Include="Pdf.Annotations\PdfGenericAnnotation.cs" />
     <Compile Include="Pdf.Annotations\PdfLinkAnnotation.cs" />
     <Compile Include="Pdf.Annotations\PdfRubberStampAnnotation.cs" />
