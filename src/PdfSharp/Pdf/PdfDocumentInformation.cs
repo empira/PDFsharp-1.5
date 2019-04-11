@@ -93,11 +93,12 @@ namespace PdfSharp.Pdf
         }
 
         /// <summary>
-        /// Gets the producer application (for example, PDFsharp).
+        /// Gets or sets the name of the producer application (for example, PDFsharp).
         /// </summary>
         public string Producer
         {
             get { return Elements.GetString(Keys.Producer); }
+            set { Elements.SetString(Keys.Producer, value); }
         }
 
         /// <summary>
