@@ -76,21 +76,35 @@ namespace PdfSharp.Pdf.IO
             }
         }
 
-        /// <summary>
-        /// Reads the next token and returns its type. If the token starts with a digit, the parameter
-        /// testReference specifies how to treat it. If it is false, the lexer scans for a single integer.
-        /// If it is true, the lexer checks if the digit is the prefix of a reference. If it is a reference,
-        /// the token is set to the object ID followed by the generation number separated by a blank
-        /// (the 'R' is omitted from the token).
-        /// </summary>
-        // /// <param name="testReference">Indicates whether to test the next token if it is a reference.</param>
-        public Symbol ScanNextToken()
+		/// <summary>
+		/// Reads the next token and returns its type. If the token starts with a digit, the parameter
+		/// testReference specifies how to treat it. If it is false, the lexer scans for a single integer.
+		/// If it is true, the lexer checks if the digit is the prefix of a reference. If it is a reference,
+		/// the token is set to the object ID followed by the generation number separated by a blank
+		/// (the 'R' is omitted from the token).
+		/// </summary>
+		// /// <param name="testReference">Indicates whether to test the next token if it is a reference.</param>
+		public Symbol ScanNextToken()
+		{
+			return ScanNextToken(out int location);
+		}
+
+		/// <summary>
+		/// Reads the next token and returns its type. If the token starts with a digit, the parameter
+		/// testReference specifies how to treat it. If it is false, the lexer scans for a single integer.
+		/// If it is true, the lexer checks if the digit is the prefix of a reference. If it is a reference,
+		/// the token is set to the object ID followed by the generation number separated by a blank
+		/// (the 'R' is omitted from the token).
+		/// </summary>
+		// /// <param name="location">The start position of the next token.</param>
+		public Symbol ScanNextToken(out int position)
         {
             Again:
             _token = new StringBuilder();
 
             char ch = MoveToNonWhiteSpace();
-            switch (ch)
+			position = Position;
+			switch (ch)
             {
                 case '%':
                     // Eat comments, the parser doesn't handle them
@@ -190,7 +204,26 @@ namespace PdfSharp.Pdf.IO
             else
                 pos = _idxChar + 1;
 
-            _pdfSteam.Position = pos;
+			// Verify stream length and resolve if bad
+			string post_stream = ReadRawString(pos + length, ("endstream").Length);
+			if (post_stream != "endstream")
+			{
+				// find the first endstream occurrence
+				// first check to see if it is within the specified stream length.
+				int endstream_idx = post_stream.IndexOf("endstream", StringComparison.Ordinal);
+				if (endstream_idx == -1)
+				{
+					post_stream = ReadRawString(pos, _pdfLength - pos);
+					endstream_idx = post_stream.IndexOf("endstream", StringComparison.Ordinal);
+				}
+
+				if (endstream_idx != -1)
+				{
+					length = endstream_idx;
+				}
+			}
+			
+			_pdfSteam.Position = pos;
             byte[] bytes = new byte[length];
             int read = _pdfSteam.Read(bytes, 0, length);
             Debug.Assert(read == length);
