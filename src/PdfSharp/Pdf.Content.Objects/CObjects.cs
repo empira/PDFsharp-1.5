@@ -773,7 +773,7 @@ namespace PdfSharp.Pdf.Content.Objects  // TODO: split into single files
             {
                 if (String.IsNullOrEmpty(value))
                     throw new ArgumentNullException(nameof(value));
-                if (_name[0] != '/')
+                if (value[0] != '/')
                     throw new ArgumentException(PSSR.NameMustStartWithSlash);
                 _name = value;
             }
