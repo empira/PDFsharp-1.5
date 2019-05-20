@@ -360,7 +360,7 @@ namespace PdfSharp.Pdf
                     if (annotations.Count > 0)
                     {
                         //Owner._irefTable.Add(annotations);
-                        page.Elements.Add(PdfPage.Keys.Annots, annotations);
+                        page.Elements[PdfPage.Keys.Annots] = annotations;
                     }
                 }
 
