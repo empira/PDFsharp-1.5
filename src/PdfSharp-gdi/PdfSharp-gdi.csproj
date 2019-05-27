@@ -137,6 +137,9 @@
     <Compile Include="..\PdfSharp\Drawing.BarCodes\Code3of9Standard.cs">
       <Link>Drawing.BarCodes\Code3of9Standard.cs</Link>
     </Compile>
+    <Compile Include="..\PdfSharp\Drawing.BarCodes\Code128.cs">
+      <Link>Drawing.BarCodes\Code128.cs</Link>
+    </Compile>
     <Compile Include="..\PdfSharp\Drawing.BarCodes\CodeBase.cs">
       <Link>Drawing.BarCodes\CodeBase.cs</Link>
     </Compile>
