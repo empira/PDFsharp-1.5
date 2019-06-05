@@ -261,6 +261,8 @@ namespace PdfSharp.Pdf.AcroForms
             // Set XRef to normal state
             ap.Elements["/N"] = form.PdfForm.Reference;
 
+            form.PdfRenderer.Close();
+
             PdfFormXObject xobj = form.PdfForm;
             string s = xobj.Stream.ToString();
             // Thank you Adobe: Without putting the content in 'EMC brackets'
