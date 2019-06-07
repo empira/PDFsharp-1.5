@@ -118,8 +118,12 @@ namespace PdfSharp.Fonts.OpenType
             glyphs.Keys.CopyTo(glyphArray, 0);
             if (!glyphs.ContainsKey(0))
                 glyphs.Add(0, null);
-            for (int idx = 0; idx < count; idx++)
-                AddCompositeGlyphs(glyphs, glyphArray[idx]);
+            // ensure no other threads can alter the Position property of this OpenTypeFontface instance, see https://forum.pdfsharp.net/viewtopic.php?f=2&t=2248#p10378
+            lock (_fontData)
+            {
+                for (int idx = 0; idx < count; idx++)
+                    AddCompositeGlyphs(glyphs, glyphArray[idx]);
+            }
         }
 
         /// <summary>
