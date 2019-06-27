@@ -247,20 +247,67 @@ namespace PdfSharp.Pdf.IO
             while (true)
             {
                 char ch = AppendAndScanNextChar();
-                if (IsWhiteSpace(ch) || IsDelimiter(ch) || ch == Chars.EOF)
-                    return _symbol = Symbol.Name;
 
-                if (ch == '#')
-                {
-                    ScanNextChar(true);
-                    char[] hex = new char[2];
-                    hex[0] = _currChar;
-                    hex[1] = _nextChar;
-                    ScanNextChar(true);
-                    // TODO Check syntax
-                    ch = (char)(ushort)int.Parse(new string(hex), NumberStyles.AllowHexSpecifier);
-                    _currChar = ch;
-                }
+				if (ch == '#')
+				{
+					ScanNextChar(true);
+					char[] hex = new char[2];
+					hex[0] = _currChar;
+					hex[1] = _nextChar;
+					ScanNextChar(true);
+					// TODO Check syntax
+					ch = (char)(ushort)int.Parse(new string(hex), NumberStyles.AllowHexSpecifier);
+					_currChar = ch;
+					continue;
+				}
+				
+				if (IsNameOrCommentDelimiter(ch) || ch == Chars.EOF)
+				{
+					return _symbol = Symbol.Name;
+				}
+
+				if (IsWhiteSpace(ch))
+				{
+					//TODO: Check that the white space is valid.
+					return _symbol = Symbol.Name;
+				}
+
+				//Handle invalid delimiters
+				switch (ch)
+				{
+					case '(':
+						//TODO: Handle invalid delimiters
+						return _symbol = Symbol.Name;
+					case ')':
+						//TODO: Handle invalid delimiters
+						return _symbol = Symbol.Name;
+					case '<':
+						//TODO: Handle invalid delimiters
+						return _symbol = Symbol.Name;
+					case '>':
+						//TODO: Handle invalid delimiters
+						return _symbol = Symbol.Name;
+					case '[':
+						//TODO: Not Complete
+						if (IsWhiteSpace(_nextChar) || IsDelimiter(_nextChar) || char.IsNumber(_nextChar) || _nextChar == '-' || PeekArrayKeyword())
+						{
+							return _symbol = Symbol.Name;
+						}
+						break;
+					case ']':
+						//TODO: Not Complete
+						if (IsWhiteSpace(_nextChar) || IsDelimiter(_nextChar) || _nextChar == Chars.EOF)
+						{
+							return _symbol = Symbol.Name;
+						}
+						break;
+					case '{':
+						//TODO: Handle invalid delimiters
+						return _symbol = Symbol.Name;
+					case '}':
+						//TODO: Handle invalid delimiters
+						return _symbol = Symbol.Name;
+				}
             }
         }
 
@@ -634,20 +681,22 @@ namespace PdfSharp.Pdf.IO
                         // Treat single CR as LF.
                         _currChar = Chars.LF;
                     }
-                }
+					//Console.WriteLine();
+				}
             }
+			//Console.Write(_currChar);
             return _currChar;
         }
 
-        ///// <summary>
-        ///// Resets the current token to the empty string.
-        ///// </summary>
-        //void ClearToken()
-        //{
-        //    _token.Length = 0;
-        //}
+		///// <summary>
+		///// Resets the current token to the empty string.
+		///// </summary>
+		//void ClearToken()
+		//{
+		//    _token.Length = 0;
+		//}
 
-        bool PeekReference()
+		bool PeekReference()
         {
             // A Reference has the form "nnn mmm R". The implementation of the parser used a
             // reduce/shift algorithm in the first place. But this case is the only one we need to
@@ -694,6 +743,39 @@ namespace PdfSharp.Pdf.IO
             Position = positon;
             return false;
         }
+
+		bool PeekArrayKeyword()
+		{
+			StringBuilder token = _token;
+			int position = Position;
+			ScanNextChar(true);
+
+			//Pretty sure I want to skip any non white space
+			char ch = MoveToNonWhiteSpace();
+
+			//reset the _token
+			_token = new StringBuilder();
+
+			while (!IsWhiteSpace(ch) && !IsDelimiter(ch))
+			{
+				ch = AppendAndScanNextChar();
+			}
+
+			bool b_is_keyword = false;
+			switch (_token.ToString())
+			{
+				case "null":
+				case "true":
+				case "false":
+					b_is_keyword = true;
+					break;
+			}
+
+			Position = position;
+			_token = token;
+
+			return b_is_keyword;
+		}
 
         /// <summary>
         /// Appends current character to the token and reads next one.
@@ -882,10 +964,24 @@ namespace PdfSharp.Pdf.IO
             return false;
         }
 
-        /// <summary>
-        /// Gets the length of the PDF output.
-        /// </summary>
-        public int PdfLength
+		/// <summary>
+		/// Indicates whether the specified character is a PDF delimiter character.
+		/// </summary>
+		internal static bool IsNameOrCommentDelimiter(char ch)
+		{
+			switch (ch)
+			{
+				case '/':
+				case '%':
+					return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Gets the length of the PDF output.
+		/// </summary>
+		public int PdfLength
         {
             get { return _pdfLength; }
         }

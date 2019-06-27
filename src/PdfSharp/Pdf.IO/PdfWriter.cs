@@ -245,7 +245,9 @@ namespace PdfSharp.Pdf.IO
                         case '[':
                         case ']':
                         case '#':
-                            break;
+						case '[':
+						case ']':
+							break;
 
                         default:
                             pdf.Append(name[idx]);
