@@ -244,16 +244,18 @@ namespace PdfSharp.Pdf.IO
             // Problem: Some pdf producers replace the eol marker with a carriage return
             // Fix: double check for endstream without the eol marker
             // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/PDF32000_2008.pdf 7.3.8
-
+            
             // Verify stream length and resolve if bad
             string nendstream = $"{'\n'}endstream";
             string rendstream = $"{'\r'}endstream";
+            string rnendstream = $"{'\r'}{'\n'}endstream";
             string endstream = "endstream";
 
-			string postStream = ReadRawString(pos + length, nendstream.Length);
+			string postStream = ReadRawString(pos + length, rnendstream.Length);
             
-            bool bValid = postStream == nendstream ||
-                          postStream == rendstream ||
+            bool bValid = postStream.StartsWith(nendstream) ||
+                          postStream.StartsWith(rendstream) ||
+                          postStream.StartsWith(rnendstream) ||
                           postStream.StartsWith(endstream); // Not all pdf producers add a eol marker before endstream
 
             if (!bValid)
