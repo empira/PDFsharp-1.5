@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -27,10 +27,12 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using PdfSharp.Pdf.IO;
+
 namespace PdfSharp.Pdf.Actions
 {
     /// <summary>
-    /// Represents a PDF Goto actions.
+    /// Represents a PDF Goto action.
     /// </summary>
     public sealed class PdfGoToAction : PdfAction
     {
@@ -52,10 +54,29 @@ namespace PdfSharp.Pdf.Actions
             Inititalize();
         }
 
+        /// <summary>
+        /// Creates a link within the current document.
+        /// </summary>
+        /// <param name="destinationName">The Named Destination's name in the target document.</param>
+        public static PdfGoToAction CreateGoToAction(string destinationName)
+        {
+            PdfGoToAction action = new PdfGoToAction();
+            action._destinationName = destinationName;
+            return action;
+        }
+        string _destinationName;
+
         void Inititalize()
         {
             Elements.SetName(PdfAction.Keys.Type, "/Action");
-            Elements.SetName(PdfAction.Keys.S, "/Goto");
+            Elements.SetName(PdfAction.Keys.S, "/GoTo");
+        }
+
+        internal override void WriteObject(PdfWriter writer)
+        {
+            Elements.SetString(PdfRemoteGoToAction.Keys.D, _destinationName);
+
+            base.WriteObject(writer);
         }
 
         /// <summary>
@@ -67,7 +88,7 @@ namespace PdfSharp.Pdf.Actions
             ///// (Required) The type of action that this dictionary describes;
             ///// must be GoTo for a go-to action.
             ///// </summary>
-            //[KeyInfo(KeyType.Name | KeyType.Required, FixedValue = "Goto")]
+            //[KeyInfo(KeyType.Name | KeyType.Required, FixedValue = "GoTo")]
             //public const string S = "/S";
 
             /// <summary>

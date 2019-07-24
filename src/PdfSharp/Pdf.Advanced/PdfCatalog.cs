@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -30,6 +30,7 @@
 using System;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.AcroForms;
+using PdfSharp.Pdf.Structure;
 
 namespace PdfSharp.Pdf.Advanced
 {
@@ -156,6 +157,25 @@ namespace PdfSharp.Pdf.Advanced
         PdfOutline _outline;
 
         /// <summary>
+        /// Gets the name dictionary of this document.
+        /// </summary>
+        public PdfNameDictionary Names
+        {
+            get
+            {
+                if (_names == null)
+                {
+                    _names = new PdfNameDictionary(Owner);
+                    Owner.Internals.AddObject(_names);
+                    Elements.SetReference(Keys.Names, _names.Reference);
+
+                }
+                return _names;
+            }
+        }
+        PdfNameDictionary _names;
+
+        /// <summary>
         /// Gets the AcroForm dictionary of this document.
         /// </summary>
         public PdfAcroForm AcroForm
@@ -201,6 +221,11 @@ namespace PdfSharp.Pdf.Advanced
                     PageMode = PdfPageMode.UseOutlines;
                 _outline.PrepareForSave();
             }
+
+            // Clean up structure tree root.
+            PdfStructureTreeRoot str =  Elements.GetObject(Keys.StructTreeRoot) as PdfStructureTreeRoot;
+            if (str != null)
+                str.PrepareForSave();
         }
 
         internal override void WriteObject(PdfWriter writer)

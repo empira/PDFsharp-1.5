@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -35,6 +35,8 @@ using PdfSharp.Pdf.Internal;
 
 namespace PdfSharp.Pdf
 {
+    // TODO: Make code more readeable with PDF 1.7 strings: text string, ASCII string, byte string etc.
+
     /// <summary>
     /// Determines the encoding of a PdfString or PdfStringObject.
     /// </summary>

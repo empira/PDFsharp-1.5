@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -957,7 +957,7 @@ namespace PdfSharp.Drawing
 #if WPF && !GDI
                 return _wpfImage.PixelWidth;
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                 return 100;
 #endif
             }
@@ -998,7 +998,7 @@ namespace PdfSharp.Drawing
 #if WPF && !GDI
                 return _wpfImage.PixelHeight;
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                 return _wrtImage.PixelHeight;
 #endif
             }
@@ -1064,7 +1064,7 @@ namespace PdfSharp.Drawing
                 return _wpfImage.PixelWidth * 72 / 96.0;
 #endif
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                 //var wb = new WriteableBitmap();
                 //GetImagePropertiesAsync
                 return 100;
@@ -1117,7 +1117,7 @@ namespace PdfSharp.Drawing
                 return _wpfImage.PixelHeight * 72 / 96.0;
 #endif
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                 return _wrtImage.PixelHeight; //_gdi Image.Width * 72 / _gdiImage.HorizontalResolution;
 #endif
             }
@@ -1163,7 +1163,7 @@ namespace PdfSharp.Drawing
 #if WPF && !GDI
                 return _wpfImage.PixelWidth;
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                 return _wrtImage.PixelWidth;
 #endif
             }
@@ -1209,7 +1209,7 @@ namespace PdfSharp.Drawing
 #if WPF && !GDI
                 return _wpfImage.PixelHeight;
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                 return _wrtImage.PixelHeight;
 #endif
             }
@@ -1266,7 +1266,7 @@ namespace PdfSharp.Drawing
                 return 96;
 #endif
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                 return 96;
 #endif
             }
@@ -1315,7 +1315,7 @@ namespace PdfSharp.Drawing
                 return 96;
 #endif
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                 return 96;
 #endif
             }
@@ -1537,7 +1537,7 @@ namespace PdfSharp.Drawing
         //internal byte[] _bytes;
 #endif
 #endif
-#if NETFX_CORE  || UWP
+#if NETFX_CORE || UWP || DNC10
         internal BitmapSource _wrtImage;
 #endif
 

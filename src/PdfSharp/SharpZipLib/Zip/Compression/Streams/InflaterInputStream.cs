@@ -666,7 +666,7 @@ namespace PdfSharp.SharpZipLib.Zip.Compression.Streams
             throw new NotSupportedException("InflaterInputStream WriteByte not supported");
         }
 
-#if !NETFX_CORE && !UWP
+#if !NETFX_CORE && !UWP && !DNC10
         /// <summary>
         /// Entry point to begin an asynchronous write.  Always throws a NotSupportedException.
         /// </summary>
@@ -683,7 +683,7 @@ namespace PdfSharp.SharpZipLib.Zip.Compression.Streams
         }
 #endif
 
-#if !NETFX_CORE && !UWP
+#if !NETFX_CORE && !UWP && !DNC10
         /// <summary>
         /// Closes the input stream.  When <see cref="IsStreamOwner"></see>
         /// is true the underlying stream is also closed.

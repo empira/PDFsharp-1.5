@@ -9,8 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PdfSharp</RootNamespace>
     <AssemblyName>PdfSharp</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -129,6 +133,8 @@
     <Compile Include="Drawing\XFontWeights.cs" />
     <Compile Include="Drawing\XForm.cs" />
     <Compile Include="Drawing\XFontSource.cs" />
+    <Compile Include="Drawing\XGradientBrush.cs" />
+    <Compile Include="Drawing\XRadialGradientBrush.cs" />
     <Compile Include="Drawing\XTypeface.cs" />
     <Compile Include="Drawing\XGlyphTypeface.cs" />
     <Compile Include="Drawing\XGraphics.cs" />
@@ -155,6 +161,7 @@
     <Compile Include="Drawing\XStringFormats.cs" />
     <Compile Include="Drawing\XUnit.cs" />
     <Compile Include="Drawing\XVector.cs" />
+    <Compile Include="Events\DocumentEvents.cs" />
     <Compile Include="Fonts.OpenType\enums\FontTechnology.cs" />
     <Compile Include="Fonts.OpenType\enums\TableTagNames.cs" />
     <Compile Include="Fonts.OpenType\FontDescriptor.cs" />
@@ -204,6 +211,8 @@
     <Compile Include="Pdf.AcroForms\PdfSignatureField.cs" />
     <Compile Include="Pdf.AcroForms\PdfTextField.cs" />
     <Compile Include="Pdf.Actions\enums\PdfNamedActionNames.cs" />
+    <Compile Include="Pdf.Actions\PdfEmbeddedGoToAction.cs" />
+    <Compile Include="Pdf.Actions\PdfRemoteGoToAction.cs" />
     <Compile Include="Pdf.Actions\PdfGoToAction.cs" />
     <Compile Include="Pdf.Actions\PdfAction.cs" />
     <Compile Include="Pdf.Advanced\IContentStream.cs" />
@@ -214,8 +223,10 @@
     <Compile Include="Pdf.Advanced\PdfCrossReferenceStream.cs" />
     <Compile Include="Pdf.Advanced\PdfCrossReferenceTable.cs" />
     <Compile Include="Pdf.Advanced\PdfDictionaryWithContentStream.cs" />
+    <Compile Include="Pdf.Advanced\PdfEmbeddedFileStream.cs" />
     <Compile Include="Pdf.Advanced\PdfExtGState.cs" />
     <Compile Include="Pdf.Advanced\PdfExtGStateTable.cs" />
+    <Compile Include="Pdf.Advanced\PdfFileSpecification.cs" />
     <Compile Include="Pdf.Advanced\PdfFont.cs" />
     <Compile Include="Pdf.Advanced\PdfFontDescriptor.cs" />
     <Compile Include="Pdf.Advanced\PdfFontTable.cs" />
@@ -227,6 +238,8 @@
     <Compile Include="Pdf.Advanced\PdfImageTable.cs" />
     <Compile Include="Pdf.Advanced\PdfImportedObjectTable.cs" />
     <Compile Include="Pdf.Advanced\PdfInternals.cs" />
+    <Compile Include="Pdf.Advanced\PdfNamedDestinationParameters.cs" />
+    <Compile Include="Pdf.Advanced\PdfNameDictionary.cs" />
     <Compile Include="Pdf.Advanced\PdfObjectInternals.cs" />
     <Compile Include="Pdf.Advanced\PdfObjectStream.cs" />
     <Compile Include="Pdf.Advanced\PdfPageInheritableObjects.cs" />
@@ -302,6 +315,14 @@
     <Compile Include="Pdf.Security\PdfSecurityHandler.cs" />
     <Compile Include="Pdf.Security\PdfSecuritySettings.cs" />
     <Compile Include="Pdf.Security\PdfStandardSecurityHandler.cs" />
+    <Compile Include="Pdf.Structure\PdfAttributesBase.cs" />
+    <Compile Include="Pdf.Structure\PdfLayoutAttributes.cs" />
+    <Compile Include="Pdf.Structure\PdfObjectReference.cs" />
+    <Compile Include="Pdf.Structure\PdfMarkedContentReference.cs" />
+    <Compile Include="Pdf.Structure\PdfStructureElement.cs" />
+    <Compile Include="Pdf.Structure\PdfStructureTreeRoot.cs" />
+    <Compile Include="Pdf.Structure\PdfMarkInformation.cs" />
+    <Compile Include="Pdf.Structure\PdfTableAttributes.cs" />
     <Compile Include="Pdf\EntryInfoAttribute.cs" />
     <Compile Include="Pdf\enums\DocumentState.cs" />
     <Compile Include="Pdf\enums\PdfFlateEncodeMode.cs" />
@@ -323,6 +344,9 @@
     <Compile Include="Pdf\PdfBooleanObject.cs" />
     <Compile Include="Pdf\PdfCustomValue.cs" />
     <Compile Include="Pdf\PdfCustomValues.cs" />
+    <Compile Include="Pdf\PdfMetadata.cs" />
+    <Compile Include="Pdf\PdfNumberTreeNode.cs" />
+    <Compile Include="Pdf\PdfNameTreeNode.cs" />
     <Compile Include="Pdf\PdfDate.cs" />
     <Compile Include="Pdf\PdfDictionary.cs" />
     <Compile Include="Pdf\PdfDocument.cs" />
@@ -387,7 +411,9 @@
     <Compile Include="SharpZipLib\Zip\ZipException.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Messages.de.restext" />
+    <EmbeddedResource Include="Resources\Messages.de.restext">
+      <Generator>ResGen</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Messages.restext" />
     <None Include="StrongnameKey.snk" />
   </ItemGroup>

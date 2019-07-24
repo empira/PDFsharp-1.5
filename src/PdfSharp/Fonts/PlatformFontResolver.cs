@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -102,7 +102,7 @@ namespace PdfSharp.Fonts
             //GlyphTypeface wpfGlyphTypeface;
             XFontSource fontSource = null;//CreateFontSource(familyName, isBold, isItalic, out wpfGlyphTypeface, typefaceKey);
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
             //GlyphTypeface wpfGlyphTypeface;
             XFontSource fontSource = null;//CreateFontSource(familyName, isBold, isItalic, out wpfGlyphTypeface, typefaceKey);
 #endif

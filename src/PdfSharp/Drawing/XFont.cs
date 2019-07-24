@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -650,7 +650,7 @@ namespace PdfSharp.Drawing
         public double GetHeight()
         {
             double value = CellSpace * _emSize / UnitsPerEm;
-#if CORE || NETFX_CORE || UWP
+#if CORE || NETFX_CORE || UWP || DNC10
             return value;
 #endif
 #if GDI && !WPF

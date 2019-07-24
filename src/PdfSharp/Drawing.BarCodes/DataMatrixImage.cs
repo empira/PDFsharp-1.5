@@ -3,7 +3,7 @@
 // Authors:
 //   David Stephensen
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -757,7 +757,7 @@ namespace PdfSharp.Drawing.BarCodes
             // WPFHACK
             return null;
 #endif
-#if CORE || NETFX_CORE || UWP
+#if CORE || NETFX_CORE || UWP || DNC10
             return null;
 #endif
         }
