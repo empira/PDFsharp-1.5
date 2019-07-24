@@ -283,8 +283,16 @@ namespace PdfSharp.Pdf.IO
         {
             Symbol symbol = _lexer.Symbol;
             Debug.Assert(symbol == Symbol.BeginStream);
+
             int length = GetStreamLength(dict);
             byte[] bytes = _lexer.ReadStream(length);
+
+            if (bytes.Length != length)
+            {
+                // The file is corrupted, but still readable.
+                dict.Elements["/Length"] = new PdfInteger(bytes.Length);
+            }
+
             PdfDictionary.PdfStream stream = new PdfDictionary.PdfStream(bytes, dict);
             Debug.Assert(dict.Stream == null, "Dictionary already has a stream.");
             dict.Stream = stream;
