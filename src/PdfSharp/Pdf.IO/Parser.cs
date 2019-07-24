@@ -266,41 +266,8 @@ namespace PdfSharp.Pdf.IO
             {
                 PdfDictionary dict = (PdfDictionary)pdfObject;
                 Debug.Assert(checkForStream, "Unexpected stream...");
-#if true_
                 ReadStream(dict);
-#else
-                int length = GetStreamLength(dict);
-                byte[] bytes = _lexer.ReadStream(length);
-#if true_
-                if (dict.Elements.GetString("/Filter") == "/FlateDecode")
-                {
-                    if (dict.Elements["/Subtype"] == null)
-                    {
-                        try
-                        {
-                            byte[] decoded = Filtering.FlateDecode.Decode(bytes);
-                            if (decoded.Length == 0)
-                                goto End;
-                            string pageContent = Filtering.FlateDecode.DecodeToString(bytes);
-                            if (pageContent.Length > 100)
-                                pageContent = pageContent.Substring(pageContent.Length - 100);
-                            pageContent.GetType();
-                            bytes = decoded;
-                            dict.Elements.Remove("/Filter");
-                            dict.Elements.SetInteger("/Length", bytes.Length);
-                        }
-                        catch
-                        {
-                        }
-                    }
-                End: ;
-                }
-#endif
-                PdfDictionary.PdfStream stream = new PdfDictionary.PdfStream(bytes, dict);
-                dict.Stream = stream;
-                ReadSymbol(Symbol.EndStream);
-                symbol = ScanNextToken();
-#endif
+                symbol = _lexer.Symbol;
             }
             if (!fromObjecStream && symbol != Symbol.EndObj)
                 ParserDiagnostics.ThrowParserException(PSSR.UnexpectedToken(_lexer.Token));
@@ -316,8 +283,16 @@ namespace PdfSharp.Pdf.IO
         {
             Symbol symbol = _lexer.Symbol;
             Debug.Assert(symbol == Symbol.BeginStream);
+
             int length = GetStreamLength(dict);
             byte[] bytes = _lexer.ReadStream(length);
+
+            if (bytes.Length != length)
+            {
+                // The file is corrupted, but still readable.
+                dict.Elements["/Length"] = new PdfInteger(bytes.Length);
+            }
+
             PdfDictionary.PdfStream stream = new PdfDictionary.PdfStream(bytes, dict);
             Debug.Assert(dict.Stream == null, "Dictionary already has a stream.");
             dict.Stream = stream;

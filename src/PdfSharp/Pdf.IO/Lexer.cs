@@ -190,7 +190,57 @@ namespace PdfSharp.Pdf.IO
             else
                 pos = _idxChar + 1;
 
-            _pdfSteam.Position = pos;
+            // Producer: 
+            // Problem: Incorrect stream length
+            // Fix: Find the endstream keyword and measure the length
+            // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/PDF32000_2008.pdf 7.3.8
+
+            // Producer: 
+            // Problem: Not all pdf producers add a eol marker before endstream
+            // Fix: double check for endstream without the eol marker
+            // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/PDF32000_2008.pdf 7.3.8
+
+            // Producer: 
+            // Problem: Some pdf producers replace the eol marker with a carriage return
+            // Fix: double check for endstream without the eol marker
+            // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/PDF32000_2008.pdf 7.3.8
+
+            // Verify stream length and resolve if bad
+            string nendstream = "\nendstream";
+            string rendstream = "\rendstream";
+            string rnendstream = "\r\nendstream";
+            string endstream = "endstream";
+
+			      string postStream = ReadRawString(pos + length, rnendstream.Length);
+
+            bool bValid = postStream.StartsWith(nendstream) ||
+                          postStream.StartsWith(rendstream) ||
+                          postStream.StartsWith(rnendstream) ||
+                          postStream.StartsWith(endstream); // Not all pdf producers add a eol marker before endstream
+
+            if (!bValid)
+            {
+				        // find the first endstream occurrence
+				        // first check to see if it is within the specified stream length.
+                int idxOffset = IndexOfEndStream(postStream);
+                if (idxOffset != -1)
+                {
+                    length = length + idxOffset;
+                }
+
+                if (idxOffset == -1)
+				        {
+                    // TODO:: read in chunks
+					          postStream = ReadRawString(pos, _pdfLength - pos);
+                    idxOffset = IndexOfEndStream(postStream);
+                    if (idxOffset != -1)
+                    {
+                        length = idxOffset;
+                    }
+                }
+			      }
+
+			      _pdfSteam.Position = pos;
             byte[] bytes = new byte[length];
             int read = _pdfSteam.Read(bytes, 0, length);
             Debug.Assert(read == length);
@@ -203,6 +253,24 @@ namespace PdfSharp.Pdf.IO
             // Synchronize idxChar etc.
             Position = pos + read;
             return bytes;
+        }
+
+        private static readonly string[] endstreamValues = { "\nendstream", "\rendstream", "endstream" };
+        private int IndexOfEndStream(string val)
+        {
+            // Find the smallest value
+            int offset = -1;
+
+            foreach (var es in endstreamValues)
+            {
+                int o = val.IndexOf(es, StringComparison.Ordinal);
+                if (o < offset || offset == -1)
+                {
+                  offset = o;
+                }
+            }
+
+            return offset;
         }
 
         /// <summary>
