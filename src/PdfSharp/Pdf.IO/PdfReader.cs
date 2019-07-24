@@ -452,10 +452,10 @@ namespace PdfSharp.Pdf.IO
                         iref.ObjectNumber);
                 }
 
-                // Encrypt all objects.
+                // Decrypt all objects.
                 if (xrefEncrypt != null)
                 {
-                    document.SecurityHandler.EncryptDocument();
+                    document.SecurityHandler.DecryptDocument();
                 }
 
                 // Fix references of trailer values and then objects and irefs are consistent.

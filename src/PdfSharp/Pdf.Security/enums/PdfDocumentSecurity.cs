@@ -46,8 +46,13 @@ namespace PdfSharp.Pdf.Security
         Encrypted40Bit,
 
         /// <summary>
-        /// Document is protected with 128-bit security.
+        /// Document is protected with 128-bit RC4 security.
         /// </summary>
         Encrypted128Bit,
+
+        /// <summary>
+        /// Document is protected with 128-bit AES security.
+        /// </summary>
+        Encrypted128BitAes,
     }
 }

@@ -902,6 +902,9 @@
     <Compile Include="..\PdfSharp\Pdf.Printing\PdfFilePrinter.cs">
       <Link>Pdf.Printing\PdfFilePrinter.cs</Link>
     </Compile>
+    <Compile Include="..\PdfSharp\Pdf.Security\CryptFilterDictionary.cs">
+      <Link>Pdf.Security\CryptFilterDictionary.cs</Link>
+    </Compile>
     <Compile Include="..\PdfSharp\Pdf.Security\enums\PdfDocumentSecurity.cs">
       <Link>Pdf.Security\enums\PdfDocumentSecurity.cs</Link>
     </Compile>
