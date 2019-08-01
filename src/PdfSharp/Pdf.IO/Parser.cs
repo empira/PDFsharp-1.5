@@ -299,7 +299,7 @@ namespace PdfSharp.Pdf.IO
                 PdfDictionary.PdfStream stream = new PdfDictionary.PdfStream(bytes, dict);
                 dict.Stream = stream;
                 ReadSymbol(Symbol.EndStream);
-                symbol = ScanNextToken();
+                while ((symbol = ScanNextToken()) == Symbol.EndStream);
 #endif
             }
             if (!fromObjecStream && symbol != Symbol.EndObj)
@@ -322,7 +322,7 @@ namespace PdfSharp.Pdf.IO
             Debug.Assert(dict.Stream == null, "Dictionary already has a stream.");
             dict.Stream = stream;
             ReadSymbol(Symbol.EndStream);
-            ScanNextToken();
+            while (ScanNextToken() == Symbol.EndStream);
         }
 
         // HACK: Solve problem more general.
