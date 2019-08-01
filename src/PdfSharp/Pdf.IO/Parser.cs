@@ -261,6 +261,7 @@ namespace PdfSharp.Pdf.IO
                     ParserDiagnostics.HandleUnexpectedToken(_lexer.Token);
                     break;
             }
+			int revert_pos = _lexer.Position;
             symbol = ScanNextToken();
             if (symbol == Symbol.BeginStream)
             {
@@ -299,11 +300,12 @@ namespace PdfSharp.Pdf.IO
                 PdfDictionary.PdfStream stream = new PdfDictionary.PdfStream(bytes, dict);
                 dict.Stream = stream;
                 ReadSymbol(Symbol.EndStream);
+				revert_pos = _lexer.Position;
                 symbol = ScanNextToken();
 #endif
             }
-            if (!fromObjecStream && symbol != Symbol.EndObj)
-                ParserDiagnostics.ThrowParserException(PSSR.UnexpectedToken(_lexer.Token));
+			if (!fromObjecStream && symbol != Symbol.EndObj)
+				_lexer.Position = revert_pos;
             return pdfObject;
         }
 
