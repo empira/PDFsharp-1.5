@@ -407,7 +407,10 @@ namespace PdfSharp.Pdf
                 if (integerObject != null)
                     return integerObject.Value;
 
-                throw new InvalidCastException("GetInteger: Object is not an integer.");
+				PdfUInteger uinteger = obj as PdfUInteger;
+				if (uinteger != null)
+					return (int)uinteger.Value;
+				throw new InvalidCastException("GetInteger: Object is not an integer.");
             }
 
             /// <summary>
