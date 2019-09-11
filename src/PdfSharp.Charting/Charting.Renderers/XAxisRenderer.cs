@@ -27,6 +27,8 @@
 // DEALINGS IN THE SOFTWARE.
 #endregion
 
+using PdfSharp.Drawing;
+
 namespace PdfSharp.Charting.Renderers
 {
     /// <summary>
@@ -47,6 +49,15 @@ namespace PdfSharp.Charting.Renderers
         protected override string GetDefaultTickLabelsFormat()
         {
             return "0";
+        }
+
+        protected void DrawTickLabel(XGraphics gfx, string tickLabel, XPoint point, XSize size, AxisRendererInfo xari)
+        {
+            XRect labelArea = new XRect(point, size);
+            double rotateAngle = xari._axis.TickLabelAngle;
+            gfx.RotateAtTransform(rotateAngle, labelArea.Center);
+            gfx.DrawString(tickLabel, xari.TickLabelsFont, xari.TickLabelsBrush, point);
+            gfx.RotateAtTransform(-rotateAngle, labelArea.Center);
         }
     }
 }

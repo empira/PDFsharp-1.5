@@ -143,11 +143,8 @@ namespace PdfSharp.Charting.Renderers
                     {
                         string tickLabel = xv._value;
                         XSize size = gfx.MeasureString(tickLabel, xari.TickLabelsFont);
-                        var point = new XPoint(startPos.X - size.Width / 2, startPos.Y);
-                        double rotateAngle = xari._axis.TickLabelAngle;
-                        gfx.RotateAtTransform(rotateAngle, point);
-                        gfx.DrawString(tickLabel, xari.TickLabelsFont, xari.TickLabelsBrush, point);
-                        gfx.RotateAtTransform(-rotateAngle, point);
+                        XPoint point = new XPoint(startPos.X - size.Width / 2, startPos.Y);
+                        DrawTickLabel(gfx, tickLabel, point, size, xari);
                     }
                     startPos.X += tickLabelStep;
                 }
