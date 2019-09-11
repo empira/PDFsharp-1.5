@@ -130,8 +130,9 @@ namespace PdfSharp.Charting.Renderers
                     string tickLabel = xv._value;
                     XSize size = gfx.MeasureString(tickLabel, xari.TickLabelsFont);
                     XPoint point = new XPoint(startPos.X - size.Width, startPos.Y + size.Height / 2);
-                    DrawTickLabel(gfx, tickLabel, point, size, xari);
                     startPos.Y += tickLabelStep;
+
+                    XRect bounds = DrawTickLabel(gfx, tickLabel, point, size, xari);
                 }
             }
 

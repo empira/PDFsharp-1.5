@@ -51,13 +51,28 @@ namespace PdfSharp.Charting.Renderers
             return "0";
         }
 
-        protected void DrawTickLabel(XGraphics gfx, string tickLabel, XPoint point, XSize size, AxisRendererInfo xari)
+        protected XMatrix RotateByDegrees(double rotateAngle, XPoint center)
+        {
+            double rotateRadians = rotateAngle * System.Math.PI / 180;
+            XMatrix transformation = XMatrix.Identity;
+            transformation.RotateAtPrepend(rotateRadians, center);
+            return transformation;
+        }
+
+        protected XRect DrawTickLabel(XGraphics gfx, string tickLabel, XPoint point, XSize size, AxisRendererInfo xari)
         {
             XRect labelArea = new XRect(point, size);
             double rotateAngle = xari._axis.TickLabelAngle;
+
+            // Draw rotated text.
             gfx.RotateAtTransform(rotateAngle, labelArea.Center);
             gfx.DrawString(tickLabel, xari.TickLabelsFont, xari.TickLabelsBrush, point);
             gfx.RotateAtTransform(-rotateAngle, labelArea.Center);
+
+            // Simulate rotation to get the rotated bounding box
+            var transformation = RotateByDegrees(rotateAngle, labelArea.Center);
+            labelArea.Transform(transformation);
+            return labelArea;
         }
     }
 }

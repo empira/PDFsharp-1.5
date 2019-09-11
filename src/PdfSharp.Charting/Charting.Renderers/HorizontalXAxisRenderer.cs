@@ -96,6 +96,11 @@ namespace PdfSharp.Charting.Renderers
                         {
                             string tickLabel = xv._value;
                             XSize valueSize = _rendererParms.Graphics.MeasureString(tickLabel, xari.TickLabelsFont);
+
+                            XRect rect = new XRect(new XPoint(0, 0), valueSize);
+                            rect.Transform(RotateByDegrees(xari._axis.TickLabelAngle, rect.Center));
+                            valueSize = rect.Size;
+
                             size.Height = Math.Max(valueSize.Height, size.Height);
                             size.Width += valueSize.Width;
                         }
@@ -144,7 +149,8 @@ namespace PdfSharp.Charting.Renderers
                         string tickLabel = xv._value;
                         XSize size = gfx.MeasureString(tickLabel, xari.TickLabelsFont);
                         XPoint point = new XPoint(startPos.X - size.Width / 2, startPos.Y);
-                        DrawTickLabel(gfx, tickLabel, point, size, xari);
+                        
+                        XRect bounds = DrawTickLabel(gfx, tickLabel, point, size, xari);
                     }
                     startPos.X += tickLabelStep;
                 }
