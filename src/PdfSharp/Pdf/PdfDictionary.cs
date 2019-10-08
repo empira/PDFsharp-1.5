@@ -32,6 +32,7 @@ using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using PdfSharp.Drawing;
@@ -1507,7 +1508,12 @@ namespace PdfSharp.Pdf
             /// </summary>
             public void CopyTo(KeyValuePair<string, PdfItem>[] array, int arrayIndex)
             {
-                throw new NotImplementedException();
+                var elements = _elements.ToArray();
+
+                for (int i = arrayIndex; i < Math.Min(array.Length, elements.Length); i++)
+                {
+                    array[i] = elements[i];
+                }
             }
 
             /// <summary>

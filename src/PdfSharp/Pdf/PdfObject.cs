@@ -31,6 +31,9 @@ using System;
 using System.Diagnostics;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.IO;
+using System;
+using System.Diagnostics;
+using System.Linq;
 
 namespace PdfSharp.Pdf
 {
@@ -174,6 +177,7 @@ namespace PdfSharp.Pdf
                 }
             }
         }
+
         internal PdfDocument _document;
 
         /// <summary>
@@ -411,16 +415,223 @@ namespace PdfSharp.Pdf
             return elements[0];
         }
 
+        ///// <summary>
+        ///// Imports a resource object and its transitive closure to the specified document.
+        ///// </summary>
+        /// <param name="importedObjectTable">The imported object table of the owner for the external document.</param>
+        /// <param name="owner">The document that owns the cloned objects.</param>
+        /// <param name="externalObject">The root object to be cloned.</param>
+        /// <returns>The clone of the root object</returns>
+        internal static PdfObject ImportResourcesClosure(PdfImportedObjectTable importedObjectTable, PdfDocument owner, PdfObject externalObject, string[] usedResources)
+        {
+            Debug.Assert(ReferenceEquals(importedObjectTable.Owner, owner), "importedObjectTable does not belong to the owner.");
+            Debug.Assert(ReferenceEquals(importedObjectTable.ExternalDocument, externalObject.Owner),
+                "The ExternalDocument of the importedObjectTable does not belong to the owner of object to be imported.");
+
+            // Get transitive closure of external object.
+            PdfObject[] elements = externalObject.Owner.Internals.GetClosure(externalObject);
+            int count = elements.Length;
+
+            // 1st loop. Already imported objects are reused and new ones are cloned.
+            for (int idx = 0; idx < count; idx++)
+            {
+                PdfObject obj = elements[idx];
+                Debug.Assert(!ReferenceEquals(obj.Owner, owner));
+
+                if (idx != 0 && importedObjectTable.Contains(obj.ObjectID))
+                {
+                    // Case: External object was already imported.
+                    PdfReference iref = importedObjectTable[obj.ObjectID];
+                    Debug.Assert(iref != null);
+                    Debug.Assert(iref.Value != null);
+                    Debug.Assert(iref.Document == owner);
+                    // Replace external object by the already cloned counterpart.
+                    elements[idx] = iref.Value;
+                }
+                else
+                {
+                    // Case: External object was not yet imported earlier and must be cloned.
+                    Debug.Assert(obj.Owner != owner);
+                    PdfObject clone = obj.Clone();
+                    Debug.Assert(clone.Reference == null);
+                    clone.Document = owner;
+                    if (obj.Reference != null)
+                    {
+                        // Case: The cloned object was an indirect object.
+                        // Add clone to new owner document.
+                        owner._irefTable.Add(clone);
+                        Debug.Assert(clone.Reference != null);
+
+                        if (idx == 0 && clone is PdfDictionary dict)
+                        {
+                            CleanUpResourceDictionary(owner, dict, usedResources, importedObjectTable);
+                        }
+                        else
+                        {
+                            importedObjectTable.Add(obj.ObjectID, clone.Reference);
+                        }
+
+                        DeepCopyItem(owner, importedObjectTable, clone);
+                    }
+                    else
+                    {
+                        // Case: The cloned object was a direct object.
+                        // Only the root object can be a direct object.
+                        Debug.Assert(idx == 0);
+                    }
+                    // Replace external object by its clone.
+                    elements[idx] = clone;
+                }
+            }
+
+            // 2nd loop. Fix up indirect references that still refers to the external document.
+            for (int idx = 0; idx < count; idx++)
+            {
+                PdfObject obj = elements[idx];
+                Debug.Assert(owner != null);
+                FixUpObject(importedObjectTable, importedObjectTable.Owner, obj);
+            }
+
+            // Return the imported root object.
+            return elements[0];
+        }
+
+        private static void DeepCopyItem(PdfDocument owner, PdfImportedObjectTable importedObjectTable, PdfItem item)
+        {
+            Debug.Assert(!(item is PdfReference), "irefs must be resolved before cloning!");
+
+            switch (item)
+            {
+                case PdfDictionary dict:
+                    DeepCopyObjects(owner, importedObjectTable, dict);
+                    break;
+
+                case PdfArray array:
+                    DeepCopyObjects(owner, importedObjectTable, array);
+                    break;
+            }
+        }
+
+        private static void DeepCopyObjects(PdfDocument owner, PdfImportedObjectTable importedObjectTable, PdfDictionary dict)
+        {
+            var pdfNames = dict.Elements.KeyNames;
+
+            foreach (var pdfName in pdfNames)
+            {
+                var childElement = dict.Elements[pdfName];
+                dict.Elements[pdfName] = CloneItem(owner, importedObjectTable, childElement);
+            }
+        }
+
+        private static void DeepCopyObjects(PdfDocument owner, PdfImportedObjectTable importedObjectTable, PdfArray array)
+        {
+            for (int i = 0; i < array.Elements.Count; i++)
+            {
+                var childElement = array.Elements[i];
+                array.Elements[i] = CloneItem(owner, importedObjectTable, childElement); ;
+            }
+        }
+
+        private static PdfItem CloneItem(PdfDocument owner, PdfImportedObjectTable importedObjectTable, PdfItem childElement)
+        {
+            if (childElement is PdfReference childRef)
+            {
+                if (childRef.Document == owner)
+                    return childElement;
+                Debug.Assert(childRef.Document != owner);
+
+                if (importedObjectTable.Contains(childRef.ObjectID))
+                {
+                    childElement = importedObjectTable[childRef.ObjectID];
+                }
+                else
+                {
+                    var clone = childRef.Value.Clone();
+                    clone.Document = owner;
+                    owner._irefTable.Add(clone);
+                    childElement = clone.Reference;
+                    importedObjectTable.Add(childRef.ObjectID, clone.Reference);
+
+                    DeepCopyItem(owner, importedObjectTable, clone);
+                }
+            }
+            else
+            {
+                childElement = childElement.Clone();
+                DeepCopyItem(owner, importedObjectTable, childElement);
+            }
+
+            return childElement;
+        }
+
+        private static void CleanUpResourceDictionary(PdfDocument owner, PdfDictionary dictionary, string[] usedResources, PdfImportedObjectTable importedObjectTable)
+        {
+            foreach (var element in dictionary.Elements.ToArray())
+            {
+                var value = element.Value;
+
+                if (value is PdfReference iref)
+                {
+                    var clone = iref.Value.Clone();
+                    clone.Document = owner;
+                    Debug.Assert(clone.Reference == null);
+                    owner._irefTable.Add(clone);
+                    value = clone;
+                    dictionary.Elements[element.Key] = clone.Reference;
+                }
+
+                if (value is PdfDictionary childDict)
+                {
+                    foreach (var childDictElement in childDict.Elements.ToArray())
+                    {
+                        if (!usedResources.Contains(childDictElement.Key))
+                        {
+                            childDict.Elements.Remove(childDictElement.Key);
+                        }
+                        else
+                        {
+                            var childElement = childDictElement.Value;
+                            if (childElement is PdfReference childRef)
+                            {
+                                if (importedObjectTable.Contains(childRef.ObjectID))
+                                {
+                                    childElement = importedObjectTable[childRef.ObjectID];
+                                }
+                                else
+                                {
+                                    Debug.Assert(childRef.Document != owner);
+                                    var clone = childRef.Value.Clone();
+                                    clone.Document = owner;
+                                    owner._irefTable.Add(clone);
+                                    childElement = clone.Reference;
+                                    importedObjectTable.Add(childRef.ObjectID, clone.Reference);
+
+                                    DeepCopyItem(owner, importedObjectTable, clone);
+                                }
+                            }
+                            else
+                            {
+                                childElement = childElement.Clone();
+                            }
+
+                            childDict.Elements[childDictElement.Key] = childElement;
+                        }
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Replace all indirect references to external objects by their cloned counterparts
         /// owned by the importer document.
         /// </summary>
-        static void FixUpObject(PdfImportedObjectTable iot, PdfDocument owner, PdfObject value)
+        private static void FixUpObject(PdfImportedObjectTable iot, PdfDocument owner, PdfObject value)
         {
             Debug.Assert(ReferenceEquals(iot.Owner, owner));
 
             PdfDictionary dict;
             PdfArray array;
+
             if ((dict = value as PdfDictionary) != null)
             {
                 // Case: The object is a dictionary.

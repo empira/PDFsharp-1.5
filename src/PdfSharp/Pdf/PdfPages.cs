@@ -23,18 +23,20 @@
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
 // THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
-#endregion
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Collections;
+#endregion PDFsharp - A .NET library for processing PDF
+
 using PdfSharp.Events;
-using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Annotations;
+using PdfSharp.Pdf.IO;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace PdfSharp.Pdf
 {
@@ -455,15 +457,16 @@ namespace PdfSharp.Pdf
         /// of their transitive closure. Any reuse of already imported objects is not intended because
         /// any modification of an imported page must not change another page.
         /// </summary>
-        PdfPage ImportExternalPage(PdfPage importPage)
+        private PdfPage ImportExternalPage(PdfPage importPage)
         {
             if (importPage.Owner._openMode != PdfDocumentOpenMode.Import)
                 throw new InvalidOperationException("A PDF document must be opened with PdfDocumentOpenMode.Import to import pages from it.");
 
             PdfPage page = new PdfPage(_document);
 
+            var usedResources = GetUsedContentResources(importPage);
             // ReSharper disable AccessToStaticMemberViaDerivedType for a better code readability.
-            CloneElement(page, importPage, PdfPage.Keys.Resources, false);
+            CloneResourceElement(page, importPage, usedResources);
             CloneElement(page, importPage, PdfPage.Keys.Contents, false);
             CloneElement(page, importPage, PdfPage.Keys.MediaBox, true);
             CloneElement(page, importPage, PdfPage.Keys.CropBox, true);
@@ -481,6 +484,23 @@ namespace PdfSharp.Pdf
             // ReSharper restore AccessToStaticMemberViaDerivedType
             // TODO more elements?
             return page;
+        }
+
+        private string[] GetUsedContentResources(PdfPage page)
+        {
+            var contentObject = page.Elements[PdfPage.Keys.Contents];
+            if (contentObject is PdfReference iref)
+                contentObject = iref.Value;
+
+            if (!(contentObject is PdfDictionary content))
+                return new string[0];
+            var stream = content.Stream.ToString();
+
+            var resources = stream
+                .Split(' ', '\n')
+                .Where(s => s.StartsWith("/"));
+
+            return resources.ToArray();
         }
 
         /// <summary>
@@ -532,7 +552,48 @@ namespace PdfSharp.Pdf
             }
         }
 
-        static PdfReference RemapReference(PdfPage[] newPages, PdfPage[] impPages, PdfReference iref)
+        /// <summary>
+        /// Helper function for ImportExternalPage.
+        /// </summary>
+        private void CloneResourceElement(PdfPage page, PdfPage importPage, string[] usedResources)
+        {
+            Debug.Assert(page != null);
+            Debug.Assert(page.Owner == _document);
+            Debug.Assert(importPage.Owner != null);
+            Debug.Assert(importPage.Owner != _document);
+
+            var key = PdfPage.Keys.Resources;
+
+            PdfItem item = importPage.Elements[key];
+            if (item != null)
+            {
+                var importedObjectTable = Owner.FormTable.GetImportedObjectTable(importPage);
+
+                // The item can be indirect. If so, replace it by its value.
+                if (item is PdfReference)
+                    item = ((PdfReference)item).Value;
+                if (item is PdfObject)
+                {
+                    PdfObject root = (PdfObject)item;
+                    // The owner can be null if the item is not a reference.
+                    if (root.Owner == null)
+                        root.Document = importPage.Owner;
+                    root = ImportResourcesClosure(importedObjectTable, page.Owner, root, usedResources);
+
+                    if (root.Reference == null)
+                        page.Elements[key] = root;
+                    else
+                        page.Elements[key] = root.Reference;
+                }
+                else
+                {
+                    // Simple items are just cloned.
+                    page.Elements[key] = item.Clone();
+                }
+            }
+        }
+
+        private static PdfReference RemapReference(PdfPage[] newPages, PdfPage[] impPages, PdfReference iref)
         {
             // Directs the iref to a one of the imported pages?
             for (int idx = 0; idx < newPages.Length; idx++)
