@@ -79,7 +79,7 @@ namespace PdfSharp.Drawing.Layout
                 _cyDescent = _lineSpace * _font.CellDescent / _font.CellSpace;
 
                 // HACK in XTextFormatter
-                _spaceWidth = _gfx.MeasureString("x x", value).Width;
+                _spaceWidth = _gfx.MeasureString("x x", value).Width;
                 _spaceWidth -= _gfx.MeasureString("xx", value).Width;
             }
         }
@@ -88,6 +88,8 @@ namespace PdfSharp.Drawing.Layout
         double _cyAscent;
         double _cyDescent;
         double _spaceWidth;
+
+        XLineAlignment _lineAlignment;
 
         /// <summary>
         /// Gets or sets the bounding box of the layout.
@@ -137,8 +139,9 @@ namespace PdfSharp.Drawing.Layout
                 throw new ArgumentNullException("font");
             if (brush == null)
                 throw new ArgumentNullException("brush");
-            if (format.Alignment != XStringAlignment.Near || format.LineAlignment != XLineAlignment.Near)
-                throw new ArgumentException("Only TopLeft alignment is currently implemented.");
+            if (format.Alignment != XStringAlignment.Near)
+                throw new ArgumentException("Only Left alignments are currently implemented.");
+            _lineAlignment = format.LineAlignment;
 
             Text = text;
             Font = font;
@@ -161,7 +164,7 @@ namespace PdfSharp.Drawing.Layout
                     break;
                 if (block.Type == BlockType.LineBreak)
                     continue;
-                _gfx.DrawString(block.Text, font, brush, dx + block.Location.X, dy + block.Location.Y);
+                _gfx.DrawString(block.Text, font, brush, dx + block.Location.X, dy + block.Location.Y, format);
             }
         }
 
@@ -231,6 +234,7 @@ namespace PdfSharp.Drawing.Layout
             int firstIndex = 0;
             double x = 0, y = 0;
             int count = _blocks.Count;
+            int numLines = 1;
             for (int idx = 0; idx < count; idx++)
             {
                 Block block = _blocks[idx];
@@ -242,6 +246,7 @@ namespace PdfSharp.Drawing.Layout
                     firstIndex = idx + 1;
                     x = 0;
                     y += _lineSpace;
+                    numLines++;
                     if (y > rectHeight)
                     {
                         block.Stop = true;
@@ -261,6 +266,7 @@ namespace PdfSharp.Drawing.Layout
                         AlignLine(firstIndex, idx - 1, rectWidth);
                         firstIndex = idx;
                         y += _lineSpace;
+                        numLines++;
                         if (y > rectHeight)
                         {
                             block.Stop = true;
@@ -273,6 +279,31 @@ namespace PdfSharp.Drawing.Layout
             }
             if (firstIndex < count && Alignment != XParagraphAlignment.Justify)
                 AlignLine(firstIndex, count - 1, rectWidth);
+
+            // Adjust vertical alignment
+            var blocksHeight = _lineSpace * numLines;
+            var delta = 0D;
+
+            switch (_lineAlignment)
+            {
+                case XLineAlignment.Near:
+                    break;
+
+                case XLineAlignment.Center:
+                    delta = rectHeight / 2D - blocksHeight / 2D + _lineSpace / 4D;
+                    break;
+
+                case XLineAlignment.BaseLine:
+                case XLineAlignment.Far:
+                    delta = rectHeight - blocksHeight + _lineSpace + _cyDescent;
+                    break;
+
+                default:
+                    throw new NotImplementedException(_lineAlignment.ToString());
+            }
+
+            foreach (var block in _blocks)
+                block.Location.Y += delta;
         }
 
         /// <summary>
