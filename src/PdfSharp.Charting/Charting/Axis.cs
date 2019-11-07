@@ -181,6 +181,13 @@ namespace PdfSharp.Charting
         }
         internal TickLabels _tickLabels;
 
+        public double TickLabelAngle
+        {
+            get { return _tickLabelAngle; }
+            set { _tickLabelAngle = value; }
+        }
+        internal double _tickLabelAngle = 0;
+
         /// <summary>
         /// Gets the format of the axis line.
         /// </summary>
