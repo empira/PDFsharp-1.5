@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -262,7 +262,7 @@ namespace PdfSharp.Drawing
 #endif
             return FontHelper.IsStyleAvailable(this, xStyle);
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
             throw new InvalidOperationException("In NETFX_CORE build it is the responsibility of the developer to provide all required font faces.");
 #endif
         }

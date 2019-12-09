@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -108,6 +108,15 @@ namespace PdfSharp.Pdf.Advanced
         public PdfExtGStateTable ExtGStateTable
         {
             get { return _document.ExtGStateTable; }
+        }
+
+        /// <summary>
+        /// This property is not documented by intention.
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        public object UAManager  // @PDF/UA
+        {
+            get { return _document._uaManager; }
         }
 
         /// <summary>

@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -31,6 +31,7 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Reflection;
+using PdfSharp.Pdf.Advanced;
 
 namespace PdfSharp.Pdf
 {
@@ -148,10 +149,19 @@ namespace PdfSharp.Pdf
                         type = typeof(PdfDictionary);
                         break;
 
-                    // The following types are not yet used
-
                     case KeyType.NumberTree:
-                        throw new NotImplementedException("KeyType.NumberTree");
+                        type = typeof(PdfNumberTreeNode);
+                        break;
+
+                    case KeyType.NameTree:
+                        type = typeof(PdfNameTreeNode);
+                        break;
+
+                    case KeyType.FileSpecification:
+                        type = typeof(PdfFileSpecification);
+                        break;
+
+                    // The following types are not yet used
 
                     case KeyType.NameOrArray:
                         throw new NotImplementedException("KeyType.NameOrArray");
@@ -224,7 +234,7 @@ namespace PdfSharp.Pdf
 #endif
         }
 
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
         // Background: The function GetRuntimeFields gets constant fields only for the specified type,
         // not for its base types. So we have to walk recursively through base classes.
         // The docmentation says full trust for the immediate caller is required for property BaseClass.

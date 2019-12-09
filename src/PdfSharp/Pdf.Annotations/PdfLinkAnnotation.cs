@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -28,6 +28,7 @@
 #endregion
 
 using System;
+using PdfSharp.Pdf.Actions;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Internal;
 
@@ -41,7 +42,7 @@ namespace PdfSharp.Pdf.Annotations
         // Just a hack to make MigraDoc work with this code.
         enum LinkType
         {
-            None, Document, Web, File
+            None, Document, NamedDestination, Web, File
         }
 
         /// <summary>
@@ -82,6 +83,77 @@ namespace PdfSharp.Pdf.Annotations
         int _destPage;
         LinkType _linkType;
         string _url;
+
+        /// <summary>
+        /// Creates a link within the current document using a named destination.
+        /// </summary>
+        /// <param name="rect">The link area in default page coordinates.</param>
+        /// <param name="destinationName">The named destination's name.</param>
+        public static PdfLinkAnnotation CreateDocumentLink(PdfRectangle rect, string destinationName)
+        {
+            PdfLinkAnnotation link = new PdfLinkAnnotation();
+            link._linkType = LinkType.NamedDestination;
+            link.Rectangle = rect;
+            link._action = PdfGoToAction.CreateGoToAction(destinationName);
+            return link;
+        }
+        PdfAction _action;
+
+        /// <summary>
+        /// Creates a link to an external PDF document using a named destination.
+        /// </summary>
+        /// <param name="rect">The link area in default page coordinates.</param>
+        /// <param name="documentPath">The path to the target document.</param>
+        /// <param name="destinationName">The named destination's name in the target document.</param>
+        /// <param name="newWindow">True, if the destination document shall be opened in a new window.
+        /// If not set, the viewer application should behave in accordance with the current user preference.</param>
+        public static PdfLinkAnnotation CreateDocumentLink(PdfRectangle rect, string documentPath, string destinationName, bool? newWindow = null)
+        {
+            PdfLinkAnnotation link = new PdfLinkAnnotation();
+            link._linkType = LinkType.NamedDestination;
+            link.Rectangle = rect;
+            link._action = PdfRemoteGoToAction.CreateRemoteGoToAction(documentPath, destinationName, newWindow);
+            return link;
+        }
+
+        /// <summary>
+        /// Creates a link to an embedded document.
+        /// </summary>
+        /// <param name="rect">The link area in default page coordinates.</param>
+        /// <param name="destinationPath">The path to the named destination through the embedded documents.
+        /// The path is separated by '\' and the last segment is the name of the named destination.
+        /// The other segments describe the route from the current (root or embedded) document to the embedded document holding the destination.
+        /// ".." references to the parent, other strings refer to a child with this name in the EmbeddedFiles name dictionary.</param>
+        /// <param name="newWindow">True, if the destination document shall be opened in a new window.
+        /// If not set, the viewer application should behave in accordance with the current user preference.</param>
+        public static PdfLinkAnnotation CreateEmbeddedDocumentLink(PdfRectangle rect, string destinationPath, bool? newWindow = null)
+        {
+            PdfLinkAnnotation link = new PdfLinkAnnotation();
+            link._linkType = LinkType.NamedDestination;
+            link.Rectangle = rect;
+            link._action = PdfEmbeddedGoToAction.CreatePdfEmbeddedGoToAction(destinationPath, newWindow);
+            return link;
+        }
+
+        /// <summary>
+        /// Creates a link to an embedded document in another document.
+        /// </summary>
+        /// <param name="rect">The link area in default page coordinates.</param>
+        /// <param name="documentPath">The path to the target document.</param>
+        /// <param name="destinationPath">The path to the named destination through the embedded documents in the target document.
+        /// The path is separated by '\' and the last segment is the name of the named destination.
+        /// The other segments describe the route from the root document to the embedded document.
+        /// Each segment name refers to a child with this name in the EmbeddedFiles name dictionary.</param>
+        /// <param name="newWindow">True, if the destination document shall be opened in a new window.
+        /// If not set, the viewer application should behave in accordance with the current user preference.</param>
+        public static PdfLinkAnnotation CreateEmbeddedDocumentLink(PdfRectangle rect, string documentPath, string destinationPath, bool? newWindow = null)
+        {
+            PdfLinkAnnotation link = new PdfLinkAnnotation();
+            link._linkType = LinkType.NamedDestination;
+            link.Rectangle = rect;
+            link._action = PdfEmbeddedGoToAction.CreatePdfEmbeddedGoToAction(documentPath, destinationPath, newWindow);
+            return link;
+        }
 
         /// <summary>
         /// Creates a link to the web.
@@ -142,6 +214,10 @@ namespace PdfSharp.Pdf.Annotations
                     dest = Owner.Pages[destIndex];
                     //pdf.AppendFormat("/Dest[{0} 0 R/XYZ null null 0]\n", dest.ObjectID);
                     Elements[Keys.Dest] = new PdfLiteral("[{0} 0 R/XYZ null null 0]", dest.ObjectNumber);
+                    break;
+
+                case LinkType.NamedDestination:
+                    Elements[PdfAnnotation.Keys.A] = _action;
                     break;
 
                 case LinkType.Web:

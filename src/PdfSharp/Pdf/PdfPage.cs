@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -72,10 +72,23 @@ namespace PdfSharp.Pdf
         {
             // Set Orientation depending on /Rotate.
 
-            //!!!modTHHO 16-06-16 Do not set Orientation here. Setting Orientation is not enough. Other properties must also be changed when setting Orientation.
-            //int rotate = Elements.GetInteger(InheritablePageKeys.Rotate);
-            //if (Math.Abs((rotate / 90)) % 2 == 1)
-            //    _orientation = PageOrientation.Landscape;
+            //!!!modTHHO 2016-06-16 Do not set Orientation here. Setting Orientation is not enough. Other properties must also be changed when setting Orientation.
+            //!!!modTHHO 2018-04-05 Restored the old behavior. Commenting the next three lines out is not enough either.
+            // New approach: remember that Orientation was set based on rotation.
+            int rotate = Elements.GetInteger(InheritablePageKeys.Rotate);
+            if (Math.Abs((rotate / 90)) % 2 == 1)
+            {
+#if true
+                _orientation = PageOrientation.Landscape;
+                // Hacky approach: do not swap width and height on saving when orientation was set here.
+                _orientationSetByCodeForRotatedDocument = true;
+#else
+                // Cleaner approach: Swap width and height here. But some drawing routines will not draw the XPdfForm correctly, so this needs more testing and more changes.
+                // When saving, width and height will be swapped. So we have to swap them here too.
+                PdfRectangle mediaBox = MediaBox;
+                MediaBox = new PdfRectangle(mediaBox.X1, mediaBox.Y1, mediaBox.Y2, mediaBox.X2);
+#endif
+            }
         }
 
         void Initialize()
@@ -83,7 +96,7 @@ namespace PdfSharp.Pdf
             Size = RegionInfo.CurrentRegion.IsMetric ? PageSize.A4 : PageSize.Letter;
 
 #pragma warning disable 168
-            // Force creation of MediaBox object by invoking property
+            // Force creation of MediaBox object by invoking property.
             PdfRectangle rect = MediaBox;
 #pragma warning restore 168
         }
@@ -100,8 +113,8 @@ namespace PdfSharp.Pdf
         object _tag;
 
         /// <summary>
-        /// Closes the page. A closes page cannot be modified anymore and it is not possible to
-        /// get an XGraphics object for a closed page. Closing a page is not required, but may saves
+        /// Closes the page. A closed page cannot be modified anymore and it is not possible to
+        /// get an XGraphics object for a closed page. Closing a page is not required, but may save
         /// resources if the document has many pages. 
         /// </summary>
         public void Close()
@@ -148,9 +161,16 @@ namespace PdfSharp.Pdf
         public PageOrientation Orientation
         {
             get { return _orientation; }
-            set { _orientation = value; }
+            set
+            {
+                _orientation = value;
+                _orientationSetByCodeForRotatedDocument = false;
+            }
         }
         PageOrientation _orientation;
+        bool _orientationSetByCodeForRotatedDocument;
+        // TODO Simplify the implementation. Should /Rotate 90 lead to Landscape format?
+        // TODO Clean implementation without _orientationSetByCodeForRotatedDocument.
 
         /// <summary>
         /// Gets or sets one of the predefined standard sizes like.
@@ -293,7 +313,6 @@ namespace PdfSharp.Pdf
         /// <summary>
         /// Gets or sets the /Rotate entry of the PDF page. The value is the number of degrees by which the page 
         /// should be rotated clockwise when displayed or printed. The value must be a multiple of 90.
-        /// TODO: Next statement is not correct: 
         /// PDFsharp does not set this value, but for imported pages this value can be set and must be taken
         /// into account when adding graphic to such a page.
         /// </summary>
@@ -375,7 +394,7 @@ namespace PdfSharp.Pdf
         }
         PdfContents _contents;
 
-        #region Annotations
+#region Annotations
 
         /// <summary>
         /// Gets the annotations array of this page.
@@ -413,13 +432,74 @@ namespace PdfSharp.Pdf
         PdfAnnotations _annotations;
 
         /// <summary>
-        /// Adds an intra document link.
+        /// Adds an internal document link.
         /// </summary>
-        /// <param name="rect">The rect.</param>
+        /// <param name="rect">The link area in default page coordinates.</param>
         /// <param name="destinationPage">The destination page.</param>
         public PdfLinkAnnotation AddDocumentLink(PdfRectangle rect, int destinationPage)
         {
             PdfLinkAnnotation annotation = PdfLinkAnnotation.CreateDocumentLink(rect, destinationPage);
+            Annotations.Add(annotation);
+            return annotation;
+        }
+
+        /// <summary>
+        /// Adds an internal document link.
+        /// </summary>
+        /// <param name="rect">The link area in default page coordinates.</param>
+        /// <param name="destinationName">The Named Destination's name.</param>
+        public PdfLinkAnnotation AddDocumentLink(PdfRectangle rect, string destinationName)
+        {
+            PdfLinkAnnotation annotation = PdfLinkAnnotation.CreateDocumentLink(rect, destinationName);
+            Annotations.Add(annotation);
+            return annotation;
+        }
+
+        /// <summary>
+        /// Adds an external document link.
+        /// </summary>
+        /// <param name="rect">The link area in default page coordinates.</param>
+        /// <param name="documentPath">The path to the target document.</param>
+        /// <param name="destinationName">The Named Destination's name in the target document.</param>
+        /// <param name="newWindow">True, if the destination document shall be opened in a new window. If not set, the viewer application should behave in accordance with the current user preference.</param>
+        public PdfLinkAnnotation AddDocumentLink(PdfRectangle rect, string documentPath, string destinationName, bool? newWindow = null)
+        {
+            PdfLinkAnnotation annotation = PdfLinkAnnotation.CreateDocumentLink(rect, documentPath, destinationName, newWindow);
+            Annotations.Add(annotation);
+            return annotation;
+        }
+
+        /// <summary>
+        /// Adds an embedded document link.
+        /// </summary>
+        /// <param name="rect">The link area in default page coordinates.</param>
+        /// <param name="destinationPath">The path to the named destination through the embedded documents.
+        /// The path is separated by '\' and the last segment is the name of the named destination.
+        /// The other segments describe the route from the current (root or embedded) document to the embedded document holding the destination.
+        /// ".." references to the parent, other strings refer to a child with this name in the EmbeddedFiles name dictionary.</param>
+        /// <param name="newWindow">True, if the destination document shall be opened in a new window.
+        /// If not set, the viewer application should behave in accordance with the current user preference.</param>
+        public PdfLinkAnnotation AddEmbeddedDocumentLink(PdfRectangle rect, string destinationPath, bool? newWindow = null)
+        {
+            PdfLinkAnnotation annotation = PdfLinkAnnotation.CreateEmbeddedDocumentLink(rect, destinationPath, newWindow);
+            Annotations.Add(annotation);
+            return annotation;
+        }
+
+        /// <summary>
+        /// Adds an external embedded document link.
+        /// </summary>
+        /// <param name="rect">The link area in default page coordinates.</param>
+        /// <param name="documentPath">The path to the target document.</param>
+        /// <param name="destinationPath">The path to the named destination through the embedded documents in the target document.
+        /// The path is separated by '\' and the last segment is the name of the named destination.
+        /// The other segments describe the route from the root document to the embedded document.
+        /// Each segment name refers to a child with this name in the EmbeddedFiles name dictionary.</param>
+        /// <param name="newWindow">True, if the destination document shall be opened in a new window.
+        /// If not set, the viewer application should behave in accordance with the current user preference.</param>
+        public PdfLinkAnnotation AddEmbeddedDocumentLink(PdfRectangle rect, string documentPath, string destinationPath, bool? newWindow = null)
+        {
+            PdfLinkAnnotation annotation = PdfLinkAnnotation.CreateEmbeddedDocumentLink(rect, documentPath, destinationPath, newWindow);
             Annotations.Add(annotation);
             return annotation;
         }
@@ -448,7 +528,7 @@ namespace PdfSharp.Pdf
             return annotation;
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Gets or sets the custom values.
@@ -583,12 +663,16 @@ namespace PdfSharp.Pdf
             // HACK: temporarily flip media box if Landscape
             PdfRectangle mediaBox = MediaBox;
             // TODO: Take /Rotate into account
-            if (_orientation == PageOrientation.Landscape)
+            //!!!newTHHO 2018-04-05 Stop manipulating the MediaBox - Height and Width properties already take orientation into account.
+            //!!!delTHHO 2018-04-05 if (_orientation == PageOrientation.Landscape)
+            //!!!delTHHO 2018-04-05     MediaBox = new PdfRectangle(mediaBox.X1, mediaBox.Y1, mediaBox.Y2, mediaBox.X2);
+            // One step back - swap members in MediaBox for landscape orientation.
+            if (_orientation == PageOrientation.Landscape && !_orientationSetByCodeForRotatedDocument)
                 MediaBox = new PdfRectangle(mediaBox.X1, mediaBox.Y1, mediaBox.Y2, mediaBox.X2);
 
 #if true
             // Add transparency group to prevent rendering problems of Adobe viewer.
-            // Update (PDFsharp 1.50 beta 3): Add transparency group only of ColorMode is defined.
+            // Update (PDFsharp 1.50 beta 3): Add transparency group only if ColorMode is defined.
             // Rgb is the default for the ColorMode, but if user sets it to Undefined then
             // we respect this and skip the transparency group.
             TransparencyUsed = true; // TODO: check XObjects
@@ -614,7 +698,10 @@ namespace PdfSharp.Pdf
 #endif
             base.WriteObject(writer);
 
-            if (_orientation == PageOrientation.Landscape)
+            //!!!delTHHO 2018-04-05 if (_orientation == PageOrientation.Landscape)
+            //!!!delTHHO 2018-04-05    MediaBox = mediaBox;
+            // One step back - swap members in MediaBox for landscape orientation.
+            if (_orientation == PageOrientation.Landscape && !_orientationSetByCodeForRotatedDocument)
                 MediaBox = mediaBox;
         }
 

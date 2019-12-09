@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -84,7 +84,7 @@ namespace PdfSharp.Drawing
 #if WPF && !GDI
                 return _wpfImage.PixelWidth;
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                 return _wrtImage.PixelWidth;
 #endif
             }
@@ -114,7 +114,7 @@ namespace PdfSharp.Drawing
 #if WPF && !GDI
                 return _wpfImage.PixelHeight;
 #endif
-#if NETFX_CORE || UWP
+#if NETFX_CORE || UWP || DNC10
                 return _wrtImage.PixelHeight;
 #endif
             }

@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -194,7 +194,8 @@ namespace PdfSharp.Drawing.Layout
                     blockLength = 0;
                     _blocks.Add(new Block(BlockType.LineBreak));
                 }
-                else if (char.IsWhiteSpace(ch))
+                // The non-breaking space is whitespace, so we treat it like non-whitespace.
+                else if (ch != Chars.NonBreakableSpace && char.IsWhiteSpace(ch))
                 {
                     if (inNonWhiteSpace)
                     {

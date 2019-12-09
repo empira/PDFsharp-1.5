@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -35,7 +35,7 @@ namespace PdfSharp.Pdf
     /// <summary>
     /// Represents trim margins added to the page.
     /// </summary>
-    [DebuggerDisplay("(Left={left.Millimeter}mm, Right={right.Millimeter}mm, Top={top.Millimeter}mm, Bottom={bottom.Millimeter}mm)")]
+    [DebuggerDisplay("(Left={_left.Millimeter}mm, Right={_right.Millimeter}mm, Top={_top.Millimeter}mm, Bottom={_bottom.Millimeter}mm)")]
     public sealed class TrimMargins
     {
         ///// <summary>

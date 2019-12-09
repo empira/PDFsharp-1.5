@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -818,7 +818,9 @@ namespace PdfSharp.Pdf
                 PdfArray array;
                 PdfReference iref;
                 PdfItem value = this[key];
-                if (value == null)
+                if (value == null ||
+                    value is PdfNull ||
+                    value is PdfReference && ((PdfReference)value).Value is PdfNullObject)
                 {
                     if (options != VCF.None)
                     {

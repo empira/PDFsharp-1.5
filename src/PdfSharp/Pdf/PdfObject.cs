@@ -3,7 +3,7 @@
 // Authors:
 //   Stefan Lange
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -365,7 +365,7 @@ namespace PdfSharp.Pdf
                 }
                 else
                 {
-                    // Case: External object was not yet imported ealier and must be cloned.
+                    // Case: External object was not yet imported earlier and must be cloned.
                     PdfObject clone = obj.Clone();
                     Debug.Assert(clone.Reference == null);
                     clone.Document = owner;

@@ -4,7 +4,7 @@
 //   Stefan Lange
 //   Thomas Hövel
 //
-// Copyright (c) 2005-2017 empira Software GmbH, Cologne Area (Germany)
+// Copyright (c) 2005-2019 empira Software GmbH, Cologne Area (Germany)
 //
 // http://www.pdfsharp.com
 // http://sourceforge.net/projects/pdfsharp
@@ -63,7 +63,7 @@ namespace PdfSharp.Pdf.Advanced
             _image = image;
 
 #if !SILVERLIGHT
-            ////// TODO: identify multiple used images. If the image already exists use the same XRef.
+            ////// TODO: identify images used multiple times. If the image already exists use the same XRef.
             ////_defaultName = PdfImageTable.NextImageName;
 
             switch (_image.Format.Guid.ToString("B").ToUpper())
@@ -511,7 +511,6 @@ namespace PdfSharp.Pdf.Advanced
 #endif
 
 #if (CORE_WITH_GDI || GDI) && !WPF
-            //bool hasMask = false;
             switch (_image._gdiImage.PixelFormat)
             {
                 case PixelFormat.Format24bppRgb:
@@ -524,20 +523,19 @@ namespace PdfSharp.Pdf.Advanced
 
                 case PixelFormat.Format32bppArgb:
                 case PixelFormat.Format32bppPArgb:
-                    //hasMask = true;
                     ReadTrueColorMemoryBitmap(3, 8, true);
                     break;
 
                 case PixelFormat.Format8bppIndexed:
-                    ReadIndexedMemoryBitmap(8/*, ref hasMask*/);
+                    ReadIndexedMemoryBitmap(8);
                     break;
 
                 case PixelFormat.Format4bppIndexed:
-                    ReadIndexedMemoryBitmap(4/*, ref hasMask*/);
+                    ReadIndexedMemoryBitmap(4);
                     break;
 
                 case PixelFormat.Format1bppIndexed:
-                    ReadIndexedMemoryBitmap(1/*, ref hasMask*/);
+                    ReadIndexedMemoryBitmap(1);
                     break;
 
                 default:
@@ -578,21 +576,21 @@ namespace PdfSharp.Pdf.Advanced
 
                 case "Indexed8":  //Format8bppIndexed:
                 case "Gray8":
-                    ReadIndexedMemoryBitmap(8/*, ref hasMask*/);
+                    ReadIndexedMemoryBitmap(8);
                     break;
 
                 case "Indexed4":  //Format4bppIndexed:
                 case "Gray4":
-                    ReadIndexedMemoryBitmap(4/*, ref hasMask*/);
+                    ReadIndexedMemoryBitmap(4);
                     break;
 
                 case "Indexed2":
-                    ReadIndexedMemoryBitmap(2/*, ref hasMask*/);
+                    ReadIndexedMemoryBitmap(2);
                     break;
 
                 case "Indexed1":  //Format1bppIndexed:
                 case "BlackWhite":  //Format1bppIndexed:
-                    ReadIndexedMemoryBitmap(1/*, ref hasMask*/);
+                    ReadIndexedMemoryBitmap(1);
                     break;
 
                 default:
@@ -620,8 +618,7 @@ namespace PdfSharp.Pdf.Advanced
                 if (firstMaskColor != -1 &&
                   lastMaskColor != -1)
                 {
-                    // Color mask requires Reader 4.0 or higher:
-                    //if (!segmentedColorMask && pdfVersion >= 13)
+                    // Color mask requires Reader 4.0 or higher.
                     if (!segmentedColorMask && pdfVersion >= 13 && !idb.IsGray)
                     {
                         PdfArray array = new PdfArray(_document);
@@ -631,7 +628,7 @@ namespace PdfSharp.Pdf.Advanced
                     }
                     else
                     {
-                        // Monochrome mask
+                        // Monochrome mask.
                         byte[] maskDataCompressed = fd.Encode(idb.BitmapMask, _document.Options.FlateEncodeMode);
                         PdfDictionary pdfMask = new PdfDictionary(_document);
                         pdfMask.Elements.SetName(Keys.Type, "/XObject");
@@ -657,7 +654,7 @@ namespace PdfSharp.Pdf.Advanced
                   (idb.LengthFax < imageDataCompressed.Length ||
                   imageDataFaxCompressed.Length < imageDataCompressed.Length))
                 {
-                    // /CCITTFaxDecode creates the smaller file (with or without /FlateDecode):
+                    // /CCITTFaxDecode creates the smaller file (with or without /FlateDecode).
                     usesCcittEncoding = true;
 
                     if (idb.LengthFax < imageDataCompressed.Length)
@@ -665,7 +662,6 @@ namespace PdfSharp.Pdf.Advanced
                         Stream = new PdfStream(idb.DataFax, this);
                         Elements[PdfStream.Keys.Length] = new PdfInteger(idb.LengthFax);
                         Elements[PdfStream.Keys.Filter] = new PdfName("/CCITTFaxDecode");
-                        //PdfArray array2 = new PdfArray(_document);
                         PdfDictionary dictionary = new PdfDictionary();
                         if (idb.K != 0)
                             dictionary.Elements.Add("/K", new PdfInteger(idb.K));
@@ -674,8 +670,7 @@ namespace PdfSharp.Pdf.Advanced
                         dictionary.Elements.Add("/EndOfBlock", new PdfBoolean(false));
                         dictionary.Elements.Add("/Columns", new PdfInteger((int)ii.Width));
                         dictionary.Elements.Add("/Rows", new PdfInteger((int)ii.Height));
-                        //array2.Elements.Add(dictionary);
-                        Elements[PdfStream.Keys.DecodeParms] = dictionary; // array2;
+                        Elements[PdfStream.Keys.DecodeParms] = dictionary;
                     }
                     else
                     {
@@ -688,7 +683,6 @@ namespace PdfSharp.Pdf.Advanced
                         PdfArray arrayDecodeParms = new PdfArray(_document);
 
                         PdfDictionary dictFlateDecodeParms = new PdfDictionary();
-                        //dictFlateDecodeParms.Elements.Add("/Columns", new PdfInteger(1));
 
                         PdfDictionary dictCcittFaxDecodeParms = new PdfDictionary();
                         if (idb.K != 0)
@@ -706,7 +700,7 @@ namespace PdfSharp.Pdf.Advanced
                 }
                 else
                 {
-                    // /FlateDecode creates the smaller file (or no monochrome bitmap):
+                    // /FlateDecode creates the smaller file (or no monochrome bitmap).
                     Stream = new PdfStream(imageDataCompressed, this);
                     Elements[PdfStream.Keys.Length] = new PdfInteger(imageDataCompressed.Length);
                     Elements[PdfStream.Keys.Filter] = new PdfName("/FlateDecode");
@@ -717,8 +711,8 @@ namespace PdfSharp.Pdf.Advanced
                 Elements[Keys.BitsPerComponent] = new PdfInteger(bits);
                 // TODO: CMYK
 
-                // CCITT encoding: we need color palette for isBitonal == 0
-                // FlateDecode: we need color palette for isBitonal <= 0 unless we have grayscales
+                // CCITT encoding: we need color palette for isBitonal == 0.
+                // FlateDecode: we need color palette for isBitonal <= 0 unless we have grayscales.
                 if ((usesCcittEncoding && idb.IsBitonal == 0) ||
                   (!usesCcittEncoding && idb.IsBitonal <= 0 && !idb.IsGray))
                 {
@@ -727,14 +721,14 @@ namespace PdfSharp.Pdf.Advanced
                     byte[] packedPaletteData = idb.PaletteDataLength >= 48 ? fd.Encode(idb.PaletteData, _document.Options.FlateEncodeMode) : null; // don't compress small palettes
                     if (packedPaletteData != null && packedPaletteData.Length + 20 < idb.PaletteDataLength) // +20: compensate for the overhead (estimated value)
                     {
-                        // Create compressed color palette:
+                        // Create compressed color palette.
                         colorPalette.CreateStream(packedPaletteData);
                         colorPalette.Elements[PdfStream.Keys.Length] = new PdfInteger(packedPaletteData.Length);
                         colorPalette.Elements[PdfStream.Keys.Filter] = new PdfName("/FlateDecode");
                     }
                     else
                     {
-                        // Create uncompressed color palette:
+                        // Create uncompressed color palette.
                         colorPalette.CreateStream(idb.PaletteData);
                         colorPalette.Elements[PdfStream.Keys.Length] = new PdfInteger(idb.PaletteDataLength);
                     }
@@ -767,8 +761,8 @@ namespace PdfSharp.Pdf.Advanced
 
             if (hasMask)
             {
-                // monochrome mask is either sufficient or
-                // provided for compatibility with older reader versions
+                // Monochrome mask is either sufficient or
+                // provided for compatibility with older reader versions.
                 byte[] maskDataCompressed = fd.Encode(idb.BitmapMask, _document.Options.FlateEncodeMode);
                 PdfDictionary pdfMask = new PdfDictionary(_document);
                 pdfMask.Elements.SetName(Keys.Type, "/XObject");
@@ -786,7 +780,7 @@ namespace PdfSharp.Pdf.Advanced
             }
             if (hasMask && hasAlphaMask && pdfVersion >= 14)
             {
-                // The image provides an alpha mask (requires Arcrobat 5.0 or higher)
+                // The image provides an alpha mask (requires Arcrobat 5.0 or higher).
                 byte[] alphaMaskCompressed = fd.Encode(idb.AlphaMask, _document.Options.FlateEncodeMode);
                 PdfDictionary smask = new PdfDictionary(_document);
                 smask.Elements.SetName(Keys.Type, "/XObject");
@@ -965,8 +959,8 @@ namespace PdfSharp.Pdf.Advanced
                 FlateDecode fd = new FlateDecode();
                 if (hasMask)
                 {
-                    // monochrome mask is either sufficient or
-                    // provided for compatibility with older reader versions
+                    // Monochrome mask is either sufficient or
+                    // provided for compatibility with older reader versions.
                     byte[] maskDataCompressed = fd.Encode(mask.MaskData, _document.Options.FlateEncodeMode);
                     PdfDictionary pdfMask = new PdfDictionary(_document);
                     pdfMask.Elements.SetName(Keys.Type, "/XObject");
@@ -984,7 +978,7 @@ namespace PdfSharp.Pdf.Advanced
                 }
                 if (hasMask && hasAlphaMask && pdfVersion >= 14)
                 {
-                    // The image provides an alpha mask (requires Arcrobat 5.0 or higher)
+                    // The image provides an alpha mask (requires Arcrobat 5.0 or higher).
                     byte[] alphaMaskCompressed = fd.Encode(alphaMask, _document.Options.FlateEncodeMode);
                     PdfDictionary smask = new PdfDictionary(_document);
                     smask.Elements.SetName(Keys.Type, "/XObject");
@@ -1032,7 +1026,7 @@ namespace PdfSharp.Pdf.Advanced
             } BITMAPINFOHEADER, *PBITMAPINFOHEADER; 
         */
 
-        private void ReadIndexedMemoryBitmap(int bits/*, ref bool hasAlpha*/)
+        private void ReadIndexedMemoryBitmap(int bits)
         {
             int pdfVersion = Owner.Version;
             int firstMaskColor = -1, lastMaskColor = -1;
@@ -1120,7 +1114,7 @@ namespace PdfSharp.Pdf.Advanced
                 MonochromeMask mask = new MonochromeMask(width, height);
 
                 bool isGray = bits == 8 && (paletteColors == 256 || paletteColors == 0);
-                int isBitonal = 0; // 0: false; >0: true; <0: true (inverted)
+                int isBitonal = 0; // 0: false; >0: true; <0: true (inverted).
                 byte[] paletteData = new byte[3 * paletteColors];
                 for (int color = 0; color < paletteColors; ++color)
                 {
@@ -1133,7 +1127,7 @@ namespace PdfSharp.Pdf.Advanced
 
                     if (imageBits[bytesColorPaletteOffset + 4 * color + 3] < 128)
                     {
-                        // We treat this as transparency:
+                        // We treat this as transparency.
                         if (firstMaskColor == -1)
                             firstMaskColor = color;
                         if (lastMaskColor == -1 || lastMaskColor == color - 1)
@@ -1143,7 +1137,7 @@ namespace PdfSharp.Pdf.Advanced
                     }
                     //else
                     //{
-                    //  // We treat this as opacity:
+                    //  // We treat this as opacity.
                     //}
                 }
 
@@ -1170,6 +1164,8 @@ namespace PdfSharp.Pdf.Advanced
                     }
                 }
 
+                bool hasMask = firstMaskColor != -1 && lastMaskColor != -1;
+
                 // NYI: (no sample found where this was required) 
                 // if (segmentedColorMask = true)
                 // { ... }
@@ -1179,8 +1175,8 @@ namespace PdfSharp.Pdf.Advanced
                 byte[] imageDataFax = null;
                 int k = 0;
 
-
-                if (bits == 1)
+                // If fax encoding is allowed, try if fax encoding reduces the size.
+                if (bits == 1 && _document.Options.EnableCcittCompressionForBilevelImages)
                 {
                     // TODO: flag/option?
                     // We try Group 3 1D and Group 4 (2D) encoding here and keep the smaller byte array.
@@ -1219,7 +1215,7 @@ namespace PdfSharp.Pdf.Advanced
                     }
                 }
 
-                //if (!isFaxEncoding)
+                //if (hasMask)
                 {
                     int bytesOffsetRead = 0;
                     if (bits == 8 || bits == 4 || bits == 1)
@@ -1271,7 +1267,7 @@ namespace PdfSharp.Pdf.Advanced
                                 bytesOffsetRead += 1;
                                 bytesOffsetWrite += 1;
                             }
-                            bytesOffsetRead = 4 * ((bytesOffsetRead + 3) / 4); // Align to 32 bit boundary
+                            bytesOffsetRead = 4 * ((bytesOffsetRead + 3) / 4); // Align to 32 bit boundary.
                         }
                     }
                     else
@@ -1281,11 +1277,9 @@ namespace PdfSharp.Pdf.Advanced
                 }
 
                 FlateDecode fd = new FlateDecode();
-                if (firstMaskColor != -1 &&
-                  lastMaskColor != -1)
+                if (hasMask)
                 {
-                    // Color mask requires Reader 4.0 or higher:
-                    //if (!segmentedColorMask && pdfVersion >= 13)
+                    // Color mask requires Reader 4.0 or higher.
                     if (!segmentedColorMask && pdfVersion >= 13 && !isGray)
                     {
                         PdfArray array = new PdfArray(_document);
@@ -1295,7 +1289,7 @@ namespace PdfSharp.Pdf.Advanced
                     }
                     else
                     {
-                        // Monochrome mask
+                        // Monochrome mask.
                         byte[] maskDataCompressed = fd.Encode(mask.MaskData, _document.Options.FlateEncodeMode);
                         PdfDictionary pdfMask = new PdfDictionary(_document);
                         pdfMask.Elements.SetName(Keys.Type, "/XObject");
@@ -1321,7 +1315,7 @@ namespace PdfSharp.Pdf.Advanced
                   (imageDataFax.Length < imageDataCompressed.Length ||
                   imageDataFaxCompressed.Length < imageDataCompressed.Length))
                 {
-                    // /CCITTFaxDecode creates the smaller file (with or without /FlateDecode):
+                    // /CCITTFaxDecode creates the smaller file (with or without /FlateDecode).
                     usesCcittEncoding = true;
 
                     if (imageDataFax.Length < imageDataCompressed.Length)
@@ -1329,7 +1323,6 @@ namespace PdfSharp.Pdf.Advanced
                         Stream = new PdfStream(imageDataFax, this);
                         Elements[PdfStream.Keys.Length] = new PdfInteger(imageDataFax.Length);
                         Elements[PdfStream.Keys.Filter] = new PdfName("/CCITTFaxDecode");
-                        //PdfArray array2 = new PdfArray(_document);
                         PdfDictionary dictionary = new PdfDictionary();
                         if (k != 0)
                             dictionary.Elements.Add("/K", new PdfInteger(k));
@@ -1352,7 +1345,6 @@ namespace PdfSharp.Pdf.Advanced
                         PdfArray arrayDecodeParms = new PdfArray(_document);
 
                         PdfDictionary dictFlateDecodeParms = new PdfDictionary();
-                        //dictFlateDecodeParms.Elements.Add("/Columns", new PdfInteger(1));
 
                         PdfDictionary dictCcittFaxDecodeParms = new PdfDictionary();
                         if (k != 0)
@@ -1370,7 +1362,7 @@ namespace PdfSharp.Pdf.Advanced
                 }
                 else
                 {
-                    // /FlateDecode creates the smaller file (or no monochrome bitmap):
+                    // /FlateDecode creates the smaller file (or no monochrome bitmap).
                     Stream = new PdfStream(imageDataCompressed, this);
                     Elements[PdfStream.Keys.Length] = new PdfInteger(imageDataCompressed.Length);
                     Elements[PdfStream.Keys.Filter] = new PdfName("/FlateDecode");
@@ -1381,8 +1373,8 @@ namespace PdfSharp.Pdf.Advanced
                 Elements[Keys.BitsPerComponent] = new PdfInteger(bits);
                 // TODO: CMYK
 
-                // CCITT encoding: we need color palette for isBitonal == 0
-                // FlateDecode: we need color palette for isBitonal <= 0 unless we have grayscales
+                // CCITT encoding: we need color palette for isBitonal == 0.
+                // FlateDecode: we need color palette for isBitonal <= 0 unless we have grayscales.
                 if ((usesCcittEncoding && isBitonal == 0) ||
                   (!usesCcittEncoding && isBitonal <= 0 && !isGray))
                 {
@@ -1391,14 +1383,14 @@ namespace PdfSharp.Pdf.Advanced
                     byte[] packedPaletteData = paletteData.Length >= 48 ? fd.Encode(paletteData, _document.Options.FlateEncodeMode) : null; // don't compress small palettes
                     if (packedPaletteData != null && packedPaletteData.Length + 20 < paletteData.Length) // +20: compensate for the overhead (estimated value)
                     {
-                        // Create compressed color palette:
+                        // Create compressed color palette.
                         colorPalette.CreateStream(packedPaletteData);
                         colorPalette.Elements[PdfStream.Keys.Length] = new PdfInteger(packedPaletteData.Length);
                         colorPalette.Elements[PdfStream.Keys.Filter] = new PdfName("/FlateDecode");
                     }
                     else
                     {
-                        // Create uncompressed color palette:
+                        // Create uncompressed color palette.
                         colorPalette.CreateStream(paletteData);
                         colorPalette.Elements[PdfStream.Keys.Length] = new PdfInteger(paletteData.Length);
                     }
@@ -1678,7 +1670,7 @@ namespace PdfSharp.Pdf.Advanced
         /// </summary>
         public void AddPel(int shade)
         {
-            // NYI: dithering!!!
+            // NYI: dithering.
             AddPel(shade < 128);
         }
 
