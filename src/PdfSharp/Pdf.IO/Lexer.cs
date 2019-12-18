@@ -410,7 +410,18 @@ namespace PdfSharp.Pdf.IO
 						{
 							return _symbol = Symbol.Name;
 						}
-						break;
+
+                        string tkn = Token;
+                        
+                        int position = Position;
+                        ScanNextChar(true);
+                        MoveToNonWhiteSpace();
+                        bool isRef = PeekReference();
+                        Position = position;
+                        _token = new StringBuilder(tkn);
+                        if (isRef)
+                            return _symbol = Symbol.Name;
+                        break;
 					case '{':
 						//TODO: Handle invalid delimiters
 						return _symbol = Symbol.Name;
