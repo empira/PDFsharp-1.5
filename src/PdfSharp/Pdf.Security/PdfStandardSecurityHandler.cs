@@ -327,13 +327,13 @@ namespace PdfSharp.Pdf.Security
         {
             byte[] ownerKey = new byte[32];
             //#if !SILVERLIGHT
-            byte[] digest = _md5.ComputeHash(ownerPad);
+            byte[] digest = _sha1.ComputeHash(ownerPad);
             if (strongEncryption)
             {
                 byte[] mkey = new byte[16];
                 // Hash the pad 50 times
                 for (int idx = 0; idx < 50; idx++)
-                    digest = _md5.ComputeHash(digest);
+                    digest = _sha1.ComputeHash(digest);
                 Array.Copy(userPad, 0, ownerKey, 0, 32);
                 // Encrypt the key
                 for (int i = 0; i < 20; i++)
@@ -363,9 +363,9 @@ namespace PdfSharp.Pdf.Security
             _encryptionKey = new byte[strongEncryption ? 16 : 5];
 
 #if !NETFX_CORE && !DNC10
-            _md5.Initialize();
-            _md5.TransformBlock(userPad, 0, userPad.Length, userPad, 0);
-            _md5.TransformBlock(ownerKey, 0, ownerKey.Length, ownerKey, 0);
+            _sha1.Initialize();
+            _sha1.TransformBlock(userPad, 0, userPad.Length, userPad, 0);
+            _sha1.TransformBlock(ownerKey, 0, ownerKey.Length, ownerKey, 0);
 
             // Split permission into 4 bytes
             byte[] permission = new byte[4];
@@ -373,18 +373,18 @@ namespace PdfSharp.Pdf.Security
             permission[1] = (byte)(permissions >> 8);
             permission[2] = (byte)(permissions >> 16);
             permission[3] = (byte)(permissions >> 24);
-            _md5.TransformBlock(permission, 0, 4, permission, 0);
-            _md5.TransformBlock(documentID, 0, documentID.Length, documentID, 0);
-            _md5.TransformFinalBlock(permission, 0, 0);
-            byte[] digest = _md5.Hash;
-            _md5.Initialize();
+            _sha1.TransformBlock(permission, 0, 4, permission, 0);
+            _sha1.TransformBlock(documentID, 0, documentID.Length, documentID, 0);
+            _sha1.TransformFinalBlock(permission, 0, 0);
+            byte[] digest = _sha1.Hash;
+            _sha1.Initialize();
             // Create the hash 50 times (only for 128 bit)
             if (_encryptionKey.Length == 16)
             {
                 for (int idx = 0; idx < 50; idx++)
                 {
-                    digest = _md5.ComputeHash(digest);
-                    _md5.Initialize();
+                    digest = _sha1.ComputeHash(digest);
+                    _sha1.Initialize();
                 }
             }
             Array.Copy(digest, 0, _encryptionKey, 0, _encryptionKey.Length);
@@ -401,10 +401,10 @@ namespace PdfSharp.Pdf.Security
             //#if !SILVERLIGHT
             if (_encryptionKey.Length == 16)
             {
-                _md5.TransformBlock(PasswordPadding, 0, PasswordPadding.Length, PasswordPadding, 0);
-                _md5.TransformFinalBlock(documentID, 0, documentID.Length);
-                byte[] digest = _md5.Hash;
-                _md5.Initialize();
+                _sha1.TransformBlock(PasswordPadding, 0, PasswordPadding.Length, PasswordPadding, 0);
+                _sha1.TransformFinalBlock(documentID, 0, documentID.Length);
+                byte[] digest = _sha1.Hash;
+                _sha1.Initialize();
                 Array.Copy(digest, 0, _userKey, 0, 16);
                 for (int idx = 16; idx < 32; idx++)
                     _userKey[idx] = 0;
@@ -531,17 +531,17 @@ namespace PdfSharp.Pdf.Security
 #if !NETFX_CORE && !DNC10
             //#if !SILVERLIGHT
             byte[] objectId = new byte[5];
-            _md5.Initialize();
+            _sha1.Initialize();
             // Split the object number and generation
             objectId[0] = (byte)id.ObjectNumber;
             objectId[1] = (byte)(id.ObjectNumber >> 8);
             objectId[2] = (byte)(id.ObjectNumber >> 16);
             objectId[3] = (byte)id.GenerationNumber;
             objectId[4] = (byte)(id.GenerationNumber >> 8);
-            _md5.TransformBlock(_encryptionKey, 0, _encryptionKey.Length, _encryptionKey, 0);
-            _md5.TransformFinalBlock(objectId, 0, objectId.Length);
-            _key = _md5.Hash;
-            _md5.Initialize();
+            _sha1.TransformBlock(_encryptionKey, 0, _encryptionKey.Length, _encryptionKey, 0);
+            _sha1.TransformFinalBlock(objectId, 0, objectId.Length);
+            _key = _sha1.Hash;
+            _sha1.Initialize();
             _keySize = _encryptionKey.Length + 5;
             if (_keySize > 16)
                 _keySize = 16;
@@ -592,7 +592,7 @@ namespace PdfSharp.Pdf.Security
             byte[] userPad = PadPassword(_userPassword);
             byte[] ownerPad = PadPassword(_ownerPassword);
 
-            _md5.Initialize();
+            _sha1.Initialize();
             _ownerKey = ComputeOwnerKey(userPad, ownerPad, strongEncryption);
             byte[] documentID = PdfEncoders.RawEncoding.GetBytes(_document.Internals.FirstDocumentID);
             InitWithUserPassword(documentID, _userPassword, _ownerKey, permissions, strongEncryption);
@@ -617,9 +617,9 @@ namespace PdfSharp.Pdf.Security
 
 #if !SILVERLIGHT && !UWP
         /// <summary>
-        /// The message digest algorithm MD5.
+        /// The message digest algorithm SHA1.
         /// </summary>
-        readonly MD5 _md5 = new MD5CryptoServiceProvider();
+        readonly SHA1 _sha1 = new SHA1CryptoServiceProvider();
 #if DEBUG_
         readonly MD5Managed _md5M = new MD5Managed();
 #endif
