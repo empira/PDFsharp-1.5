@@ -32,6 +32,7 @@ using System.Diagnostics;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Security;
 using PdfSharp.Pdf.Internal;
+using System.Linq;
 
 namespace PdfSharp.Pdf.Advanced
 {
@@ -113,9 +114,17 @@ namespace PdfSharp.Pdf.Advanced
             PdfArray array = Elements[Keys.ID] as PdfArray;
             if (array == null || array.Elements.Count < 2)
                 return "";
-            PdfItem item = array.Elements[index];
-            if (item is PdfString)
-                return ((PdfString)item).Value;
+            var item = array.Elements[index] as PdfString;
+            if (item != null)
+            {
+                // The DocumentID is just a hex string, never represents unicode content.
+                if ((item.Flags & PdfStringFlags.Unicode) != 0)
+                {
+                    return new string(new[] { '\u00FE', '\u00FF' })
+                        + new string(item.Value.SelectMany(x => new[] { (char)(x / 256), (char)(x % 256) }).ToArray());
+                }
+                return item.Value;
+            }
             return "";
         }
 
