@@ -189,8 +189,8 @@ namespace PdfSharp.Pdf.IO
                     break;
 
                 // Acrobat 6 Professional proudly presents: The Null object!
-                // Even with a one-digit object number an indirect reference «x 0 R» to this object is
-                // one character larger than the direct use of «null». Probable this is the reason why
+                // Even with a one-digit object number an indirect reference ï¿½x 0 Rï¿½ to this object is
+                // one character larger than the direct use of ï¿½nullï¿½. Probable this is the reason why
                 // it is true that Acrobat Web Capture 6.0 creates this object, but obviously never 
                 // creates a reference to it!
                 case Symbol.Null:
@@ -1082,6 +1082,11 @@ namespace PdfSharp.Pdf.IO
                             // Skip unused entries.
                             if (token != "n")
                                 continue;
+
+                            // INS Fix 2020-4-10 :
+                            // Skip if both generation and position are 0, even if token is "n"
+                            if (position == 0 && generation == 0)
+                                continue;
 #if true
                             //!!!new 2018-03-14 begin
                             // Check if the object at the address has the correct ID and generation.
@@ -1237,7 +1242,7 @@ namespace PdfSharp.Pdf.IO
             int prev = xrefStream.Elements.GetInteger(PdfCrossReferenceStream.Keys.Prev);
             PdfArray w = (PdfArray)xrefStream.Elements.GetValue(PdfCrossReferenceStream.Keys.W);
 
-            // E.g.: W[1 2 1] ¤ Index[7 12] ¤ Size 19
+            // E.g.: W[1 2 1] ï¿½ Index[7 12] ï¿½ Size 19
 
             // Setup subsections.
             int subsectionCount;
