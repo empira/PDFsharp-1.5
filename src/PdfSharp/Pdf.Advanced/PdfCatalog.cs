@@ -210,9 +210,19 @@ namespace PdfSharp.Pdf.Advanced
         /// </summary>
         internal override void PrepareForSave()
         {
+            var pages = _pages;
+            //We need the pages when saving but they are available only when CanModify yet when Pages is populated, the ability to modify may become possible even when !CanModify.
+            //By using a local copy of PdfPages, we can switch to an unexposed copy during !CanModify.
+            if (!Owner.CanModify && _pages == null)
+            {
+                pages = (PdfPages)Elements.GetValue(Keys.Pages, VCF.CreateIndirect);
+                if (Owner.IsImported)
+                    pages.FlattenPageTree();
+            }
+
             // Prepare pages.
-            if (_pages != null)
-                _pages.PrepareForSave();
+            if (pages != null)
+                pages.PrepareForSave();
 
             // Create outline objects.
             if (_outline != null && _outline.Outlines.Count > 0)

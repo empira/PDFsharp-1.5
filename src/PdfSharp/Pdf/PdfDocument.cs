@@ -603,7 +603,7 @@ namespace PdfSharp.Pdf
         {
             get { return _fullPath; }
         }
-        internal string _fullPath = String.Empty; // TODO: make private and add a setter. public string FullPath { get; set; } = string.Empty;
+        internal string _fullPath = String.Empty; // TODO: make private and add a setter. public string FullPath { get; internal set; } = string.Empty;
 
         /// <summary>
         /// Gets a Guid that uniquely identifies this instance of PdfDocument.
@@ -925,7 +925,7 @@ namespace PdfSharp.Pdf
         }
 
         //The use of an underscore is typically reserved for class-level private variables yet these are set as internal. Property accessors are more appropriate.
-        //TODO: Switch these over to properties. public PdfTrailer Trailer { get; set; }
+        //TODO: Switch these over to properties. internal PdfTrailer Trailer { get; set; }
         internal PdfTrailer _trailer;
         internal PdfCrossReferenceTable _irefTable;
         internal Stream _outStream;
