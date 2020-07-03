@@ -319,7 +319,7 @@ namespace PdfSharp.Pdf
                 throw new InvalidOperationException(PSSR.CannotModify);
 
             // TODO: more diagnostic checks
-            string message = "";
+            string message = string.Empty;
             if (!CanSave(ref message))
                 throw new PdfSharpException(message);
 
@@ -370,7 +370,18 @@ namespace PdfSharp.Pdf
         /// </summary>
         void DoSave(PdfWriter writer)
         {
-            if (_pages == null || _pages.Count == 0)
+            bool hasPages = false;
+
+            if (CanModify && Pages != null && Pages.Count > 0)
+                hasPages = true;
+            else if (!CanModify && Catalog != null && Catalog.Elements.Count > 0)
+            {
+                // PdfOpenMode is InformationOnly
+                var pageTreeRoot = (PdfDictionary)Catalog.Elements.GetObject(PdfCatalog.Keys.Pages);
+                hasPages = pageTreeRoot.Elements.GetInteger(PdfPages.Keys.Count) > 0;
+            }
+
+            if (!hasPages)
             {
                 if (_outStream != null)
                 {
@@ -470,7 +481,7 @@ namespace PdfSharp.Pdf
             {
                 // Prevent endless concatenation if file is edited with PDFsharp more than once.
                 if (!producer.StartsWith(VersionInfo.Title))
-                    producer = pdfSharpProducer + " (Original: " + producer + ")";
+                    producer = $"{pdfSharpProducer} Original: {producer})";
             }
             info.Elements.SetString(PdfDocumentInformation.Keys.Producer, producer);
 
@@ -499,10 +510,7 @@ namespace PdfSharp.Pdf
         /// </summary>
         public bool CanSave(ref string message)
         {
-            if (!SecuritySettings.CanSave(ref message))
-                return false;
-
-            return true;
+            return SecuritySettings.CanSave(ref message);
         }
 
         internal bool HasVersion(string version)
@@ -595,7 +603,7 @@ namespace PdfSharp.Pdf
         {
             get { return _fullPath; }
         }
-        internal string _fullPath = String.Empty; // TODO: make private
+        internal string _fullPath = String.Empty; // TODO: make private and add a setter. public string FullPath { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets a Guid that uniquely identifies this instance of PdfDocument.
@@ -916,6 +924,8 @@ namespace PdfSharp.Pdf
             get { return _trailer.SecurityHandler; }
         }
 
+        //The use of an underscore is typically reserved for class-level private variables yet these are set as internal. Property accessors are more appropriate.
+        //TODO: Switch these over to properties. public PdfTrailer Trailer { get; set; }
         internal PdfTrailer _trailer;
         internal PdfCrossReferenceTable _irefTable;
         internal Stream _outStream;
