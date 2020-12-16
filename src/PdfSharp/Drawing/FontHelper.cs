@@ -75,18 +75,48 @@ namespace PdfSharp.Drawing
             if (descriptor != null)
             {
                 // Height is the sum of ascender and descender.
-                size.Height = (descriptor.Ascender + descriptor.Descender) * font.Size / font.UnitsPerEm;
+                var singleLineHeight = (descriptor.Ascender + descriptor.Descender) * font.Size / font.UnitsPerEm;
+                var lineGapHeight = (descriptor.LineSpacing - descriptor.Ascender - descriptor.Descender) * font.Size / font.UnitsPerEm;
+
                 Debug.Assert(descriptor.Ascender > 0);
 
                 bool symbol = descriptor.FontFace.cmap.symbol;
                 int length = text.Length;
+                int adjustedLength = length;
+                var height = singleLineHeight;
+                int maxWidth = 0;
                 int width = 0;
                 for (int idx = 0; idx < length; idx++)
                 {
                     char ch = text[idx];
+
+                    // Handle line feed (\n)
+                    if (ch == 10)
+                    {
+                        adjustedLength--;
+                        if (idx < (length - 1))
+                        {
+                            maxWidth = Math.Max(maxWidth, width);
+                            width = 0;
+                            height += lineGapHeight + singleLineHeight;
+                        }
+
+                        continue;
+                    }
+
+                    // HACK: Handle tabulator sign as space (\t)
+                    if (ch == 9)
+                    {
+                        ch = ' ';
+                    }
+
                     // HACK: Unclear what to do here.
                     if (ch < 32)
+                    {
+                        adjustedLength--;
+
                         continue;
+                    }
 
                     if (symbol)
                     {
@@ -97,15 +127,18 @@ namespace PdfSharp.Drawing
                     int glyphIndex = descriptor.CharCodeToGlyphIndex(ch);
                     width += descriptor.GlyphIndexToWidth(glyphIndex);
                 }
-                // What? size.Width = width * font.Size * (font.Italic ? 1 : 1) / descriptor.UnitsPerEm;
-                size.Width = width * font.Size / descriptor.UnitsPerEm;
+                maxWidth = Math.Max(maxWidth, width);
+
+                // What? size.Width = maxWidth * font.Size * (font.Italic ? 1 : 1) / descriptor.UnitsPerEm;
+                size.Width = maxWidth * font.Size / descriptor.UnitsPerEm;
+                size.Height = height;
 
                 // Adjust bold simulation.
                 if ((font.GlyphTypeface.StyleSimulations & XStyleSimulations.BoldSimulation) == XStyleSimulations.BoldSimulation)
                 {
                     // Add 2% of the em-size for each character.
                     // Unsure how to deal with white space. Currently count as regular character.
-                    size.Width += length * font.Size * Const.BoldEmphasis;
+                    size.Width += adjustedLength * font.Size * Const.BoldEmphasis;
                 }
             }
             Debug.Assert(descriptor != null, "No OpenTypeDescriptor.");
