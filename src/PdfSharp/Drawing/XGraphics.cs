@@ -1235,7 +1235,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
 
 #if GDI
         /// <summary>
-        /// Draws a Bézier spline defined by four points.
+        /// Draws a BÃ©zier spline defined by four points.
         /// </summary>
         public void DrawBezier(XPen pen, GdiPoint pt1, GdiPoint pt2, GdiPoint pt3, GdiPoint pt4)
         {
@@ -1248,7 +1248,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
 
 #if WPF
         /// <summary>
-        /// Draws a Bézier spline defined by four points.
+        /// Draws a BÃ©zier spline defined by four points.
         /// </summary>
         public void DrawBezier(XPen pen, SysPoint pt1, SysPoint pt2, SysPoint pt3, SysPoint pt4)
         {
@@ -1258,7 +1258,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
 
 #if GDI
         /// <summary>
-        /// Draws a Bézier spline defined by four points.
+        /// Draws a BÃ©zier spline defined by four points.
         /// </summary>
         public void DrawBezier(XPen pen, GdiPointF pt1, GdiPointF pt2, GdiPointF pt3, GdiPointF pt4)
         {
@@ -1267,7 +1267,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
 #endif
 
         /// <summary>
-        /// Draws a Bézier spline defined by four points.
+        /// Draws a BÃ©zier spline defined by four points.
         /// </summary>
         public void DrawBezier(XPen pen, XPoint pt1, XPoint pt2, XPoint pt3, XPoint pt4)
         {
@@ -1275,7 +1275,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
         }
 
         /// <summary>
-        /// Draws a Bézier spline defined by four points.
+        /// Draws a BÃ©zier spline defined by four points.
         /// </summary>
         public void DrawBezier(XPen pen, double x1, double y1, double x2, double y2,
           double x3, double y3, double x4, double y4)
@@ -1326,7 +1326,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
 
 #if GDI
         /// <summary>
-        /// Draws a series of Bézier splines from an array of points.
+        /// Draws a series of BÃ©zier splines from an array of points.
         /// </summary>
         public void DrawBeziers(XPen pen, GdiPoint[] points)
         {
@@ -1336,7 +1336,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
 
 #if WPF
         /// <summary>
-        /// Draws a series of Bézier splines from an array of points.
+        /// Draws a series of BÃ©zier splines from an array of points.
         /// </summary>
         public void DrawBeziers(XPen pen, SysPoint[] points)
         {
@@ -1346,7 +1346,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
 
 #if GDI
         /// <summary>
-        /// Draws a series of Bézier splines from an array of points.
+        /// Draws a series of BÃ©zier splines from an array of points.
         /// </summary>
         public void DrawBeziers(XPen pen, GdiPointF[] points)
         {
@@ -1355,7 +1355,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
 #endif
 
         /// <summary>
-        /// Draws a series of Bézier splines from an array of points.
+        /// Draws a series of BÃ©zier splines from an array of points.
         /// </summary>
         public void DrawBeziers(XPen pen, XPoint[] points)
         {
@@ -4380,7 +4380,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
         /// </summary>
         public XGraphicsContainer BeginContainer(Rectangle dstrect, Rectangle srcrect, XGraphicsUnit unit)
         {
-            return BeginContainer(new XRect(dstrect), new XRect(dstrect), unit);
+            return BeginContainer(new XRect(dstrect), new XRect(srcrect), unit);
         }
 #endif
 
@@ -4391,7 +4391,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
         /// </summary>
         public XGraphicsContainer BeginContainer(GdiRectF dstrect, GdiRectF srcrect, XGraphicsUnit unit)
         {
-            return BeginContainer(new XRect(dstrect), new XRect(dstrect), unit);
+            return BeginContainer(new XRect(dstrect), new XRect(srcrect), unit);
         }
 #endif
 
@@ -4402,7 +4402,7 @@ namespace PdfSharp.Drawing  // #??? Clean up
         /// </summary>
         public XGraphicsContainer BeginContainer(Rect dstrect, Rect srcrect, XGraphicsUnit unit)
         {
-            return BeginContainer(new XRect(dstrect), new XRect(dstrect), unit);
+            return BeginContainer(new XRect(dstrect), new XRect(srcrect), unit);
         }
 #endif
 
