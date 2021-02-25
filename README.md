@@ -15,9 +15,11 @@ Install-Package PdfSharpCoreOpt -Version 1.0.0
 
 ## Sample Code 
 
- static void Main(string[] args)
+ 
+ 
+        static void Main(string[] args)
         {
- PdfDocument pdf = new PdfDocument();
+         PdfDocument pdf = new PdfDocument();
             pdf.Info.Title = "My First PDF";
             //Loop to create Number of Pages 
             for (int i = 0; i < 500; i++)
@@ -41,5 +43,4 @@ Install-Package PdfSharpCoreOpt -Version 1.0.0
 
             string pdfFilename = "My First PDF.pdf";
             pdf.Save(pdfFilename);
-
-}
+            }
