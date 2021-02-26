@@ -1,7 +1,10 @@
 # PDFSharpCoreOpt 
 
-#### PDFSharpCoreOpt is a for
-ked Version of PDFSharp , this version is compatible with .net Core 
+#### PDFSharpCoreOpt 
+
+This is modified  Version of PDFSharp , this version is compatible with .net Core 
+
+With this package you can create or modify PDFs with well positioned strings and Images 
 
 
 ## How To Install ?
