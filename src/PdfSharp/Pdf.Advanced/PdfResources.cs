@@ -185,7 +185,7 @@ namespace PdfSharp.Pdf.Advanced
         /// <summary>
         /// Gets the fonts map.
         /// </summary>
-        internal PdfResourceMap Fonts
+        public PdfResourceMap Fonts
         {
             get { return _fonts ?? (_fonts = (PdfResourceMap)Elements.GetValue(Keys.Font, VCF.Create)); }
         }
@@ -194,14 +194,14 @@ namespace PdfSharp.Pdf.Advanced
         /// <summary>
         /// Gets the external objects map.
         /// </summary>
-        internal PdfResourceMap XObjects
+        public PdfResourceMap XObjects
         {
             get { return _xObjects ?? (_xObjects = (PdfResourceMap)Elements.GetValue(Keys.XObject, VCF.Create)); }
         }
         PdfResourceMap _xObjects;
 
         // TODO: make own class
-        internal PdfResourceMap ExtGStates
+        public PdfResourceMap ExtGStates
         {
             get
             {
@@ -211,28 +211,28 @@ namespace PdfSharp.Pdf.Advanced
         PdfResourceMap _extGStates;
 
         // TODO: make own class
-        internal PdfResourceMap ColorSpaces
+        public PdfResourceMap ColorSpaces
         {
             get { return _colorSpaces ?? (_colorSpaces = (PdfResourceMap)Elements.GetValue(Keys.ColorSpace, VCF.Create)); }
         }
         PdfResourceMap _colorSpaces;
 
         // TODO: make own class
-        internal PdfResourceMap Patterns
+        public PdfResourceMap Patterns
         {
             get { return _patterns ?? (_patterns = (PdfResourceMap) Elements.GetValue(Keys.Pattern, VCF.Create)); }
         }
         PdfResourceMap _patterns;
 
         // TODO: make own class
-        internal PdfResourceMap Shadings
+        public PdfResourceMap Shadings
         {
             get { return _shadings ?? (_shadings = (PdfResourceMap) Elements.GetValue(Keys.Shading, VCF.Create)); }
         }
         PdfResourceMap _shadings;
 
         // TODO: make own class
-        internal PdfResourceMap Properties
+        public PdfResourceMap Properties
         {
             get {return _properties ?? (_properties = (PdfResourceMap) Elements.GetValue(Keys.Properties, VCF.Create));}
         }

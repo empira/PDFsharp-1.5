@@ -34,7 +34,7 @@ namespace PdfSharp.Pdf.Advanced
     /// <summary>
     /// Base class for all dictionaries that map resource names to objects.
     /// </summary>
-    internal class PdfResourceMap : PdfDictionary //, IEnumerable
+    public sealed class PdfResourceMap : PdfDictionary //, IEnumerable
     {
         public PdfResourceMap()
         { }
@@ -43,7 +43,7 @@ namespace PdfSharp.Pdf.Advanced
             : base(document)
         { }
 
-        protected PdfResourceMap(PdfDictionary dict)
+        public PdfResourceMap(PdfDictionary dict)
             : base(dict)
         { }
 
@@ -61,7 +61,7 @@ namespace PdfSharp.Pdf.Advanced
         /// <summary>
         /// Adds all imported resource names to the specified hashtable.
         /// </summary>
-        internal void CollectResourceNames(Dictionary<string, object> usedResourceNames)
+        public void CollectResourceNames(Dictionary<string, object> usedResourceNames)
         {
             // ?TODO: Imported resources (e.g. fonts) can be reused, but I think this is rather difficult. Will be an issue in PDFsharp 2.0.
             PdfName[] names = Elements.KeyNames;
