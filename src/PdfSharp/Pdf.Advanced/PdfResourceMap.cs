@@ -36,13 +36,24 @@ namespace PdfSharp.Pdf.Advanced
     /// </summary>
     public sealed class PdfResourceMap : PdfDictionary //, IEnumerable
     {
+        /// <summary>
+        /// Instantiates a new instance of the <see cref="PdfResourceMap"/> class.
+        /// </summary>
         public PdfResourceMap()
         { }
 
+        /// <summary>
+        /// Instantiates a new instance of the <see cref="PdfResourceMap"/> class.
+        /// </summary>
+        /// <param name="document">The <see cref="PdfDocument"/></param>
         public PdfResourceMap(PdfDocument document)
             : base(document)
         { }
 
+        /// <summary>
+        /// Instantiates a new instance of the <see cref="PdfResourceMap"/> class.
+        /// </summary>
+        /// <param name="dict">The <see cref="PdfDictionary"/></param>
         public PdfResourceMap(PdfDictionary dict)
             : base(dict)
         { }

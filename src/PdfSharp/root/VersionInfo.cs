@@ -32,7 +32,7 @@ namespace PdfSharp
     /// <summary>
     /// Version info of this assembly.
     /// </summary>
-    static class VersionInfo
+    internal static class VersionInfo
     {
         public const string Title = ProductVersionInfo.Title;
         public const string Description = ProductVersionInfo.Description;

@@ -200,6 +200,9 @@ namespace PdfSharp.Pdf.Advanced
         }
         PdfResourceMap _xObjects;
 
+        /// <summary>
+        /// 
+        /// </summary>
         // TODO: make own class
         public PdfResourceMap ExtGStates
         {
@@ -210,6 +213,9 @@ namespace PdfSharp.Pdf.Advanced
         }
         PdfResourceMap _extGStates;
 
+        /// <summary>
+        /// 
+        /// </summary>
         // TODO: make own class
         public PdfResourceMap ColorSpaces
         {
@@ -217,6 +223,9 @@ namespace PdfSharp.Pdf.Advanced
         }
         PdfResourceMap _colorSpaces;
 
+        /// <summary>
+        /// 
+        /// </summary>
         // TODO: make own class
         public PdfResourceMap Patterns
         {
@@ -224,6 +233,9 @@ namespace PdfSharp.Pdf.Advanced
         }
         PdfResourceMap _patterns;
 
+        /// <summary>
+        /// 
+        /// </summary>
         // TODO: make own class
         public PdfResourceMap Shadings
         {
@@ -231,6 +243,9 @@ namespace PdfSharp.Pdf.Advanced
         }
         PdfResourceMap _shadings;
 
+        /// <summary>
+        /// 
+        /// </summary>
         // TODO: make own class
         public PdfResourceMap Properties
         {
