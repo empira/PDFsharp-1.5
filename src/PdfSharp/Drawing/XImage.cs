@@ -340,7 +340,7 @@ namespace PdfSharp.Drawing
         /// <param name="path">The path to a BMP, PNG, GIF, JPEG, TIFF, or PDF file.</param>
         public static XImage FromFile(string path)
         {
-            if (PdfReader.TestPdfFile(path) > 0)
+            if (PdfReader.TestPdfFile(path) >= 0)
                 return new XPdfForm(path);
             return new XImage(path);
         }
@@ -355,7 +355,7 @@ namespace PdfSharp.Drawing
             if (stream == null)
                 throw new ArgumentNullException("stream");
 
-            if (PdfReader.TestPdfFile(stream) > 0)
+            if (PdfReader.TestPdfFile(stream) >= 0)
                 return new XPdfForm(stream);
             return new XImage(stream);
         }
@@ -442,7 +442,7 @@ namespace PdfSharp.Drawing
             //if (path.StartsWith("base64:")) // The Image is stored in the string here, so the file exists.
             //    return true;
 
-            if (PdfReader.TestPdfFile(path) > 0)
+            if (PdfReader.TestPdfFile(path) >= 0)
                 return true;
 #if !NETFX_CORE && !UWP
             return File.Exists(path);

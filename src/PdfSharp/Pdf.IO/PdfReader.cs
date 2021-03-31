@@ -68,7 +68,7 @@ namespace PdfSharp.Pdf.IO
         /// Determines whether the file specified by its path is a PDF file by inspecting the first eight
         /// bytes of the data. If the file header has the form «%PDF-x.y» the function returns the version
         /// number as integer (e.g. 14 for PDF 1.4). If the file header is invalid or inaccessible
-        /// for any reason, 0 is returned. The function never throws an exception. 
+        /// for any reason, -1 is returned. The function never throws an exception.
         /// </summary>
         public static int TestPdfFile(string path)
         {
@@ -107,14 +107,14 @@ namespace PdfSharp.Pdf.IO
                 }
             }
 #endif
-            return 0;
+            return -1;
         }
 
         /// <summary>
         /// Determines whether the specified stream is a PDF file by inspecting the first eight
         /// bytes of the data. If the data begins with «%PDF-x.y» the function returns the version
         /// number as integer (e.g. 14 for PDF 1.4). If the data is invalid or inaccessible
-        /// for any reason, 0 is returned. The function never throws an exception. 
+        /// for any reason, -1 is returned. The function never throws an exception.
         /// </summary>
         public static int TestPdfFile(Stream stream)
         {
@@ -138,14 +138,14 @@ namespace PdfSharp.Pdf.IO
                 // ReSharper disable once EmptyGeneralCatchClause
                 catch { }
             }
-            return 0;
+            return -1;
         }
 
         /// <summary>
         /// Determines whether the specified data is a PDF file by inspecting the first eight
         /// bytes of the data. If the data begins with «%PDF-x.y» the function returns the version
         /// number as integer (e.g. 14 for PDF 1.4). If the data is invalid or inaccessible
-        /// for any reason, 0 is returned. The function never throws an exception. 
+        /// for any reason, -1 is returned. The function never throws an exception.
         /// </summary>
         public static int TestPdfFile(byte[] data)
         {
@@ -168,14 +168,14 @@ namespace PdfSharp.Pdf.IO
                     {
                         char major = header[ich + 4];
                         char minor = header[ich + 6];
-                        if (major >= '1' && major < '2' && minor >= '0' && minor <= '9')
+                        if (major >= '0' && major < '2' && minor >= '0' && minor <= '9')
                             return (major - '0') * 10 + (minor - '0');
                     }
                 }
             }
             // ReSharper disable once EmptyGeneralCatchClause
             catch { }
-            return 0;
+            return -1;
         }
 
         /// <summary>
@@ -292,7 +292,7 @@ namespace PdfSharp.Pdf.IO
                 stream.Position = 0;
                 stream.Read(header, 0, 1024);
                 document._version = GetPdfFileVersion(header);
-                if (document._version == 0)
+                if (document._version == -1)
                     throw new InvalidOperationException(PSSR.InvalidPdf);
 
                 document._irefTable.IsUnderConstruction = true;

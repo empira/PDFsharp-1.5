@@ -70,7 +70,7 @@ namespace PdfSharp.Drawing
                 throw new FileNotFoundException(PSSR.FileNotFound(path));
 #endif
 
-            if (PdfReader.TestPdfFile(path) == 0)
+            if (PdfReader.TestPdfFile(path) == -1)
                 throw new ArgumentException("The specified file has no valid PDF file header.", "path");
 
             _path = path;
@@ -87,7 +87,7 @@ namespace PdfSharp.Drawing
             // Create a dummy unique path
             _path = "*" + Guid.NewGuid().ToString("B");
 
-            if (PdfReader.TestPdfFile(stream) == 0)
+            if (PdfReader.TestPdfFile(stream) == -1)
                 throw new ArgumentException("The specified stream has no valid PDF file header.", "stream");
 
             _externalDocument = PdfReader.Open(stream);
