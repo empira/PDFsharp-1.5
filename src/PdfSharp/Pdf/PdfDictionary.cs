@@ -652,8 +652,10 @@ namespace PdfSharp.Pdf
                       array.Elements.GetReal(2), array.Elements.GetReal(3));
                     this[key] = value;
                 }
-                else
-                    value = (PdfRectangle)obj;
+                else if (obj is PdfRectangle rectangle)
+                {
+                    value = rectangle;
+                }
                 return value;
             }
 
