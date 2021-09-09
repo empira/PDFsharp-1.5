@@ -80,6 +80,22 @@ namespace PdfSharp.Pdf.IO
             return _lexer.Position = position;
         }
 
+        /// <summary>
+        /// Tries to set PDF input stream position to the specified object.
+        /// </summary>
+        public bool TryMoveToObject(PdfObjectID objectID, out int position)
+        {
+            position = _document._irefTable[objectID].Position;
+            if (position == -1)
+            {
+                position = _lexer.Position;
+                return false;
+            }
+
+            _lexer.Position = position;
+            return true;
+        }
+
         public Symbol Symbol
         {
             get { return _lexer.Symbol; }
@@ -118,7 +134,8 @@ namespace PdfSharp.Pdf.IO
             int generationNumber = objectID.GenerationNumber;
             if (!fromObjecStream)
             {
-                MoveToObject(objectID);
+                if (!TryMoveToObject(objectID, out int position))
+                    return null;
                 objectNumber = ReadInteger();
                 generationNumber = ReadInteger();
             }
@@ -261,49 +278,35 @@ namespace PdfSharp.Pdf.IO
                     ParserDiagnostics.HandleUnexpectedToken(_lexer.Token);
                     break;
             }
-            symbol = ScanNextToken();
-            if (symbol == Symbol.BeginStream)
+
+			int revert_pos = _lexer.Position;
+
+            ParserState state = SaveState();
+            TryScanNextToken(out symbol);
+            if (symbol == Symbol.BeginStream || symbol == Symbol.None)
             {
+                if (symbol == Symbol.None)
+                {
+                    // Failed to get a proper symbol
+                    // probably missing "stream" token
+                    RestoreState(state);
+                }
+
                 PdfDictionary dict = (PdfDictionary)pdfObject;
                 Debug.Assert(checkForStream, "Unexpected stream...");
-#if true_
-                ReadStream(dict);
-#else
+     
                 int length = GetStreamLength(dict);
                 byte[] bytes = _lexer.ReadStream(length);
-#if true_
-                if (dict.Elements.GetString("/Filter") == "/FlateDecode")
-                {
-                    if (dict.Elements["/Subtype"] == null)
-                    {
-                        try
-                        {
-                            byte[] decoded = Filtering.FlateDecode.Decode(bytes);
-                            if (decoded.Length == 0)
-                                goto End;
-                            string pageContent = Filtering.FlateDecode.DecodeToString(bytes);
-                            if (pageContent.Length > 100)
-                                pageContent = pageContent.Substring(pageContent.Length - 100);
-                            pageContent.GetType();
-                            bytes = decoded;
-                            dict.Elements.Remove("/Filter");
-                            dict.Elements.SetInteger("/Length", bytes.Length);
-                        }
-                        catch
-                        {
-                        }
-                    }
-                End: ;
-                }
-#endif
+
                 PdfDictionary.PdfStream stream = new PdfDictionary.PdfStream(bytes, dict);
                 dict.Stream = stream;
-                ReadSymbol(Symbol.EndStream);
-                symbol = ScanNextToken();
-#endif
+
+				revert_pos = _lexer.Position;
+                while ((symbol = ScanNextToken()) == Symbol.EndStream);
             }
-            if (!fromObjecStream && symbol != Symbol.EndObj)
-                ParserDiagnostics.ThrowParserException(PSSR.UnexpectedToken(_lexer.Token));
+			if (!fromObjecStream && symbol != Symbol.EndObj)
+				_lexer.Position = revert_pos;
+            
             return pdfObject;
         }
 
@@ -322,7 +325,7 @@ namespace PdfSharp.Pdf.IO
             Debug.Assert(dict.Stream == null, "Dictionary already has a stream.");
             dict.Stream = stream;
             ReadSymbol(Symbol.EndStream);
-            ScanNextToken();
+            while (ScanNextToken() == Symbol.EndStream);
         }
 
         // HACK: Solve problem more general.
@@ -339,11 +342,47 @@ namespace PdfSharp.Pdf.IO
             if (reference != null)
             {
                 ParserState state = SaveState();
-                object length = ReadObject(null, reference.ObjectID, false, false);
+                object pdf_obj = ReadObject(null, reference.ObjectID, false, false);
                 RestoreState(state);
-                int len = ((PdfIntegerObject)length).Value;
-                dict.Elements["/Length"] = new PdfInteger(len);
-                return len;
+
+
+
+
+                int len = -1;
+                if (pdf_obj is PdfIntegerObject length_obj)
+                {
+                    len = length_obj.Value;
+                }
+                // For whatever reason, ReadObject() did not return a valid PdfIntegerObject
+                else
+                {
+                    // Read 1k chunks until we find an "endstream" symbol
+                    string content = "";
+                    int read_pos = _lexer.Position;
+                    int se = -1;
+                    while (true)
+                    {
+                        int read_len = Math.Min(_lexer.PdfLength - read_pos, 1024);
+                        content += _lexer.ReadRawString(read_pos, read_len);
+                        read_pos += 1024;
+
+                        se = content.IndexOf("endstream", StringComparison.Ordinal);
+                        if (se != -1)
+                        {
+                            len = se - 2; // By spec, the stream should start on a new line. remove crlf chars from the count.
+                            break;
+                        }
+
+                        if (read_pos >= _lexer.PdfLength)
+                            break;
+                    }
+                }
+
+                if (len != -1)
+                {
+                    dict.Elements["/Length"] = new PdfInteger(len);
+                    return len;
+                }
             }
             throw new InvalidOperationException("Cannot retrieve stream length.");
         }
@@ -537,10 +576,41 @@ namespace PdfSharp.Pdf.IO
                     //case Symbol.StartXRef:
                     //case Symbol.Eof:
                     default:
-                        ParserDiagnostics.HandleUnexpectedToken(_lexer.Token);
-                        SkipCharsUntil(stop);
-                        return;
-                }
+						// Any Keyword can be treated as a literal string.
+						switch (stop)
+						{
+							case Symbol.EndArray:
+								// Arrays are space delimited.
+								while (true)
+								{
+									char ch = _lexer.AppendAndScanNextChar();
+									if (Lexer.IsWhiteSpace(ch) || ch == Chars.EOF || ch == Chars.BracketRight)
+									{
+										_stack.Shift(new PdfString(_lexer.Token, PdfStringFlags.RawEncoding));
+										break;
+									}
+								}
+								break;
+							case Symbol.EndDictionary:
+								// Dictionaries are key value pairs where key must be a name.
+								while (true)
+								{
+									char ch = _lexer.AppendAndScanNextChar();
+									if (ch == Chars.Slash || ch == Chars.Greater)
+									{
+										_stack.Shift(new PdfString(_lexer.Token, PdfStringFlags.RawEncoding));
+										break;
+									}
+								}
+								break;
+							default:
+								ParserDiagnostics.HandleUnexpectedToken(_lexer.Token);
+								SkipCharsUntil(stop);
+								break;
+						}
+
+						return;
+				}
             }
             ParserDiagnostics.ThrowParserException("Unexpected end of file."); // TODO L10N using PSSR.
         }
@@ -548,6 +618,16 @@ namespace PdfSharp.Pdf.IO
         private Symbol ScanNextToken()
         {
             return _lexer.ScanNextToken();
+        }
+        
+		private Symbol ScanNextToken(out int position)
+		{
+			return _lexer.ScanNextToken(out position);
+		}
+        
+        private bool TryScanNextToken(out Symbol symbol)
+        {
+            return _lexer.TryScanNextToken(out symbol, out int position);
         }
 
         private Symbol ScanNextToken(out string token)
@@ -1030,11 +1110,29 @@ namespace PdfSharp.Pdf.IO
             if (idx == -1)
                 throw new Exception("The StartXRef table could not be found, the file cannot be opened.");
 
-            ReadSymbol(Symbol.StartXRef);
-            _lexer.Position = ReadInteger();
+            Symbol s = ReadSymbol(Symbol.StartXRef);
+			_lexer.Position = ReadInteger();
 
-            // Read all trailers.
-            while (true)
+            // Producer: iText1.3.1 by lowagie.com (based on itext-paulo-154)
+            // Problem: certificate data added to the start of file. Invalid startxref byte offset
+            // Fix: We could search for the a valid xref table but all byte offsets are probably incorrect.
+            // Probably best to just recreate the xref table.
+            // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/PDF32000_2008.pdf 7.5.5
+            
+			// Check for valid startxref
+			if (!IsValidXref())
+			{
+                PdfTrailer trailer;
+                bool bSuccess = TryRecreateXRefTableAndTrailer(out trailer, _document);
+				if (!bSuccess)
+					throw new Exception("Could not recreate the xref table or trailer.");
+
+				_document._trailer = trailer;
+				return _document._trailer;
+			}
+            
+			// Read all trailers.
+			while (true)
             {
                 PdfTrailer trailer = ReadXRefTableAndTrailer(_document._irefTable);
                 // 1st trailer seems to be the best.
@@ -1052,9 +1150,191 @@ namespace PdfSharp.Pdf.IO
         }
 
         /// <summary>
-        /// Reads cross reference table(s) and trailer(s).
+        /// Checks that the current _lexer location is a valid xref.
         /// </summary>
-        private PdfTrailer ReadXRefTableAndTrailer(PdfCrossReferenceTable xrefTable)
+        /// <returns></returns>
+        private bool IsValidXref()
+        {
+            int position = _lexer.Position;
+            try
+            {
+                Symbol symbol = ScanNextToken();
+                if (symbol == Symbol.XRef) // xref table
+                {
+                    _lexer.Position = position;
+                    return true;
+                }
+
+                if (symbol == Symbol.Integer) // Linearization parameter dictionary
+                {
+                    // Just because we have an integer, doesn't mean the startxref is actually valid
+                    if (ScanNextToken() == Symbol.Integer && ScanNextToken() == Symbol.Obj)
+                    {
+                        _lexer.Position = position;
+                        return true;
+                    }
+                }
+
+                _lexer.Position = position;
+                return false;
+            }
+            catch
+            {
+                _lexer.Position = position;
+                return false;
+            }
+        }
+
+        private bool TryRecreateXRefTableAndTrailer(out PdfTrailer trailer, PdfDocument document)
+		{
+            PdfCrossReferenceTable xrefTable = document._irefTable;
+            trailer = null;
+            int length = _lexer.PdfLength;
+
+            // because some pdf producers put random info before the header, we need to find a proper starting position.
+            // i.e. Producer: iText1.3.1 by lowagie.com (based on itext-paulo-154)
+            int startIdx = -1;
+            string contents = "";
+            for (int i = 0, pos = 0; startIdx == -1 && pos < length; i++, pos = 1024 * i)
+            {
+                int len = Math.Min(1024, length - pos);
+                contents = $"{contents}{_lexer.ReadRawString(pos, len)}";
+                startIdx = contents.IndexOf("%PDF-1.", StringComparison.Ordinal);
+            }
+
+            if (startIdx == -1)
+                return false;
+
+            // Don't look past the last %%EOF marker
+            int endIdx = -1;
+            contents = "";
+            for (int i = 1; endIdx == -1; i++)
+            {
+                int pos = length - (1024 * i);
+                int len = 1024;
+
+                if (pos < 0)
+                {
+                    len = len + pos;
+                    pos = 0;
+                }
+
+                contents = $"{_lexer.ReadRawString(pos, len)}{contents}";
+                endIdx = contents.LastIndexOf("%%EOF", StringComparison.Ordinal);
+                if (endIdx != -1)
+                    endIdx = length - contents.Length + endIdx;
+
+                if (pos == 0)
+                    break;
+            }
+
+            if (endIdx == -1)
+                return false;
+
+            endIdx = endIdx + 5; // This should be where Eof char is
+            
+			// Recreate the xref table.
+			//
+			// When symbol == Symbol.Obj
+			// [0] - generation
+			// [1] - id
+			TokenInfo[] token_stack = new TokenInfo[2];
+            
+            _lexer.Position = startIdx;
+			while (true)
+			{
+				Symbol symbol = ScanNextToken(out int position);
+                if (symbol == Symbol.Eof)
+                {
+                    // Check if it's the last EOF
+                    if (_lexer.Position >= endIdx)
+                        break; // This is the end of the file.
+                }
+
+				// we need to skip over streams entirely
+				if (symbol == Symbol.BeginStream)
+				{
+					// We're not reading any data from the object so wee need to find endstream
+					int pos = _lexer.Position;
+					string trail = "";
+					int trail_pos = pos;
+					while (true)
+					{
+						// look for endstream in 1k chunks.
+						int trail_length = Math.Min(1024, length - trail_pos);
+						trail += _lexer.ReadRawString(trail_pos, trail_length);
+						int stop = trail.IndexOf("endstream", StringComparison.Ordinal);
+						if (stop != -1)
+						{
+							_lexer.Position = stop + pos;
+							break;
+						}
+
+						trail_pos = trail_pos + trail_length;
+						if (trail_pos + trail_length >= length)
+						{
+							// No endstream was found.
+							throw new Exception("endstream not found.");
+						}
+					}
+				}
+
+				if (symbol == Symbol.Obj &&
+					token_stack[0].Symbol == Symbol.Integer &&
+					token_stack[1].Symbol == Symbol.Integer)
+				{
+                    // TODO:: Do we only need the most recent revision?
+					PdfObjectID objectID = new PdfObjectID(token_stack[1].Number, token_stack[0].Number);
+					if (!xrefTable.Contains(objectID))
+						xrefTable.Add(new PdfReference(objectID, token_stack[1].Position));
+					//ReadObject(null, objectID, false, false); // Can't do this because the object value will never be set after
+					//SkipCharsUntil(Symbol.EndObj); // Can't do this because streams will cause exceptions
+				}
+
+                token_stack[1] = token_stack[0];
+				TokenInfo token_info = new TokenInfo { Symbol = symbol, Position = position };
+				if (symbol == Symbol.Integer)
+					token_info.Number = _lexer.TokenToInteger;
+				token_stack[0] = token_info;
+			}
+
+            // find the root.
+//             foreach (var reference in xrefTable.AllReferences)
+//             {
+//                 PdfObject obj = ReadObject(null, reference.ObjectID, false, false);
+//                 if (obj is PdfDictionary dObj)
+//                 {
+//                     if (dObj.Elements[PdfCatalog.Keys.Type] as PdfName == "/Catalog")
+//                     {
+//                         PdfCatalog catalog = new PdfCatalog(dObj);
+//                     }
+//                 }
+//             }
+
+
+
+
+
+
+
+
+            trailer = new PdfTrailer(_document);
+            trailer.ConstructFromDocument(this);
+
+            return true;
+		}
+
+		struct TokenInfo
+		{
+			public int Position;
+			public Symbol Symbol;
+			public int Number;
+		}
+
+		/// <summary>
+		/// Reads cross reference table(s) and trailer(s).
+		/// </summary>
+		private PdfTrailer ReadXRefTableAndTrailer(PdfCrossReferenceTable xrefTable)
         {
             Debug.Assert(xrefTable != null);
 
@@ -1081,6 +1361,14 @@ namespace PdfSharp.Pdf.IO
                                 continue;
                             // Skip unused entries.
                             if (token != "n")
+                                continue;
+
+                            // Mac OS X 10.12.6 Quartz PDFContext fails to mark 0 position entries as free.
+                            // According to spec, we could skip anything less than 8 (e.g. '%PDF-1.n' where n is a digit between 0 and 7 must be the header of a file)
+                            // but anything between 0 and 8 (1-7) could be the indication of a much larger problem.
+                            // https://www.adobe.com/content/dam/acom/en/devnet/acrobat/pdfs/PDF32000_2008.pdf 7.5.2
+                            // Skip 0 position entries.
+                            if (position == 0)
                                 continue;
 #if true
                             //!!!new 2018-03-14 begin
@@ -1129,7 +1417,7 @@ namespace PdfSharp.Pdf.IO
             }
             return null;
         }
-
+        
         /// <summary>
         /// Checks the x reference table entry. Returns true if everything is correct.
         /// Return false if the keyword "obj" was found, but ID or Generation are incorrect.

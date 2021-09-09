@@ -75,7 +75,7 @@ namespace PdfSharp.Pdf.Advanced
             if (id != null)
                 Elements.SetValue(Keys.ID, id);
         }
-
+        
         public int Size
         {
             get { return Elements.GetInteger(Keys.Size); }
@@ -216,6 +216,37 @@ namespace PdfSharp.Pdf.Advanced
 
             Debug.Assert(_document._irefTable.IsUnderConstruction == false);
             _document._irefTable.IsUnderConstruction = false;
+        }
+
+        /// <summary>
+        /// Constructs the PdfTrailer from a document.
+        /// </summary>
+        /// <param name="parser">the parser used to read the file.</param>
+        internal void ConstructFromDocument(Parser parser)
+        {
+            // TODO - May need to also search for encryption related trailer info
+            PdfCrossReferenceTable xrefTable = _document._irefTable;
+            Elements.SetInteger(Keys.Size, xrefTable.ObjectTable.Count);
+
+            // find the root.
+            PdfDictionary rootToUse = null;
+            foreach (var reference in xrefTable.AllReferences)
+            {
+                PdfObject obj = parser.ReadObject(null, reference.ObjectID, false, false);
+                if (obj is PdfDictionary dObj)
+                {
+                    if (dObj.Elements[PdfCatalog.Keys.Type] as PdfName == "/Catalog")
+                    {
+                        if (rootToUse == null)
+                            rootToUse = dObj;
+                        else if (dObj.ObjectID.GenerationNumber > rootToUse.ObjectID.GenerationNumber)
+                            rootToUse = dObj;
+                    }
+                }
+            }
+
+            if (rootToUse != null)
+                Elements.SetReference(Keys.Root, rootToUse);
         }
 
         /// <summary>

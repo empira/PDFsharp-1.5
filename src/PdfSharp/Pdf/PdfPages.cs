@@ -612,8 +612,9 @@ namespace PdfSharp.Pdf
                 PdfPage.InheritValues(kid, values);
                 return new PdfDictionary[] { kid };
             }
-
-            if (string.IsNullOrEmpty(type))
+            
+            // If it has kids, it's logically not going to be type page.
+            if (string.IsNullOrEmpty(type) && !kid.Elements.ContainsKey("/Kids"))
             {
                 // Type is required. If type is missing, assume it is "/Page" and hope it will work.
                 // TODO Implement a "Strict" mode in PDFsharp and don't do this in "Strict" mode.
