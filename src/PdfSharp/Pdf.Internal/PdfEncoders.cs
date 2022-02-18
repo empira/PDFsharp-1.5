@@ -398,6 +398,7 @@ namespace PdfSharp.Pdf.Internal
                 }
                 else
                 {
+                    securityHandler?.EncryptBytes(bytes);
                     pdf.Append('<');
                     for (int idx = 0; idx < count; idx++)
                         pdf.AppendFormat("{0:X2}", bytes[idx]);
