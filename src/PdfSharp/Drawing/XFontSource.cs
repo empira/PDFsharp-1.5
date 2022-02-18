@@ -37,16 +37,11 @@ using PdfSharp.Fonts;
 using GdiFont = System.Drawing.Font;
 using GdiFontStyle = System.Drawing.FontStyle;
 #endif
-#if WPF
-using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Media;
-using WpfFontFamily = System.Windows.Media.FontFamily;
-using WpfTypeface = System.Windows.Media.Typeface;
-using WpfGlyphTypeface = System.Windows.Media.GlyphTypeface;
-#endif
 using PdfSharp.Internal;
 using PdfSharp.Fonts.OpenType;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Linq;
 
 namespace PdfSharp.Drawing
 {
@@ -65,6 +60,66 @@ namespace PdfSharp.Drawing
 
         // Signature of a true type collection font.
         const uint ttcf = 0x66637474;
+
+        /// <summary>
+        /// (fontName, fileName)
+        /// </summary>
+        internal static Dictionary<string, string> FontFilePaths = new Dictionary<string, string>();
+        static XFontSource()
+        {
+            var searchingPaths = new List<string>();
+            // Application
+            var executingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            searchingPaths.Add(executingPath);
+            // Windows
+            var systemFontsPath = Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
+            if (!string.IsNullOrWhiteSpace(systemFontsPath))
+            {
+                searchingPaths.Add(systemFontsPath);
+            }
+            else
+            {
+                // Debian
+                searchingPaths.Add("/usr/share/fonts/truetype");
+                //searchingPaths.Add("/usr/share/X11/fonts");
+                //searchingPaths.Add("/usr/X11R6/lib/X11/fonts");
+                //searchingPaths.Add("~/.fonts");
+            }
+
+            foreach (var searchingPath in searchingPaths)
+            {
+                // TODO: *.ttc not supported yet!
+                var fileNames = new List<string>();
+                try
+                {
+                    fileNames = Directory.GetFiles(searchingPath, "*.ttf", SearchOption.AllDirectories).ToList();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    continue;
+                }
+
+                foreach (var fileName in fileNames)
+                {
+                    try
+                    {
+                        var fontCollection = new System.Drawing.Text.PrivateFontCollection();
+                        fontCollection.AddFontFile(fileName);
+                        var fontName = fontCollection.Families[0].Name;
+                        if (!FontFilePaths.ContainsKey(fontName))
+                        {
+                            FontFilePaths.Add(fontName, fileName);
+                            Debug.WriteLine($"Add font {fontName}: {fileName}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                    }
+                }
+            }
+        }
 
         XFontSource(byte[] bytes, ulong key)
         {
@@ -90,7 +145,6 @@ namespace PdfSharp.Drawing
             return fontSource;
         }
 
-#if CORE || GDI
         internal static XFontSource GetOrCreateFromGdi(string typefaceKey, GdiFont gdiFont)
         {
             byte[] bytes = ReadFontBytesFromGdi(gdiFont);
@@ -100,100 +154,30 @@ namespace PdfSharp.Drawing
 
         static byte[] ReadFontBytesFromGdi(GdiFont gdiFont)
         {
-            // Weird: LastError is always 123 or 127. Comment out Debug.Assert.
-            int error = Marshal.GetLastWin32Error();
-            //Debug.Assert(error == 0);
-            error = Marshal.GetLastWin32Error();
-            //Debug.Assert(error == 0);
-
-            IntPtr hfont = gdiFont.ToHfont();
-#if true
-            IntPtr hdc = NativeMethods.GetDC(IntPtr.Zero);
-#else
-            NativeMethods.LOGFONT logFont = new NativeMethods.LOGFONT();
-            logFont.lfHeight = 30;
-            logFont.lfWidth = 0;
-            logFont.lfEscapement = 0;
-            logFont.lfOrientation = 0;
-            logFont.lfWeight = 400;
-            logFont.lfItalic = 0;
-            logFont.lfUnderline = 0;
-            logFont.lfStrikeOut = 0;
-            logFont.lfCharSet = 0;
-            logFont.lfOutPrecision = 0;
-            logFont.lfClipPrecision = 0;
-            logFont.lfQuality = 0;
-            logFont.lfPitchAndFamily = 0;
-            logFont.lfFaceName = "Arial";
-
-            gdiFont.ToLogFont(logFont);
-
-            hfont = NativeMethods.CreateFontIndirect(logFont);
-
-
-            // IntPtr hdc = NativeMethods.CreateDC("DISPLAY", null, null, IntPtr.Zero);
-            IntPtr hdc = NativeMethods.CreateCompatibleDC(IntPtr.Zero);
-#endif
-            error = Marshal.GetLastWin32Error();
-            //Debug.Assert(error == 0);
-
-            IntPtr oldFont = NativeMethods.SelectObject(hdc, hfont);
-            error = Marshal.GetLastWin32Error();
-            //Debug.Assert(error == 0);
-
-            // Get size of the font file.
-            bool isTtcf = false;
-            // In Azure I get 0xc0000022
-            int size = NativeMethods.GetFontData(hdc, 0, 0, null, 0);
-
-            // Check for ntstatus.h: #define STATUS_ACCESS_DENIED             ((NTSTATUS)0xC0000022L)
-            if ((uint)size == 0xc0000022)
-                throw new InvalidOperationException("Microsoft Azure returns STATUS_ACCESS_DENIED ((NTSTATUS)0xC0000022L) from GetFontData. This is a bug in Azure. You must implement a FontResolver to circumvent this issue.");
-
-            if (size == NativeMethods.GDI_ERROR)
+            var assembly = Assembly.GetAssembly(typeof(XFontSource));
+            var fontName = gdiFont.Name;
+            Stream fontStream = null;
             {
-                // Assume that the font file is a true type collection.
-                size = NativeMethods.GetFontData(hdc, ttcf, 0, null, 0);
-                isTtcf = true;
+                if (FontFilePaths.ContainsKey(fontName))
+                {
+                    var fileName = FontFilePaths[fontName];
+                    fontStream = File.OpenRead(fileName);
+                    Debug.WriteLine($"{fileName} retrieved.");
+                }
             }
-            error = Marshal.GetLastWin32Error();
-            //Debug.Assert(error == 0);
 
-            if (size == 0)
-                throw new InvalidOperationException("Cannot retrieve font data.");
-
-            byte[] bytes = new byte[size];
-            int effectiveSize = NativeMethods.GetFontData(hdc, isTtcf ? ttcf : 0, 0, bytes, size);
-            Debug.Assert(size == effectiveSize);
-            // Clean up.
-            NativeMethods.SelectObject(hdc, oldFont);
-            NativeMethods.ReleaseDC(IntPtr.Zero, hdc);
-
-            return bytes;
-        }
-#endif
-
-#if WPF && !SILVERLIGHT
-        internal static XFontSource GetOrCreateFromWpf(string typefaceKey, WpfGlyphTypeface wpfGlyphTypeface)
-        {
-            byte[] bytes = ReadFontBytesFromWpf(wpfGlyphTypeface);
-            XFontSource fontSource = GetOrCreateFrom(typefaceKey, bytes);
-            return fontSource;
-        }
-
-        internal static byte[] ReadFontBytesFromWpf(WpfGlyphTypeface wpfGlyphTypeface)
-        {
-            using (Stream fontStream = wpfGlyphTypeface.GetFontStream())
+            // 3.default
+            if (fontStream == null)
             {
-                if (fontStream == null)
-                    throw new InvalidOperationException("Cannot retrieve font data.");
-                int size = (int)fontStream.Length;
-                byte[] bytes = new byte[size];
-                fontStream.Read(bytes, 0, size);
-                return bytes;
+                fontStream = assembly.GetManifestResourceStream($"PdfSharp.Assets.stsong.ttf");
+                Debug.WriteLine($"{fontName} not found, replaced by default stsong.ttf");
             }
+
+            // to output
+            var fontData = new byte[fontStream.Length];
+            fontStream.Read(fontData, 0, (int)fontStream.Length);
+            return fontData;
         }
-#endif
 
         static XFontSource GetOrCreateFrom(string typefaceKey, byte[] fontBytes)
         {

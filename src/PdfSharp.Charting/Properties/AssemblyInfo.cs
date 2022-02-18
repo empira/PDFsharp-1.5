@@ -37,13 +37,13 @@ using System.Runtime.InteropServices;
 //
 [assembly: AssemblyTitle("PDFsharp Charting")]
 [assembly: AssemblyVersion(PdfSharp.ProductVersionInfo.Version)]
-[assembly: AssemblyDescription("A .NET charting library based on PDFsharp.")]
+[assembly: AssemblyDescription("A .NET charting library based on PDFsharp. (.NET Standard)")]
 [assembly: AssemblyConfiguration(PdfSharp.ProductVersionInfo.Configuration)]
 [assembly: AssemblyCompany(PdfSharp.ProductVersionInfo.Company)]
 #if DEBUG
   [assembly: AssemblyProduct(PdfSharp.ProductVersionInfo.Product + " (Debug Build)")]
 #else
-  [assembly: AssemblyProduct(PdfSharp.ProductVersionInfo.Product)]
+  [assembly: AssemblyProduct("PDFSharp.Charting.NetStandard2")]
 #endif
 [assembly: AssemblyCopyright(PdfSharp.ProductVersionInfo.Copyright)]
 [assembly: AssemblyTrademark(PdfSharp.ProductVersionInfo.Trademark)]

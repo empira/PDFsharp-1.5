@@ -39,12 +39,12 @@ namespace PdfSharp
         /// <summary>
         /// The title of the product.
         /// </summary>
-        public const string Title = "PDFsharp";
+        public const string Title = "PDFSharp";
 
         /// <summary>
         /// A characteristic description of the product.
         /// </summary>
-        public const string Description = "A .NET library for processing PDF.";
+        public const string Description = "A .NET library for processing PDF. (.NET Standard) ";
 
         /// <summary>
         /// The PDF producer information string.
@@ -85,7 +85,7 @@ namespace PdfSharp
         /// <summary>
         /// The name the product.
         /// </summary>
-        public const string Product = "PDFsharp";
+        public const string Product = "PDFSharp.NetStandard";
 
         /// <summary>
         /// The copyright information.
@@ -149,13 +149,13 @@ namespace PdfSharp
         /// or characters that are invalid in an URL. In general, they follow the same rules as .NET namespaces do.
         /// So Foo.Bar is a valid ID, Foo! and Foo Bar are not. 
         /// </summary>
-        public const string NuGetID = "PDFsharp";
+        public const string NuGetID = "PDFSharp.NetStandard";
 
         /// <summary>
         /// Nuspec Doc: The human-friendly title of the package displayed in the Manage NuGet Packages dialog.
         /// If none is specified, the ID is used instead. 
         /// </summary>
-        public const string NuGetTitle = "PDFsharp";
+        public const string NuGetTitle = "PDFSharp.NetStandard";
 
         /// <summary>
         /// Nuspec Doc: A comma-separated list of authors of the package code.
