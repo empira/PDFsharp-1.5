@@ -170,6 +170,9 @@ namespace PdfSharp.Pdf
                 if (disposing)
                 {
                     // Dispose managed resources.
+                    if(_outStream != null) {
+                        ((IDisposable)_outStream).Dispose();
+                    } 
                 }
                 //PdfDocument.Gob.DetatchDocument(Handle);
             }
