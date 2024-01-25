@@ -145,6 +145,10 @@ namespace PdfSharp.Fonts
                             }
                         }
                     }
+                    else
+                    {
+                        fontResolverInfo = PlatformFontResolver.ResolveTypeface(familyName, fontResolvingOptions, typefaceKey);
+                    }
                 }
                 else
                 {
